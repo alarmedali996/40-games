@@ -20,6 +20,7 @@
       color: var(--text);
       line-height: 1.5;
       min-height: 100vh;
+      -webkit-tap-highlight-color: transparent;
     }
     header {
       background: linear-gradient(135deg, #1a1a2e, #16213e);
@@ -126,6 +127,42 @@
     canvas { border-radius: 8px; max-width: 100%; }
     .score { font-size: 1rem; margin-bottom: 0.6rem; color: var(--accent2); }
     .controls { margin-top: 0.8rem; display: flex; gap: 0.4rem; flex-wrap: wrap; justify-content: center; }
+    
+    /* ======== D-PAD (أزرار الأسهم) ======== */
+    .dpad {
+      display: grid;
+      grid-template-columns: repeat(3, 60px);
+      grid-template-rows: repeat(2, 60px);
+      gap: 6px;
+      margin-top: 12px;
+      justify-content: center;
+      user-select: none;
+    }
+    .dpad button {
+      background: #2a2a3a;
+      color: white;
+      border: 2px solid #7c5cff;
+      border-radius: 10px;
+      font-size: 1.6rem;
+      cursor: pointer;
+      font-weight: bold;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .dpad button:active {
+      background: #7c5cff;
+      transform: scale(0.92);
+    }
+    .dpad .up    { grid-column: 2; grid-row: 1; }
+    .dpad .left  { grid-column: 1; grid-row: 2; }
+    .dpad .down  { grid-column: 2; grid-row: 2; }
+    .dpad .right { grid-column: 3; grid-row: 2; }
+    .dpad .action {
+      grid-column: 3; grid-row: 1;
+      background: #7c5cff;
+      font-size: 0.75rem;
+    }
+
     .ttt-board { display: grid; grid-template-columns: repeat(3, 70px); gap: 5px; }
     .ttt-cell {
       width: 70px; height: 70px;
@@ -280,6 +317,56 @@
       document.onkeydown = null;
     }
 
+    // ========== D-PAD (أزرار أسهم للجوال) ==========
+    function simulateKey(key) {
+      if (document.onkeydown) {
+        document.onkeydown({ key: key, preventDefault: () => {} });
+      }
+    }
+
+    function addDpad(controls, keys) {
+      const dpad = document.createElement('div');
+      dpad.className = 'dpad';
+      
+      if (keys.includes('ArrowUp')) {
+        const btn = document.createElement('button');
+        btn.className = 'up';
+        btn.textContent = '↑';
+        btn.onclick = () => simulateKey('ArrowUp');
+        dpad.appendChild(btn);
+      }
+      if (keys.includes('ArrowLeft')) {
+        const btn = document.createElement('button');
+        btn.className = 'left';
+        btn.textContent = '←';
+        btn.onclick = () => simulateKey('ArrowLeft');
+        dpad.appendChild(btn);
+      }
+      if (keys.includes('ArrowDown')) {
+        const btn = document.createElement('button');
+        btn.className = 'down';
+        btn.textContent = '↓';
+        btn.onclick = () => simulateKey('ArrowDown');
+        dpad.appendChild(btn);
+      }
+      if (keys.includes('ArrowRight')) {
+        const btn = document.createElement('button');
+        btn.className = 'right';
+        btn.textContent = '→';
+        btn.onclick = () => simulateKey('ArrowRight');
+        dpad.appendChild(btn);
+      }
+      if (keys.includes('Space')) {
+        const btn = document.createElement('button');
+        btn.className = 'action';
+        btn.textContent = 'SHOOT';
+        btn.onclick = () => simulateKey(' ');
+        dpad.appendChild(btn);
+      }
+      
+      controls.appendChild(dpad);
+    }
+
     // ========== 1. SNAKE ==========
     function initSnake(area, controls) {
       const canvas = document.createElement('canvas');
@@ -311,8 +398,8 @@
         if(e.key==='ArrowRight'&&dir.x===0) dir={x:1,y:0};
       };
       controls.innerHTML = `<button class="btn" onclick="closeModal();openGame(1)">Restart</button>
-        <button class="btn secondary" onclick="closeModal()">Close</button>
-        <p style="width:100%;text-align:center;color:#888;font-size:0.75rem">Arrow keys</p>`;
+        <button class="btn secondary" onclick="closeModal()">Close</button>`;
+      addDpad(controls, ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight']);
     }
 
     // ========== 2. TTT ==========
@@ -371,8 +458,8 @@
       }
       add();add();draw();
       document.onkeydown=e=>{if(e.key==='ArrowLeft')move('l');if(e.key==='ArrowRight')move('r');if(e.key==='ArrowUp')move('u');if(e.key==='ArrowDown')move('d');};
-      controls.innerHTML=`<button class="btn" onclick="closeModal();openGame(3)">Restart</button><button class="btn secondary" onclick="closeModal()">Close</button>
-        <p style="width:100%;text-align:center;color:#888;font-size:0.75rem">Arrow keys</p>`;
+      controls.innerHTML=`<button class="btn" onclick="closeModal();openGame(3)">Restart</button><button class="btn secondary" onclick="closeModal()">Close</button>`;
+      addDpad(controls, ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight']);
     }
 
     // ========== 4. MEMORY ==========
@@ -495,9 +582,10 @@
         draw(); window.gameAnim=requestAnimationFrame(update);
       }
       canvas.onmousemove=e=>{const r=canvas.getBoundingClientRect(); py=e.clientY-r.top-25; if(py<0)py=0; if(py>200)py=200;};
+      canvas.ontouchmove=e=>{e.preventDefault(); const r=canvas.getBoundingClientRect(); const t=e.touches[0]; py=t.clientY-r.top-25; if(py<0)py=0; if(py>200)py=200;};
       update();
       controls.innerHTML=`<button class="btn" onclick="closeModal();openGame(8)">Restart</button><button class="btn secondary" onclick="closeModal()">Close</button>
-        <p style="width:100%;text-align:center;color:#888;font-size:0.75rem">Move mouse</p>`;
+        <p style="width:100%;text-align:center;color:#888;font-size:0.75rem">Move finger / mouse</p>`;
     }
 
     // ========== 9. WHACK ==========
@@ -538,7 +626,7 @@
       controls.innerHTML=`<button class="btn secondary" onclick="closeModal()">Close</button>`;
     }
 
-    // ========== 11. TETRIS (simplified) ==========
+    // ========== 11. TETRIS ==========
     function initTetris(area, controls) {
       const canvas=document.createElement('canvas'); canvas.width=180; canvas.height=360; area.appendChild(canvas);
       const ctx=canvas.getContext('2d');
@@ -567,8 +655,8 @@
         if(e.key==='ArrowUp'){const rot=piece.shape[0].map((_,i)=>piece.shape.map(r=>r[i]).reverse()); if(!collide(piece.x,piece.y,rot))piece.shape=rot;}
         draw();
       };
-      controls.innerHTML=`<button class="btn" onclick="closeModal();openGame(11)">Restart</button><button class="btn secondary" onclick="closeModal()">Close</button>
-        <p style="width:100%;text-align:center;color:#888;font-size:0.75rem">← → ↓ rotate↑</p>`;
+      controls.innerHTML=`<button class="btn" onclick="closeModal();openGame(11)">Restart</button><button class="btn secondary" onclick="closeModal()">Close</button>`;
+      addDpad(controls, ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight']);
     }
 
     // ========== 12. FLAPPY ==========
@@ -595,9 +683,10 @@
         draw(); window.gameAnim=requestAnimationFrame(update);
       }
       canvas.onclick=()=>{if(!over)bird.vy=-7; else{closeModal();openGame(12);}};
+      canvas.ontouchstart=e=>{e.preventDefault(); if(!over)bird.vy=-7; else{closeModal();openGame(12);}};
       addPipe(); update();
       controls.innerHTML=`<button class="btn" onclick="closeModal();openGame(12)">Restart</button><button class="btn secondary" onclick="closeModal()">Close</button>
-        <p style="width:100%;text-align:center;color:#888;font-size:0.75rem">Tap / Click to flap</p>`;
+        <p style="width:100%;text-align:center;color:#888;font-size:0.75rem">Tap to flap</p>`;
     }
 
     // ========== 13. BREAKOUT ==========
@@ -625,25 +714,26 @@
         draw(); window.gameAnim=requestAnimationFrame(update);
       }
       canvas.onmousemove=e=>{const r=canvas.getBoundingClientRect(); paddle.x=e.clientX-r.left-paddle.w/2; if(paddle.x<0)paddle.x=0; if(paddle.x>260)paddle.x=260;};
+      canvas.ontouchmove=e=>{e.preventDefault(); const r=canvas.getBoundingClientRect(); const t=e.touches[0]; paddle.x=t.clientX-r.left-paddle.w/2; if(paddle.x<0)paddle.x=0; if(paddle.x>260)paddle.x=260;};
       update();
       controls.innerHTML=`<button class="btn" onclick="closeModal();openGame(13)">Restart</button><button class="btn secondary" onclick="closeModal()">Close</button>
-        <p style="width:100%;text-align:center;color:#888;font-size:0.75rem">Move mouse</p>`;
+        <p style="width:100%;text-align:center;color:#888;font-size:0.75rem">Move finger / mouse</p>`;
     }
 
-    // ========== 14. MINESWEEPER (simple 8x8) ==========
+    // ========== 14. MINESWEEPER ==========
     function initMines(area, controls) {
       const SIZE=8, MINES=10;
       let board=Array(SIZE).fill().map(()=>Array(SIZE).fill(0));
       let revealed=Array(SIZE).fill().map(()=>Array(SIZE).fill(false));
       let flagged=Array(SIZE).fill().map(()=>Array(SIZE).fill(false));
       let over=false, won=false;
-      // place mines
       let placed=0; while(placed<MINES){const r=Math.floor(Math.random()*SIZE),c=Math.floor(Math.random()*SIZE); if(board[r][c]!==-1){board[r][c]=-1; placed++;}}
       for(let r=0;r<SIZE;r++)for(let c=0;c<SIZE;c++)if(board[r][c]!==-1){
         let n=0; for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){const nr=r+dr,nc=c+dc; if(nr>=0&&nr<SIZE&&nc>=0&&nc<SIZE&&board[nr][nc]===-1)n++;} board[r][c]=n;
       }
       const status=document.createElement('div'); status.className='score'; status.textContent='Mines: 10'; area.appendChild(status);
       const g=document.createElement('div'); g.style.cssText='display:grid;grid-template-columns:repeat(8,32px);gap:2px;'; area.appendChild(g);
+      let touchTimer = null;
       function reveal(r,c){
         if(r<0||r>=SIZE||c<0||c>=SIZE||revealed[r][c]||flagged[r][c]||over)return;
         revealed[r][c]=true;
@@ -652,6 +742,9 @@
         let left=0; for(let i=0;i<SIZE;i++)for(let j=0;j<SIZE;j++)if(!revealed[i][j]&&board[i][j]!==-1)left++;
         if(left===0){won=true; status.textContent='You Win!'; status.style.color='#00d4aa';}
         render();
+      }
+      function flag(r,c){
+        if(!revealed[r][c]&&!over){flagged[r][c]=!flagged[r][c]; render();}
       }
       function render(){
         g.innerHTML='';
@@ -663,13 +756,15 @@
             else if(board[r][c]>0){cell.textContent=board[r][c]; cell.style.color=['','#5af','#5f5','#f55','#a5f','#f5a','#5ff','#fa5','#aaa'][board[r][c]];}
           } else if(flagged[r][c]) cell.textContent='🚩';
           cell.onclick=()=>reveal(r,c);
-          cell.oncontextmenu=e=>{e.preventDefault(); if(!revealed[r][c]&&!over){flagged[r][c]=!flagged[r][c]; render();}};
+          cell.oncontextmenu=e=>{e.preventDefault(); flag(r,c);};
+          cell.ontouchstart=()=>{touchTimer=setTimeout(()=>{flag(r,c); touchTimer=null;},500);};
+          cell.ontouchend=()=>{if(touchTimer){clearTimeout(touchTimer); touchTimer=null;}};
           g.appendChild(cell);
         }
       }
       render();
       controls.innerHTML=`<button class="btn" onclick="closeModal();openGame(14)">New Game</button><button class="btn secondary" onclick="closeModal()">Close</button>
-        <p style="width:100%;text-align:center;color:#888;font-size:0.75rem">Left click reveal • Right click flag</p>`;
+        <p style="width:100%;text-align:center;color:#888;font-size:0.75rem">Tap reveal • Long-press flag</p>`;
     }
 
     // ========== 15. CONNECT FOUR ==========
@@ -734,7 +829,7 @@
         <button class="btn secondary" onclick="closeModal()">Close</button>`;
     }
 
-    // ========== 17. SUDOKU (fixed easy puzzle) ==========
+    // ========== 17. SUDOKU ==========
     function initSudoku(area, controls) {
       const puzzle = [
         [5,3,0,0,7,0,0,0,0],[6,0,0,1,9,5,0,0,0],[0,9,8,0,0,0,0,6,0],
@@ -844,7 +939,7 @@
       next(); status.textContent=`Score: 0 | Time: 20`;
       window.gameInterval=setInterval(()=>{time--; status.textContent=`Score: ${score} | Time: ${time}`; if(time<=0){clearInterval(window.gameInterval); status.textContent=`Final: ${score}`;}},1000);
       controls.innerHTML=`<button class="btn" onclick="closeModal();openGame(21)">Restart</button><button class="btn secondary" onclick="closeModal()">Close</button>
-        <p style="width:100%;text-align:center;color:#888;font-size:0.75rem">Click the COLOR not the word</p>`;
+        <p style="width:100%;text-align:center;color:#888;font-size:0.75rem">Tap the COLOR not the word</p>`;
     }
 
     // ========== 22. BALLOON POP ==========
@@ -886,12 +981,13 @@
         draw(); window.gameAnim=requestAnimationFrame(update);
       }
       canvas.onclick=()=>{if(player.onGround&&!over){player.vy=-10; player.onGround=false;} if(over){closeModal();openGame(23);}};
+      canvas.ontouchstart=e=>{e.preventDefault(); if(player.onGround&&!over){player.vy=-10; player.onGround=false;} if(over){closeModal();openGame(23);}};
       update();
       controls.innerHTML=`<button class="btn" onclick="closeModal();openGame(23)">Restart</button><button class="btn secondary" onclick="closeModal()">Close</button>
         <p style="width:100%;text-align:center;color:#888;font-size:0.75rem">Tap to jump</p>`;
     }
 
-    // ========== 24. SPACE INVADERS (simple) ==========
+    // ========== 24. SPACE INVADERS ==========
     function initInvaders(area, controls) {
       const canvas=document.createElement('canvas'); canvas.width=300; canvas.height=340; area.appendChild(canvas);
       const ctx=canvas.getContext('2d');
@@ -915,12 +1011,13 @@
         draw(); window.gameAnim=requestAnimationFrame(update);
       }
       canvas.onclick=e=>{const r=canvas.getBoundingClientRect(); player.x=e.clientX-r.left-15; if(player.x<0)player.x=0; if(player.x>270)player.x=270; bullets.push({x:player.x+13,y:305});};
+      canvas.ontouchstart=e=>{e.preventDefault(); const r=canvas.getBoundingClientRect(); const t=e.touches[0]; player.x=t.clientX-r.left-15; if(player.x<0)player.x=0; if(player.x>270)player.x=270; bullets.push({x:player.x+13,y:305});};
       update();
       controls.innerHTML=`<button class="btn" onclick="closeModal();openGame(24)">Restart</button><button class="btn secondary" onclick="closeModal()">Close</button>
-        <p style="width:100%;text-align:center;color:#888;font-size:0.75rem">Click to move & shoot</p>`;
+        <p style="width:100%;text-align:center;color:#888;font-size:0.75rem">Tap to move & shoot</p>`;
     }
 
-    // ========== 25. ASTEROIDS (simple) ==========
+    // ========== 25. ASTEROIDS ==========
     function initAsteroids(area, controls) {
       const canvas=document.createElement('canvas'); canvas.width=300; canvas.height=300; area.appendChild(canvas);
       const ctx=canvas.getContext('2d');
@@ -949,18 +1046,18 @@
         if(e.key===' ')bullets.push({x:ship.x,y:ship.y,vx:Math.sin(ship.a)*6,vy:-Math.cos(ship.a)*6});
       };
       update();
-      controls.innerHTML=`<button class="btn" onclick="closeModal();openGame(25)">Restart</button><button class="btn secondary" onclick="closeModal()">Close</button>
-        <p style="width:100%;text-align:center;color:#888;font-size:0.75rem">← → rotate • ↑ thrust • Space shoot</p>`;
+      controls.innerHTML=`<button class="btn" onclick="closeModal();openGame(25)">Restart</button><button class="btn secondary" onclick="closeModal()">Close</button>`;
+      addDpad(controls, ['ArrowUp','ArrowLeft','ArrowRight','Space']);
     }
 
-    // ========== 26-40 simplified but playable ==========
+    // ========== 26. PAC-MAN ==========
     function initPac(area, controls) {
-      area.innerHTML='<div class="score">Pac-Man Lite</div><p style="color:#888;text-align:center;padding:1rem">Use arrow keys to move. Eat dots, avoid red ghost.</p>';
+      const title = document.createElement('div'); title.className='score'; title.textContent='Pac-Man Lite'; area.appendChild(title);
       const canvas=document.createElement('canvas'); canvas.width=280; canvas.height=280; area.appendChild(canvas);
       const ctx=canvas.getContext('2d');
       let pac={x:140,y:140}, ghost={x:50,y:50}, dots=[], score=0, over=false;
       for(let i=0;i<20;i++)dots.push({x:20+Math.random()*240,y:20+Math.random()*240,eaten:false});
-      const scoreEl=document.querySelector('.score');
+      const scoreEl = document.createElement('div'); scoreEl.className='score'; area.insertBefore(scoreEl, canvas);
       function draw(){ctx.fillStyle='#111';ctx.fillRect(0,0,280,280); ctx.fillStyle='#ff0';ctx.beginPath();ctx.arc(pac.x,pac.y,10,0.2,Math.PI*1.8);ctx.lineTo(pac.x,pac.y);ctx.fill();
         ctx.fillStyle='#e74c3c';ctx.beginPath();ctx.arc(ghost.x,ghost.y,10,0,Math.PI*2);ctx.fill();
         ctx.fillStyle='#fff';dots.forEach(d=>{if(!d.eaten){ctx.beginPath();ctx.arc(d.x,d.y,3,0,Math.PI*2);ctx.fill();}});}
@@ -973,8 +1070,10 @@
         pac.x=Math.max(10,Math.min(270,pac.x));pac.y=Math.max(10,Math.min(270,pac.y));};
       update();
       controls.innerHTML=`<button class="btn" onclick="closeModal();openGame(26)">Restart</button><button class="btn secondary" onclick="closeModal()">Close</button>`;
+      addDpad(controls, ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight']);
     }
 
+    // ========== 27. PLATFORMER ==========
     function initPlatform(area, controls) {
       const canvas=document.createElement('canvas'); canvas.width=300; canvas.height=220; area.appendChild(canvas);
       const ctx=canvas.getContext('2d');
@@ -989,10 +1088,11 @@
         draw(); window.gameAnim=requestAnimationFrame(update);}
       document.onkeydown=e=>{if(e.key==='ArrowLeft')p.x-=6;if(e.key==='ArrowRight')p.x+=6;if(e.key==='ArrowUp'&&p.onG)p.vy=-9;};
       update();
-      controls.innerHTML=`<button class="btn" onclick="closeModal();openGame(27)">Restart</button><button class="btn secondary" onclick="closeModal()">Close</button>
-        <p style="width:100%;text-align:center;color:#888;font-size:0.75rem">← → move • ↑ jump</p>`;
+      controls.innerHTML=`<button class="btn" onclick="closeModal();openGame(27)">Restart</button><button class="btn secondary" onclick="closeModal()">Close</button>`;
+      addDpad(controls, ['ArrowUp','ArrowLeft','ArrowRight']);
     }
 
+    // ========== 28. 15-PUZZLE ==========
     function init15(area, controls) {
       let tiles=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,0];
       tiles.sort(()=>Math.random()-0.5);
@@ -1016,10 +1116,10 @@
       controls.innerHTML=`<button class="btn" onclick="closeModal();openGame(28)">Shuffle</button><button class="btn secondary" onclick="closeModal()">Close</button>`;
     }
 
+    // ========== 29. MAZE ==========
     function initMaze(area, controls) {
       const W=11,H=11;
       let maze=Array(H).fill().map(()=>Array(W).fill(1));
-      // simple maze generation
       function carve(x,y){maze[y][x]=0; const dirs=[[0,-2],[0,2],[-2,0],[2,0]].sort(()=>Math.random()-0.5);
         for(let [dx,dy] of dirs){const nx=x+dx,ny=y+dy; if(nx>0&&nx<W-1&&ny>0&&ny<H-1&&maze[ny][nx]===1){maze[y+dy/2][x+dx/2]=0; carve(nx,ny);}}}
       carve(1,1); maze[H-2][W-2]=0;
@@ -1040,10 +1140,11 @@
         if(nx>=0&&nx<W&&ny>=0&&ny<H&&maze[ny][nx]===0){px=nx;py=ny;render(); if(px===W-2&&py===H-2)status.textContent='Escaped! 🎉';}
       };
       render();
-      controls.innerHTML=`<button class="btn" onclick="closeModal();openGame(29)">New Maze</button><button class="btn secondary" onclick="closeModal()">Close</button>
-        <p style="width:100%;text-align:center;color:#888;font-size:0.75rem">Arrow keys</p>`;
+      controls.innerHTML=`<button class="btn" onclick="closeModal();openGame(29)">New Maze</button><button class="btn secondary" onclick="closeModal()">Close</button>`;
+      addDpad(controls, ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight']);
     }
 
+    // ========== 30. DICE ==========
     function initDice(area, controls) {
       const status=document.createElement('div'); status.className='score'; status.textContent='Click to roll'; area.appendChild(status);
       const dice=document.createElement('div'); dice.style.cssText='font-size:4rem;margin:1rem 0;'; dice.textContent='🎲'; area.appendChild(dice);
@@ -1059,6 +1160,7 @@
       controls.appendChild(rollBtn); controls.appendChild(closeBtn);
     }
 
+    // ========== 31. BLACKJACK ==========
     function initBlackjack(area, controls) {
       const suits=['♠','♥','♦','♣'], vals=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
       function card(){return vals[Math.floor(Math.random()*13)]+suits[Math.floor(Math.random()*4)];}
@@ -1071,25 +1173,28 @@
         pEl.innerHTML=`You: ${player.join(' ')} (${val(player)})`;
         dEl.innerHTML=`Dealer: ${done?dealer.join(' ')+' ('+val(dealer)+')':dealer[0]+' ??'}`;}
       render();
-      controls.innerHTML=`<button class="btn" id="hitBtn">Hit</button><button class="btn" id="standBtn">Stand</button>
-        <button class="btn secondary" onclick="closeModal()">Close</button>`;
-      document.getElementById('hitBtn').onclick=()=>{if(done)return; player.push(card()); if(val(player)>21){done=true; status.textContent='Bust! Dealer wins'; status.style.color='#f65e3b';} render();};
-      document.getElementById('standBtn').onclick=()=>{done=true; while(val(dealer)<17)dealer.push(card());
+      const hitBtn = document.createElement('button'); hitBtn.className='btn'; hitBtn.textContent='Hit';
+      const standBtn = document.createElement('button'); standBtn.className='btn'; standBtn.textContent='Stand';
+      const closeBtn = document.createElement('button'); closeBtn.className='btn secondary'; closeBtn.textContent='Close'; closeBtn.onclick=closeModal;
+      hitBtn.onclick=()=>{if(done)return; player.push(card()); if(val(player)>21){done=true; status.textContent='Bust! Dealer wins'; status.style.color='#f65e3b';} render();};
+      standBtn.onclick=()=>{done=true; while(val(dealer)<17)dealer.push(card());
         const pv=val(player),dv=val(dealer);
         if(dv>21||pv>dv){status.textContent='You Win!'; status.style.color='#00d4aa';}
         else if(pv===dv)status.textContent='Push';
         else{status.textContent='Dealer Wins'; status.style.color='#f65e3b';}
         render();};
+      controls.appendChild(hitBtn); controls.appendChild(standBtn); controls.appendChild(closeBtn);
     }
 
+    // ========== 32. ROULETTE ==========
     function initRoulette(area, controls) {
       const status=document.createElement('div'); status.className='score'; status.textContent='Pick a color & spin'; area.appendChild(status);
       const res=document.createElement('div'); res.style.cssText='font-size:2rem;margin:1rem 0;'; area.appendChild(res);
       let bet=null;
       const redBtn=document.createElement('button'); redBtn.className='btn'; redBtn.style.background='#e74c3c'; redBtn.textContent='Red';
-      redBtn.onclick=()=>{bet='red';};
+      redBtn.onclick=()=>{bet='red'; status.textContent='Bet: Red';};
       const blackBtn=document.createElement('button'); blackBtn.className='btn'; blackBtn.style.cssText='background:#222;border:1px solid #555'; blackBtn.textContent='Black';
-      blackBtn.onclick=()=>{bet='black';};
+      blackBtn.onclick=()=>{bet='black'; status.textContent='Bet: Black';};
       const spinBtn=document.createElement('button'); spinBtn.className='btn'; spinBtn.textContent='Spin';
       spinBtn.onclick=()=>{
         if(!bet)return;
@@ -1104,6 +1209,7 @@
       controls.appendChild(redBtn); controls.appendChild(blackBtn); controls.appendChild(spinBtn); controls.appendChild(closeBtn);
     }
 
+    // ========== 33. SLOTS ==========
     function initSlots(area, controls) {
       const symbols=['🍒','🍋','🍊','🍇','⭐','💎'];
       const status=document.createElement('div'); status.className='score'; status.textContent='Press Spin'; area.appendChild(status);
@@ -1122,6 +1228,7 @@
       controls.appendChild(spinBtn); controls.appendChild(closeBtn);
     }
 
+    // ========== 34. TRIVIA ==========
     function initTrivia(area, controls) {
       const qs=[{q:'Capital of France?',a:['London','Paris','Berlin','Madrid'],c:1},{q:'2+2*2=?',a:['6','8','4','2'],c:0},{q:'Largest planet?',a:['Earth','Mars','Jupiter','Venus'],c:2},{q:'HTML stands for?',a:['Hyper Text Markup Language','High Tech Modern Language','Home Tool Markup Language'],c:0}];
       let i=0, score=0;
@@ -1136,6 +1243,7 @@
       controls.innerHTML=`<button class="btn" onclick="closeModal();openGame(34)">Restart</button><button class="btn secondary" onclick="closeModal()">Close</button>`;
     }
 
+    // ========== 35. DRAWING ==========
     function initDraw(area, controls) {
       const canvas=document.createElement('canvas'); canvas.width=280; canvas.height=220; canvas.style.background='#fff'; canvas.style.borderRadius='8px'; area.appendChild(canvas);
       const ctx=canvas.getContext('2d'); ctx.strokeStyle='#000'; ctx.lineWidth=3; ctx.lineCap='round';
@@ -1153,6 +1261,7 @@
       controls.appendChild(clearBtn); controls.appendChild(closeBtn);
     }
 
+    // ========== 36. VIRTUAL PET ==========
     function initPet(area, controls) {
       let hunger=50, happy=50, energy=50;
       const status=document.createElement('div'); status.className='score'; area.appendChild(status);
@@ -1172,6 +1281,7 @@
       controls.appendChild(feedBtn); controls.appendChild(playBtn); controls.appendChild(sleepBtn); controls.appendChild(closeBtn);
     }
 
+    // ========== 37. IDLE ==========
     function initIdle(area, controls) {
       let money=0, rate=1;
       const status=document.createElement('div'); status.className='score'; status.textContent='$0'; area.appendChild(status);
@@ -1184,33 +1294,32 @@
       controls.appendChild(upBtn); controls.appendChild(closeBtn);
     }
 
+    // ========== 38. CHESS ==========
     function initChess(area, controls) {
       const status=document.createElement('div'); status.className='score'; status.textContent='Simple Chess Board (move freely)'; area.appendChild(status);
       const pieces=['♜','♞','♝','♛','♚','♝','♞','♜','♟','♟','♟','♟','♟','♟','♟','♟','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','♙','♙','♙','♙','♙','♙','♙','♙','♖','♘','♗','♕','♔','♗','♘','♖'];
       const g=document.createElement('div'); g.style.cssText='display:grid;grid-template-columns:repeat(8,32px);gap:0;'; area.appendChild(g);
       let selected=null;
-      pieces.forEach((p,i)=>{
-        const c=document.createElement('div');
-        const r=Math.floor(i/8), col=i%8;
-        c.style.cssText=`width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;cursor:pointer;background:${(r+col)%2?'#769656':'#eeeed2'}`;
-        c.textContent=p; c.dataset.i=i;
-        c.onclick=()=>{
-          if(selected===null){if(c.textContent){selected=i; c.style.outline='2px solid #f1c40f';}}
-          else{pieces[selected]=''; pieces[i]=c.textContent?c.textContent:pieces[selected]; // swap simplified
-            const tmp=pieces[selected]; pieces[selected]=pieces[i]; pieces[i]=tmp;
-            selected=null; render();}};
-        g.appendChild(c);
-      });
-      function render(){g.innerHTML=''; pieces.forEach((p,i)=>{
-        const c=document.createElement('div'); const r=Math.floor(i/8),col=i%8;
-        c.style.cssText=`width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;cursor:pointer;background:${(r+col)%2?'#769656':'#eeeed2'}`;
-        c.textContent=p; c.onclick=()=>{if(selected===null){if(p){selected=i;c.style.outline='2px solid #f1c40f';}}
-          else{const tmp=pieces[selected]; pieces[selected]=pieces[i]; pieces[i]=tmp; selected=null; render();}};
-        g.appendChild(c);});}
+      function render(){
+        g.innerHTML='';
+        pieces.forEach((p,i)=>{
+          const c=document.createElement('div'); const r=Math.floor(i/8),col=i%8;
+          c.style.cssText=`width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;cursor:pointer;background:${(r+col)%2?'#769656':'#eeeed2'}`;
+          c.textContent=p;
+          if(selected===i) c.style.outline='2px solid #f1c40f';
+          c.onclick=()=>{
+            if(selected===null){if(p){selected=i; render();}}
+            else{const tmp=pieces[selected]; pieces[selected]=pieces[i]; pieces[i]=tmp; selected=null; render();}
+          };
+          g.appendChild(c);
+        });
+      }
+      render();
       controls.innerHTML=`<button class="btn secondary" onclick="closeModal()">Close</button>
-        <p style="width:100%;text-align:center;color:#888;font-size:0.75rem">Click piece then square to move</p>`;
+        <p style="width:100%;text-align:center;color:#888;font-size:0.75rem">Tap piece then square to move</p>`;
     }
 
+    // ========== 39. CHECKERS ==========
     function initCheckers(area, controls) {
       const status=document.createElement('div'); status.className='score'; status.textContent='Checkers (simplified)'; area.appendChild(status);
       let board=Array(8).fill().map((_,r)=>Array(8).fill(0).map((_,c)=>((r+c)%2===1?(r<3?2:(r>4?1:0)):0)));
@@ -1235,6 +1344,7 @@
       controls.innerHTML=`<button class="btn" onclick="closeModal();openGame(39)">Restart</button><button class="btn secondary" onclick="closeModal()">Close</button>`;
     }
 
+    // ========== 40. YAHTZEE ==========
     function initYahtzee(area, controls) {
       let dice=[0,0,0,0,0], held=[false,false,false,false,false], rolls=3;
       const status=document.createElement('div'); status.className='score'; status.textContent='Rolls left: 3'; area.appendChild(status);
@@ -1244,10 +1354,14 @@
         hEl.innerHTML=''; dice.forEach((_,i)=>{const b=document.createElement('button'); b.className='btn secondary'; b.textContent=held[i]?'Held':'Hold';
           b.onclick=()=>{held[i]=!held[i]; render();}; hEl.appendChild(b);});}
       render();
-      controls.innerHTML=`<button class="btn" onclick="if(rolls>0){dice=dice.map((d,i)=>held[i]?d:Math.ceil(Math.random()*6)); rolls--; status.textContent='Rolls left: '+rolls; render();}">Roll</button>
-        <button class="btn" onclick="rolls=3;held=[false,false,false,false,false];dice=[0,0,0,0,0];status.textContent='Rolls left: 3';render();">New Turn</button>
-        <button class="btn secondary" onclick="closeModal()">Close</button>`;
+      const rollBtn = document.createElement('button'); rollBtn.className='btn'; rollBtn.textContent='Roll';
+      rollBtn.onclick=()=>{if(rolls>0){dice=dice.map((d,i)=>held[i]?d:Math.ceil(Math.random()*6)); rolls--; status.textContent='Rolls left: '+rolls; render();}};
+      const newBtn = document.createElement('button'); newBtn.className='btn'; newBtn.textContent='New Turn';
+      newBtn.onclick=()=>{rolls=3;held=[false,false,false,false,false];dice=[0,0,0,0,0];status.textContent='Rolls left: 3';render();};
+      const closeBtn = document.createElement('button'); closeBtn.className='btn secondary'; closeBtn.textContent='Close'; closeBtn.onclick=closeModal;
+      controls.appendChild(rollBtn); controls.appendChild(newBtn); controls.appendChild(closeBtn);
     }
   </script>
 </body>
 </html>
+      
