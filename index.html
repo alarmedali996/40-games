@@ -11,8 +11,7 @@
 <meta property="og:title" content="GameZone40 - 40 ነጻ ጨዋታዎች">
 <meta property="og:description" content="40 ነጻ ጨዋታዎች በቀጥታ በብራውዘር - ያለ ማውረድ!">
 <meta property="og:type" content="website">
-<meta property="og:image" content="logo.png">
-<link rel="icon" href="logo.png">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
 <style>
 :root{--bg:#0f0f13;--card:#1a1a24;--accent:#7c5cff;--accent2:#00d4aa;--text:#e8e8f0;--muted:#8888a0}
 *{margin:0;padding:0;box-sizing:border-box}
@@ -20,8 +19,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 nav{background:linear-gradient(135deg,#1a1a2e,#16213e);padding:15px;display:flex;justify-content:center;gap:15px;border-bottom:1px solid #2a2a3a;position:sticky;top:0;z-index:100;flex-wrap:wrap}
 nav a{color:var(--text);text-decoration:none;font-weight:600;font-size:.85rem;padding:8px 14px;border-radius:8px;transition:.2s}
 nav a:hover,nav a.active{background:var(--accent);color:#fff}
-header{background:linear-gradient(135deg,#1a1a2e,#16213e);padding:2rem 1rem;text-align:center;border-bottom:1px solid #2a2a3a}
-header img.logo{width:180px;height:180px;border-radius:20px;box-shadow:0 0 30px rgba(124,92,255,.6);margin-bottom:15px}
+header{background:linear-gradient(135deg,#1a1a2e,#16213e);padding:1.8rem 1rem;text-align:center;border-bottom:1px solid #2a2a3a}
 header h1{font-size:2rem;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.3rem;font-weight:900}
 header p{color:var(--muted);font-size:.9rem}
 .stats{display:flex;justify-content:center;gap:20px;margin-top:15px;flex-wrap:wrap}
@@ -91,7 +89,8 @@ footer a{color:var(--text);text-decoration:none;font-size:.85rem;transition:.2s}
 footer a:hover{color:var(--accent2)}
 footer .copyright{color:var(--muted);font-size:.75rem;margin-top:15px}
 </style>
-</head><body>
+</head>
+<body>
 <nav>
 <a href="#" class="active">መነሻ</a>
 <a href="#about">ስለ እኛ</a>
@@ -100,7 +99,6 @@ footer .copyright{color:var(--muted);font-size:.75rem;margin-top:15px}
 </nav>
 
 <header>
-<img src="logo.png" alt="GameZone40 Logo" class="logo" onerror="this.style.display='none'">
 <h1>🎮 GameZone40</h1>
 <p>40 ነጻ ጨዋታዎች • ያለ ማውረድ • በሞባይል እና ኮምፒውተር</p>
 <div class="stats">
@@ -129,7 +127,6 @@ footer .copyright{color:var(--muted);font-size:.75rem;margin-top:15px}
 <section id="about" class="section">
 <h2>🎮 ስለ GameZone40</h2>
 <p>GameZone40 የ40 ነጻ ጨዋታዎች ዌብሳይት ነው። ሁሉም ጨዋታዎች በቀጥታ በብራውዘር ይሰራሉ - ምንም ማውረድ አያስፈልግም። በሞባይል እና በኮምፒውተር ላይ ይሰራሉ።</p>
-<p>የሚያካትታቸው ጨዋታዎች: Snake, Tetris, 2048, Memory Match, Chess, Sudoku, Minesweeper, Connect Four, Pac-Man, Space Invaders, እና ሌሎችም።</p>
 </section>
 
 <section id="contact" class="section">
@@ -144,7 +141,6 @@ footer .copyright{color:var(--muted);font-size:.75rem;margin-top:15px}
 <section id="privacy" class="section">
 <h2>🔒 የግላዊነት ፖሊሲ</h2>
 <p>GameZone40 የእርስዎን የግል መረጃ አይሰበስብም። ሁሉም ጨዋታዎች በአሳሽዎ ውስጥ ብቻ ይሰራሉ።</p>
-<p>እኛ ኩኪዎችን (cookies) ለማሻሻያ እና ለማስታወቂያ ዓላማዎች እንጠቀማለን።</p>
 </section>
 
 <footer>
@@ -167,6 +163,118 @@ footer .copyright{color:var(--muted);font-size:.75rem;margin-top:15px}
 <div class="controls" id="gameControls"></div>
 </div>
 </div>
+<script>
+const games=[
+{id:1,name:"Snake",desc:"Eat food, grow longer",cat:"arcade"},
+{id:2,name:"Tic-Tac-Toe",desc:"X vs O",cat:"classic"},
+{id:3,name:"2048",desc:"Slide to 2048",cat:"puzzle"},
+{id:4,name:"Memory Match",desc:"Find the pairs",cat:"puzzle"},
+{id:5,name:"Rock Paper Scissors",desc:"vs Computer",cat:"classic"},
+{id:6,name:"Number Guess",desc:"1 to 100",cat:"puzzle"},
+{id:7,name:"Hangman",desc:"Guess the word",cat:"puzzle"},
+{id:8,name:"Pong",desc:"Classic paddle",cat:"arcade"},
+{id:9,name:"Whack-a-Mole",desc:"Hit the moles",cat:"arcade"},
+{id:10,name:"Reaction Test",desc:"How fast?",cat:"arcade"},
+{id:11,name:"Tetris",desc:"Stack the blocks",cat:"puzzle"},
+{id:12,name:"Flappy Bird",desc:"Fly between pipes",cat:"arcade"},
+{id:13,name:"Breakout",desc:"Break the bricks",cat:"arcade"},
+{id:14,name:"Minesweeper",desc:"Clear the mines",cat:"puzzle"},
+{id:15,name:"Connect Four",desc:"Four in a row",cat:"classic"},
+{id:16,name:"Simon Says",desc:"Repeat the sequence",cat:"puzzle"},
+{id:17,name:"Sudoku",desc:"Fill the grid",cat:"puzzle"},
+{id:18,name:"Word Scramble",desc:"Unscramble letters",cat:"puzzle"},
+{id:19,name:"Typing Speed",desc:"Test your WPM",cat:"classic"},
+{id:20,name:"Cookie Clicker",desc:"Click for cookies",cat:"arcade"},
+{id:21,name:"Color Match",desc:"Match the color",cat:"arcade"},
+{id:22,name:"Balloon Pop",desc:"Pop the balloons",cat:"arcade"},
+{id:23,name:"Endless Runner",desc:"Jump obstacles",cat:"arcade"},
+{id:24,name:"Space Invaders",desc:"Shoot aliens",cat:"arcade"},
+{id:25,name:"Asteroids",desc:"Destroy rocks",cat:"arcade"},
+{id:26,name:"Pac-Man Lite",desc:"Eat the dots",cat:"arcade"},
+{id:27,name:"Platformer",desc:"Jump & run",cat:"arcade"},
+{id:28,name:"15-Puzzle",desc:"Slide to order",cat:"puzzle"},
+{id:29,name:"Maze",desc:"Find the exit",cat:"puzzle"},
+{id:30,name:"Dice Roller",desc:"Roll the dice",cat:"cards"},
+{id:31,name:"Blackjack",desc:"Beat the dealer",cat:"cards"},
+{id:32,name:"Roulette",desc:"Place your bet",cat:"cards"},
+{id:33,name:"Slot Machine",desc:"Spin to win",cat:"cards"},
+{id:34,name:"Trivia Quiz",desc:"Answer questions",cat:"classic"},
+{id:35,name:"Drawing Pad",desc:"Sketch freely",cat:"arcade"},
+{id:36,name:"Virtual Pet",desc:"Care for your pet",cat:"arcade"},
+{id:37,name:"Idle Clicker",desc:"Build empire",cat:"arcade"},
+{id:38,name:"Chess Board",desc:"Basic chess",cat:"classic"},
+{id:39,name:"Checkers",desc:"Jump & capture",cat:"classic"},
+{id:40,name:"Yahtzee Lite",desc:"Roll combinations",cat:"cards"}
+];
+
+const grid=document.getElementById('gamesGrid');
+let currentCat='all';
+
+function renderGames(){
+grid.innerHTML='';
+const search=document.getElementById('searchBar').value.toLowerCase();
+games.forEach(g=>{
+if(currentCat!=='all'&&g.cat!==currentCat)return;
+if(search&&!g.name.toLowerCase().includes(search)&&!g.desc.toLowerCase().includes(search))return;
+const card=document.createElement('div');
+card.className='card';
+card.innerHTML=`<span class="badge">PLAY</span><h3>${g.id}. ${g.name}</h3><p>${g.desc}</p><button class="btn" onclick="openGame(${g.id})">Play Now</button>`;
+grid.appendChild(card);
+});
+}
+
+document.getElementById('searchBar').addEventListener('input',renderGames);
+document.querySelectorAll('.cat-btn').forEach(btn=>{
+btn.addEventListener('click',()=>{
+document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+btn.classList.add('active');
+currentCat=btn.dataset.cat;
+renderGames();
+});
+});
+renderGames();
+
+let playerCount=0;
+const targetPlayers=1247;
+const counter=document.getElementById('playerCount');
+const interval=setInterval(()=>{
+playerCount+=Math.ceil(targetPlayers/50);
+if(playerCount>=targetPlayers){playerCount=targetPlayers;clearInterval(interval);}
+counter.textContent=playerCount;
+},50);
+
+function openGame(id){
+const g=games.find(x=>x.id===id);
+document.getElementById('modalTitle').textContent=g.name;
+document.getElementById('gameModal').classList.add('active');
+const area=document.getElementById('gameArea');
+const controls=document.getElementById('gameControls');
+area.innerHTML='';controls.innerHTML='';
+if(window.gameInterval)clearInterval(window.gameInterval);
+if(window.gameAnim)cancelAnimationFrame(window.gameAnim);
+document.onkeydown=null;
+const fns={1:initSnake,2:initTTT,3:init2048,4:initMemory,5:initRPS,6:initGuess,7:initHangman,8:initPong,9:initWhack,10:initReaction,11:initTetris,12:initFlappy,13:initBreakout,14:initMines,15:initC4,16:initSimon,17:initSudoku,18:initScramble,19:initTyping,20:initCookie,21:initColor,22:initBalloon,23:initRunner,24:initInvaders,25:initAsteroids,26:initPac,27:initPlatform,28:init15,29:initMaze,30:initDice,31:initBlackjack,32:initRoulette,33:initSlots,34:initTrivia,35:initDraw,36:initPet,37:initIdle,38:initChess,39:initCheckers,40:initYahtzee};
+if(fns[id])fns[id](area,controls);
+}
+
+function closeModal(){
+document.getElementById('gameModal').classList.remove('active');
+if(window.gameInterval){clearInterval(window.gameInterval);window.gameInterval=null;}
+if(window.gameAnim){cancelAnimationFrame(window.gameAnim);window.gameAnim=null;}
+document.onkeydown=null;
+}
+
+function simulateKey(key){if(document.onkeydown)document.onkeydown({key:key,preventDefault:()=>{}});}
+
+function addDpad(controls,keys){
+const dpad=document.createElement('div');dpad.className='dpad';
+if(keys.includes('ArrowUp')){const b=document.createElement('button');b.className='up';b.textContent='↑';b.onclick=()=>simulateKey('ArrowUp');dpad.appendChild(b);}
+if(keys.includes('ArrowLeft')){const b=document.createElement('button');b.className='left';b.textContent='←';b.onclick=()=>simulateKey('ArrowLeft');dpad.appendChild(b);}
+if(keys.includes('ArrowDown')){const b=document.createElement('button');b.className='down';b.textContent='↓';b.onclick=()=>simulateKey('ArrowDown');dpad.appendChild(b);}
+if(keys.includes('ArrowRight')){const b=document.createElement('button');b.className='right';b.textContent='→';b.onclick=()=>simulateKey('ArrowRight');dpad.appendChild(b);}
+if(keys.includes('Space')){const b=document.createElement('button');b.className='action';b.textContent='SHOOT';b.onclick=()=>simulateKey(' ');dpad.appendChild(b);}
+controls.appendChild(dpad);
+}
 // ===== 1. SNAKE =====
 function initSnake(area,controls){
 const canvas=document.createElement('canvas');canvas.width=280;canvas.height=280;area.appendChild(canvas);
@@ -310,6 +418,7 @@ controls.innerHTML=`<button class="btn" onclick="closeModal();openGame(11)">Rest
 addDpad(controls,['ArrowUp','ArrowDown','ArrowLeft','ArrowRight']);
 }
 
+// ===== 12-40: باقي الألعاب =====
 // ===== 12. FLAPPY =====
 function initFlappy(area,controls){
 const canvas=document.createElement('canvas');canvas.width=300;canvas.height=400;area.appendChild(canvas);
@@ -424,6 +533,7 @@ const buyBtn=document.createElement('button');buyBtn.className='btn';buyBtn.text
 const closeBtn=document.createElement('button');closeBtn.className='btn secondary';closeBtn.textContent='Close';closeBtn.onclick=closeModal;
 controls.appendChild(buyBtn);controls.appendChild(closeBtn);
 }
+
 // ===== 21. COLOR MATCH =====
 function initColor(area,controls){
 const colors=['Red','Blue','Green','Yellow','Purple','Orange'];const cols=['#e74c3c','#3498db','#2ecc71','#f1c40f','#9b59b6','#e67e22'];let score=0,time=20;
@@ -680,4 +790,4 @@ controls.appendChild(rollBtn);controls.appendChild(newBtn);controls.appendChild(
 
 </script>
 </body>
-  </html>
+</html>
