@@ -1,0 +1,1373 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f7e5bc">
+<title>Route 66 Station</title>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup }
+from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, query, where, orderBy, limit, getDocs, arrayUnion, increment }
+from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCqGY9XI2eSFkjdXazzamOcho8d8K2VhC4",
+  authDomain: "nova-ai-575d1.firebaseapp.com",
+  projectId: "nova-ai-575d1",
+  storageBucket: "nova-ai-575d1.firebasestorage.app",
+  messagingSenderId: "707788036735",
+  appId: "1:707788036735:web:e3c7827f9427c58895bd4a",
+  measurementId: "G-ZBH5TH2FY7"
+};
+
+try {
+  const app = initializeApp(firebaseConfig);
+  window.FB = {
+    auth: getAuth(app), db: getFirestore(app),
+    doc, setDoc, getDoc, updateDoc,
+    collection, query, where, orderBy, limit, getDocs,
+    arrayUnion, increment,
+    createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut,
+    onAuthStateChanged, GoogleAuthProvider, signInWithPopup,
+    ready: true
+  };
+} catch(e) { window.FB = { ready: false }; }
+window.dispatchEvent(new Event('fb-ready'));
+</script>
+
+<style>
+:root { --ink:#50331f; }
+* { box-sizing:border-box; margin:0; padding:0; }
+html, body { width:100%; min-height:100%; overflow:hidden; touch-action:manipulation; }
+body { background:#d5b985; color:var(--ink); font-family:'Segoe UI',system-ui,sans-serif; overscroll-behavior:none; -webkit-user-select:none; user-select:none; }
+button { font:inherit; cursor:pointer; border:0; background:none; -webkit-tap-highlight-color:transparent; }
+
+.game-shell { position:fixed; inset:0; display:flex; justify-content:center; align-items:center; background:linear-gradient(180deg,#a67c4a,#d5b985); }
+.game { position:relative; display:flex; flex-direction:column; width:min(100vw,520px); height:100dvh; max-height:1000px; overflow:hidden; background:#f1d69e; box-shadow:0 0 0 8px #73442d, 0 30px 80px rgba(0,0,0,0.5); }
+
+.topbar { z-index:10; flex:0 0 72px; display:flex; align-items:center; justify-content:space-between; gap:4px; padding:8px 8px; background:linear-gradient(180deg,#fdf3d8,#f5e6c0); border-bottom:4px solid #a76a39; }
+.brand { display:flex; flex-direction:column; line-height:1; min-width:0; }
+.kicker { color:#a34b31; font-size:9px; font-weight:800; white-space:nowrap; }
+.title { margin-top:3px; color:#683b25; font:900 13px Georgia,serif; white-space:nowrap; }
+.wallets { display:flex; align-items:center; gap:3px; }
+.wallet { height:28px; display:flex; align-items:center; gap:3px; padding:0 7px; border:2px solid #8e5833; border-radius:16px; background:linear-gradient(180deg,#fff7df,#ffeec4); box-shadow:0 2px 0 #6d432d; color:#50301f; font:900 10px monospace; }
+.coin-icon { width:12px; height:12px; border-radius:50%; background:radial-gradient(circle at 30% 30%,#ffe27a,#f6b82e 60%,#c87c16); border:2px solid #a06a10; }
+.gem-icon { width:11px; height:11px; background:linear-gradient(135deg,#7dd8f0,#279ce9); transform:rotate(45deg); border-radius:3px; }
+.icon-btn { width:28px; height:28px; border:2px solid #8e5833; border-radius:50%; background:linear-gradient(180deg,#fff7df,#ffeec4); color:#76472d; font-weight:900; font-size:12px; box-shadow:0 2px 0 #6d432d; display:grid; place-items:center; }
+.icon-btn:active { transform:translateY(2px); }
+.xp-bar { position:absolute; top:72px; left:0; right:0; height:4px; background:#3f2b21; z-index:11; }
+.xp-fill { height:100%; width:0%; background:linear-gradient(90deg,#f3ca76,#ffed9f); transition:width 0.3s; }
+
+.scene { position:relative; flex:1; min-height:240px; overflow:hidden; background:linear-gradient(180deg,#ff9a76 0%,#ffb88c 35%,#ffd89b 55%,#f0c987 56%,#d4a06a 100%); }
+.sun { position:absolute; top:8%; right:15%; width:55px; height:55px; border-radius:50%; background:radial-gradient(circle at 40% 40%,#fff5b8,#ffe27a 40%,#ffb84d 80%); box-shadow:0 0 35px rgba(255,220,120,0.9); z-index:1; }
+.mountain { position:absolute; bottom:44%; width:100%; height:25%; z-index:2; pointer-events:none; }
+.mountain-1 { fill:#d48f6a; }
+.mountain-2 { fill:#c2785a; }
+.cloud { position:absolute; height:20px; background:rgba(255,255,255,0.85); border-radius:18px; z-index:3; }
+.cloud::before,.cloud::after { content:""; position:absolute; background:inherit; border-radius:50%; }
+.cloud::before { width:26px; height:26px; top:-12px; left:10px; }
+.cloud::after { width:20px; height:20px; top:-8px; right:10px; }
+.cloud.c1 { width:60px; top:12%; animation:drift 40s linear infinite; }
+.cloud.c2 { width:45px; top:22%; animation:drift 55s linear infinite; animation-delay:-25s; }
+.cloud.c3 { width:75px; top:6%; animation:drift 70s linear infinite; animation-delay:-45s; }
+@keyframes drift { from { transform:translateX(-100%); } to { transform:translateX(calc(100vw + 100px)); } }
+.cactus { position:absolute; bottom:30%; z-index:4; }
+.cactus-1 { left:6%; width:14px; height:50px; }
+.cactus-2 { right:8%; width:11px; height:40px; }
+.rock { position:absolute; background:#a87a5e; border-radius:60% 40% 50% 50%; z-index:5; }
+.rock.r1 { width:22px; height:14px; bottom:22%; left:12%; }
+.rock.r2 { width:16px; height:11px; bottom:18%; right:15%; }
+.highway { position:absolute; bottom:0; left:-10%; width:120%; height:22%; background:linear-gradient(180deg,#5c5550,#3a3532); z-index:6; transform:perspective(200px) rotateX(15deg); transform-origin:bottom; }
+.highway::before { content:""; position:absolute; top:50%; left:0; right:0; height:4px; background:repeating-linear-gradient(90deg,#ead1a5 0 25px,transparent 25px 50px); transform:translateY(-50%); }
+
+.station { position:absolute; bottom:28%; left:50%; width:55%; height:42%; transform:translateX(-50%); z-index:8; filter:drop-shadow(0 8px 12px rgba(0,0,0,0.3)); }
+.station-roof { position:absolute; top:0; left:0; width:100%; height:28%; background:linear-gradient(180deg,#e85a3a,#c84b31); clip-path:polygon(0 100%,12% 0,88% 0,100% 100%); border-bottom:3px solid #8b2f1a; }
+.station-body { position:absolute; top:26%; left:5%; width:90%; height:74%; background:linear-gradient(180deg,#f8d9ac,#e8b88a); border:4px solid #70452d; border-top:none; }
+.station-window { position:absolute; top:18%; left:10%; width:28%; height:32%; background:linear-gradient(135deg,#a6d8f0,#6eb3d8); border:4px solid #70452d; border-radius:4px; }
+.station-door { position:absolute; bottom:0; right:8%; width:30%; height:55%; background:linear-gradient(180deg,#b8654a,#8b4a35); border:4px solid #70452d; border-bottom:none; border-radius:15px 15px 0 0; }
+.station-sign { position:absolute; top:6%; left:50%; transform:translateX(-50%); background:linear-gradient(180deg,#f3bd48,#d99e2a); color:#70452d; font:900 11px Georgia,serif; padding:4px 10px; border:3px solid #70452d; border-radius:8px; white-space:nowrap; }
+.pump { position:absolute; bottom:0; left:-8%; width:22%; height:50%; background:linear-gradient(180deg,#e85a3a,#c84b31); border:3px solid #70452d; border-radius:6px 6px 2px 2px; z-index:9; }
+.pump::before { content:""; position:absolute; top:8%; left:15%; width:70%; height:25%; background:#fff9e0; border:2px solid #70452d; border-radius:3px; }
+.pump::after { content:"⛽"; position:absolute; top:40%; left:50%; transform:translateX(-50%); font-size:18px; }
+.scene-label { position:absolute; bottom:8px; right:12px; color:#ffeec4; font:900 10px monospace; text-shadow:1px 2px 2px rgba(0,0,0,0.5); z-index:10; }
+.statusline { position:absolute; top:10px; left:10px; padding:5px 12px; background:rgba(255,247,223,0.95); border:2px solid #a76a39; border-radius:20px; color:#603e28; font:900 11px monospace; z-index:11; }
+
+.customers { position:absolute; inset:0; pointer-events:none; z-index:12; contain:layout style paint; }
+.character { position:absolute; bottom:20%; width:42px; height:80px; padding:0; background:transparent; cursor:pointer; pointer-events:auto; filter:drop-shadow(2px 4px 3px rgba(0,0,0,0.35)); transition:transform 0.15s; will-change:transform; }
+.character.enter { animation:travelerEnter 0.35s ease-out; }
+.character:active { transform:scale(0.95); }
+.character.selected { transform:translateY(-6px) scale(1.1); filter:drop-shadow(0 0 12px #ffed8d); }
+.character.leaving { pointer-events:none; animation:travelerLeave 0.35s ease-in forwards; }
+.character.vip { filter:drop-shadow(0 0 15px #ffd700); }
+@keyframes travelerEnter { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
+@keyframes travelerLeave { from { opacity:1; } to { opacity:0; transform:translate(40px,-20px) scale(0.8); } }
+.char-head { position:absolute; top:2px; left:11px; width:22px; height:24px; border:2px solid #65432e; border-radius:50% 50% 45% 45%; background:var(--skin,#e9b883); }
+.char-hair { position:absolute; z-index:2; top:0; left:10px; width:24px; height:12px; border-radius:12px 12px 4px 4px; background:var(--hat,#503c32); border:2px solid #4a2c1a; border-bottom:none; }
+.char-body { position:absolute; top:24px; left:5px; width:33px; height:34px; border:2px solid #4a2c1a; border-radius:12px 12px 5px 5px; background:var(--shirt,#c14b36); }
+.char-legs::before,.char-legs::after { content:""; position:absolute; top:55px; left:12px; width:9px; height:22px; border-radius:3px; background:#4a3a2a; border:2px solid #2a1a0a; }
+.char-legs::after { left:25px; }
+.character.vip::after { content:"👑"; position:absolute; top:-42px; left:50%; transform:translateX(-50%); font-size:20px; animation:crownBounce 1.5s ease-in-out infinite; }
+@keyframes crownBounce { 0%,100% { transform:translateX(-50%) translateY(0); } 50% { transform:translateX(-50%) translateY(-6px); } }
+.bubble { position:absolute; z-index:8; bottom:100%; left:50%; padding:5px 10px; transform:translateX(-50%); border:2px solid #7e4f30; border-radius:12px; background:linear-gradient(180deg,#fff9e0,#fff2c4); color:#432c1c; font-size:11px; font-weight:900; white-space:nowrap; }
+.bubble::after { content:""; position:absolute; bottom:-7px; left:50%; width:10px; height:10px; transform:translateX(-50%) rotate(45deg); border-right:2px solid #7e4f30; border-bottom:2px solid #7e4f30; background:#fff2c4; }
+.bubble.vip { background:linear-gradient(180deg,#fff3a0,#ffd94a); border-color:#d4a017; color:#6c4a00; }
+.bubble.vip::after { background:#ffd94a; border-color:#d4a017; }
+
+.mission { z-index:5; flex:0 0 52px; display:flex; align-items:center; gap:8px; padding:6px 10px; background:linear-gradient(180deg,#7a4632,#5c3425); border-top:4px solid #a96d3b; color:#ffe7b4; }
+.mission-icon { width:30px; height:30px; flex:none; display:grid; place-items:center; border:3px solid #f3ca76; border-radius:50%; color:#f3ca76; font:900 11px Georgia,serif; background:rgba(0,0,0,0.2); }
+.mission-copy { flex:1; min-width:0; }
+.mission-title { color:#f8d98e; font:900 9px monospace; }
+.mission-desc { font-size:11px; font-weight:900; margin-top:2px; }
+.progress-track { height:5px; margin-top:3px; border-radius:8px; background:rgba(0,0,0,0.4); overflow:hidden; }
+.progress-fill { height:100%; background:linear-gradient(90deg,#ecc65e,#ffed9f); transition:width 0.3s; }
+.mission-reward { min-width:66px; padding:6px 8px; border:0; border-bottom:4px solid #ad6b25; border-radius:10px; background:linear-gradient(180deg,#f5d88e,#e4c98e); color:#563719; font-size:10px; font-weight:900; }
+.mission-reward.ready { background:linear-gradient(180deg,#ffd94a,#f3bd48); animation:pulseBtn 1.2s ease-in-out infinite; }
+@keyframes pulseBtn { 50% { filter:brightness(1.15); } }
+
+.bottom { z-index:5; padding:6px 10px calc(8px + env(safe-area-inset-bottom)); border-top:4px solid #aa6c3e; background:linear-gradient(180deg,#fdf3d8,#f0d9a6); }
+.hint-row { min-height:18px; display:flex; align-items:center; justify-content:center; color:#805638; font:900 10px monospace; text-align:center; padding:2px 0; margin-bottom:3px; }
+.hint-row strong { color:#9e3f2e; font-size:12px; }
+.supplies { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:5px; }
+.supply-card { position:relative; min-height:58px; padding:4px 3px 3px; border:2px solid #a9784e; border-bottom-width:5px; border-radius:12px; background:linear-gradient(180deg,#fff9e0,#fceec4); color:#563b27; text-align:center; transition:transform 0.1s; }
+.supply-card:active { transform:translateY(2px); }
+.supply-card.selected { transform:translateY(-4px); border-color:#a74d32; background:linear-gradient(180deg,#ffe9a8,#f5d57a); }
+.supply-card.pulse { animation:pulseSupply 0.9s ease-in-out infinite; }
+@keyframes pulseSupply { 50% { box-shadow:0 0 0 5px #ffdb73; } }
+.supply-art { height:24px; display:grid; place-items:center; }
+.supply-name { font-size:10px; font-weight:900; margin-top:2px; }
+.supply-count { position:absolute; top:-8px; right:-4px; min-width:20px; height:20px; display:grid; place-items:center; padding:0 5px; border:2px solid #f8e2ae; border-radius:12px; background:linear-gradient(180deg,#8b4a35,#5c3425); color:#fff1cf; font:900 10px monospace; }
+.item-icon { position:relative; display:block; width:20px; height:20px; }
+.item-icon.food { border:2px solid #94582f; border-radius:6px 6px 9px 9px; background:linear-gradient(180deg,#f0bd63,#d99e2a); }
+.item-icon.food::before { content:""; position:absolute; top:-5px; left:2px; width:10px; height:5px; border:1px solid #94582f; border-radius:6px 6px 0 0; background:#f5dc9d; }
+.item-icon.water { width:13px; height:22px; border:2px solid #477987; border-radius:5px; background:linear-gradient(180deg,#a8dced,#5fabc0); margin-left:3px; }
+.item-icon.water::before { content:""; position:absolute; top:-6px; left:2px; width:5px; height:5px; border:1px solid #477987; background:#f6d280; }
+.item-icon.medical { border:2px solid #b85240; border-radius:5px; background:linear-gradient(180deg,#fff5e0,#ffe8c5); }
+.item-icon.medical::before { content:"+"; position:absolute; inset:-4px 0 0; color:#d94530; font:900 18px sans-serif; line-height:20px; text-align:center; }
+.item-icon.fuel { width:16px; height:22px; border:2px solid #75442d; border-radius:5px; background:linear-gradient(180deg,#e17a52,#c04a2a); }
+.item-icon.fuel::before { content:""; position:absolute; top:3px; left:2px; width:9px; height:6px; border:1px solid #75442d; background:#f5dc9d; }
+
+.toolbar { display:grid; grid-template-columns:repeat(7,1fr); gap:3px; margin-top:6px; }
+.tool-btn { position:relative; height:46px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px; border:2px solid #805031; border-bottom-width:5px; border-radius:10px; background:linear-gradient(180deg,#e8c68a,#d4a56a); color:#51351f; font-size:7px; font-weight:900; padding:2px; transition:transform 0.1s; }
+.tool-btn:active { transform:translateY(2px); }
+.tool-btn.shop { border-color:#415b4a; background:linear-gradient(180deg,#7fa589,#62806c); color:#fff0cd; }
+.tool-btn.upgrade { border-color:#713925; background:linear-gradient(180deg,#c96249,#a64a35); color:#ffedc5; }
+.tool-btn.boost { background:linear-gradient(180deg,#f5d76e,#e6c66f); }
+.tool-btn.ach { background:linear-gradient(180deg,#b08050,#9b6b3a); color:#fff0cd; border-color:#5a3a1a; }
+.tool-btn.workers { background:linear-gradient(180deg,#e87676,#c94a4a); color:#fff; border-color:#8b2f2f; }
+.tool-btn.rate { background:linear-gradient(180deg,#ffc107,#ff9800); color:#50331f; border-color:#e65100; animation:pulseBtn 2s ease-in-out infinite; }
+.tool-btn.contact { background:linear-gradient(180deg,#6bbf70,#4caf50); color:#fff; border-color:#1b5e20; }
+.tool-btn .icon { font-size:16px; line-height:1; }
+
+.modal-scrim { position:absolute; inset:0; z-index:50; display:flex; align-items:center; justify-content:center; padding:18px; background:rgba(66,43,29,0.75); animation:fadeIn 0.15s; }
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+.modal { width:100%; max-width:400px; max-height:88%; overflow-y:auto; padding:16px; border:4px solid #70452d; border-radius:20px; background:linear-gradient(180deg,#fdf3d8,#f0d9a6); }
+.modal-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+.modal-title { color:#6c3b25; font:900 18px Georgia,serif; }
+.close-btn { width:32px; height:32px; border:2px solid #9b6741; border-radius:50%; background:#f8e9c7; color:#603c25; font-weight:900; font-size:18px; box-shadow:0 3px 0 #9b6741; }
+.close-btn:active { transform:translateY(2px); }
+.modal-note { margin:0 0 10px; color:#856246; font-size:12px; line-height:1.5; }
+.shop-row { display:flex; align-items:center; gap:10px; padding:10px 0; border-top:2px dashed #d6b88c; }
+.shop-row:first-of-type { border-top:0; }
+.shop-icon { width:42px; height:42px; flex:none; display:grid; place-items:center; border:2px solid #b38456; border-radius:12px; background:linear-gradient(180deg,#fff9e0,#efdcaf); font-size:20px; }
+.shop-copy { flex:1; min-width:0; }
+.shop-name { color:#583a24; font-size:13px; font-weight:900; }
+.shop-sub { color:#896b4e; font:900 10px monospace; margin-top:2px; }
+.buy-btn { min-width:80px; padding:9px 10px; border:0; border-bottom:4px solid #794a2d; border-radius:10px; background:linear-gradient(180deg,#e0b058,#d0a04e); color:#4a301d; font-size:11px; font-weight:900; transition:transform 0.1s; }
+.buy-btn:active { transform:translateY(2px); }
+.buy-btn:disabled { opacity:0.45; }
+.buy-btn.full-width { width:100%; padding:12px; font-size:14px; }
+.buy-btn.owned { background:linear-gradient(180deg,#8bc34a,#689f38); color:#fff; }
+.ach-row { display:flex; align-items:center; gap:10px; padding:10px 0; border-top:1px solid #d6b88c; }
+.ach-icon { width:42px; height:42px; flex:none; display:grid; place-items:center; border-radius:50%; font-size:20px; background:linear-gradient(180deg,#f8e9c7,#efdcaf); border:2px solid #b38456; }
+.ach-icon.done { background:linear-gradient(135deg,#ffd94a,#f3bd48); border-color:#d99e2a; }
+.ach-name { color:#583a24; font-size:13px; font-weight:900; }
+.ach-desc { color:#896b4e; font:900 10px monospace; margin-top:2px; }
+.ach-check { color:#2e7d32; font-size:22px; font-weight:900; }
+
+.rate-stars { display:flex; justify-content:center; gap:8px; margin:20px 0; direction:ltr; }
+.rate-star { font-size:42px; cursor:pointer; transition:transform 0.15s; filter:grayscale(1); }
+.rate-star.active { filter:none; transform:scale(1.15); }
+
+.start-screen { position:fixed; inset:0; z-index:9999; display:flex; align-items:center; justify-content:center; padding:20px; background:radial-gradient(circle at 50% 30%,#ffe8a8 0%,#d5b985 65%,#a67c4a 100%); overflow-y:auto; }
+.start-screen.hide { display:none; }
+.start-card { width:100%; max-width:400px; padding:26px 20px 18px; background:linear-gradient(180deg,#fdf3d8,#efd6a0); border:5px solid #70452d; border-radius:24px; box-shadow:0 15px 0 #4a2c1a, 0 25px 60px rgba(0,0,0,0.5); text-align:center; position:relative; }
+.lang-row { display:flex; justify-content:center; gap:5px; margin-bottom:14px; flex-wrap:wrap; }
+.lang-btn { padding:6px 10px; border:2px solid #b6885a; border-radius:10px; background:#fff9e0; color:#8c6747; font-weight:900; font-size:11px; cursor:pointer; }
+.lang-btn.active { background:linear-gradient(180deg,#c14b36,#a64a35); color:#fff; border-color:#70452d; }
+.start-shield { width:80px; height:80px; margin:0 auto 10px; display:flex; align-items:center; justify-content:center; font-family:Georgia,serif; font-size:34px; font-weight:900; color:#f4e4b8; background:linear-gradient(135deg,#e85a3a,#a64a35); border:5px solid #70452d; border-radius:50%; box-shadow:0 7px 0 #4a2c1a; text-shadow:3px 3px 0 #70452d; }
+.start-kicker { color:#a34b31; font:900 10px monospace; margin-bottom:4px; }
+.start-title { margin:0 0 4px; color:#683b25; font:900 22px Georgia,serif; }
+.start-sub { margin:0 0 14px; color:#8c6747; font-size:12px; font-style:italic; }
+.start-info { background:linear-gradient(180deg,#fff9e0,#f7e5bc); border:2px solid #b6885a; border-radius:14px; padding:10px 12px; margin-bottom:14px; text-align:start; }
+.start-info-title { color:#a34b31; font:900 12px Georgia,serif; margin-bottom:6px; }
+.start-info-item { color:#5c3d24; font-size:11px; font-weight:800; padding:3px 0; }
+.start-btn { display:block; width:100%; padding:14px; margin-top:8px; font-family:Georgia,serif; font-size:16px; font-weight:900; color:#fff4d9; background:linear-gradient(180deg,#c14b36,#a64a35); border:3px solid #70452d; border-radius:14px; box-shadow:0 6px 0 #4a2c1a; transition:transform 0.1s; }
+.start-btn:active { transform:translateY(4px); }
+.start-btn.quick { background:linear-gradient(180deg,#e91e63,#c2185b); }
+.start-btn.google { background:linear-gradient(180deg,#fff,#eee); color:#333; border-color:#ddd; box-shadow:0 6px 0 #aaa; }
+.start-btn.guest { background:linear-gradient(180deg,#999,#666); border-color:#333; box-shadow:0 6px 0 #222; }
+.auth-tabs { display:flex; gap:4px; margin-bottom:14px; padding:4px; border:2px solid #b6885a; border-radius:14px; background:#fff9e0; }
+.auth-tab { flex:1; padding:10px; border:0; border-radius:10px; background:transparent; color:#8c6747; font-weight:900; font-size:12px; }
+.auth-tab.active { background:linear-gradient(180deg,#c14b36,#a64a35); color:#fff; }
+.auth-error { display:none; padding:9px; margin-bottom:10px; border:2px solid #d44; border-radius:10px; background:#ffe5e5; color:#a22; font-size:11px; font-weight:800; text-align:center; }
+.auth-error.show { display:block; }
+.auth-input { width:100%; padding:12px 14px; margin-bottom:8px; border:2px solid #b6885a; border-radius:12px; background:#fffdf5; font-size:13px; font-family:inherit; color:#50331f; outline:none; }
+.auth-input:focus { border-color:#a64a35; }
+.auth-divider { margin:12px 0; color:#8c6747; font-size:11px; font-weight:900; }
+
+.toast-layer { position:absolute; z-index:30; top:85px; left:50%; width:max-content; max-width:90%; transform:translateX(-50%); pointer-events:none; }
+.toast-card { padding:9px 16px; border:3px solid #8b5833; border-radius:14px; background:linear-gradient(180deg,#fff9e0,#ffedb8); color:#56371f; font-size:12px; font-weight:900; text-align:center; box-shadow:0 6px 0 rgba(112,69,45,0.4); animation:toastIn 0.3s; }
+@keyframes toastIn { from { opacity:0; transform:translateY(-20px); } to { opacity:1; transform:translateY(0); } }
+.coin-float { position:absolute; z-index:20; color:#ffe87c; font:900 16px monospace; text-shadow:2px 2px 0 #763e20, 0 0 15px #ffe87c; pointer-events:none; animation:coinUp 1.2s ease-out forwards; }
+@keyframes coinUp { 0% { opacity:0; transform:translateY(15px) scale(0.5); } 20% { opacity:1; transform:translateY(0) scale(1.1); } 100% { opacity:0; transform:translateY(-70px) scale(1); } }
+.big-text { position:absolute; z-index:25; top:30%; left:50%; transform:translateX(-50%); color:#fff; font:900 22px Georgia,serif; text-shadow:3px 3px 0 #70452d, 0 0 20px #ffed8d; pointer-events:none; animation:bigTextAnim 1.4s ease-out forwards; text-align:center; max-width:85%; }
+@keyframes bigTextAnim { 0% { opacity:0; transform:translateX(-50%) scale(0.5); } 25% { opacity:1; transform:translateX(-50%) scale(1.15); } 60% { opacity:1; transform:translateX(-50%) scale(1); } 100% { opacity:0; transform:translateX(-50%) scale(1.3) translateY(-40px); } }
+.scene.shake { animation:sceneShake 0.4s ease-in-out; }
+@keyframes sceneShake { 0%,100% { transform:translate(0,0); } 25% { transform:translate(-5px,3px); } 75% { transform:translate(5px,-3px); } }
+@media (max-width:370px) { .title { font-size:11px; } .wallet { padding:0 5px; font-size:9px; } .tool-btn { font-size:6px; height:44px; } }
+</style>
+</head>
+<body>
+
+<!-- AUTH -->
+<div id="authScreen" class="start-screen hide">
+  <div class="start-card">
+    <div class="lang-row">
+      <button class="lang-btn" data-lang="ar">🇸🇦 العربية</button>
+      <button class="lang-btn" data-lang="en">🇬🇧 English</button>
+      <button class="lang-btn" data-lang="am">🇪🇹 አማርኛ</button>
+    </div>
+    <div class="start-shield">66</div>
+    <div class="start-kicker" data-i18n="kicker"></div>
+    <h1 class="start-title" data-i18n="title"></h1>
+    <p class="start-sub" data-i18n="loginSub"></p>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabLogin" data-i18n="login"></button>
+      <button class="auth-tab" id="tabSignup" data-i18n="signup"></button>
+    </div>
+    <div class="auth-error" id="authError"></div>
+    <input type="email" id="authEmail" class="auth-input" data-i18n-ph="emailPh">
+    <input type="password" id="authPassword" class="auth-input" data-i18n-ph="passPh">
+    <button class="start-btn" id="authSubmitBtn"></button>
+    <div class="auth-divider">— <span data-i18n="or"></span> —</div>
+    <button class="start-btn google" id="googleBtn" data-i18n="googleBtn"></button>
+    <button class="start-btn guest" id="guestBtn" data-i18n="guestBtn"></button>
+  </div>
+</div>
+
+<!-- START -->
+<div id="startScreen" class="start-screen hide">
+  <div class="start-card">
+    <div class="lang-row">
+      <button class="lang-btn" data-lang="ar">🇸🇦 العربية</button>
+      <button class="lang-btn" data-lang="en">🇬🇧 English</button>
+      <button class="lang-btn" data-lang="am">🇪🇹 አማርኛ</button>
+    </div>
+    <div class="start-shield">66</div>
+    <div class="start-kicker" data-i18n="kicker"></div>
+    <h1 class="start-title" data-i18n="title"></h1>
+    <p class="start-sub" data-i18n="startSub"></p>
+    <div class="start-info">
+      <div class="start-info-title" data-i18n="howTo"></div>
+      <div class="start-info-item" data-i18n="how1"></div>
+      <div class="start-info-item" data-i18n="how2"></div>
+      <div class="start-info-item" data-i18n="how3"></div>
+      <div class="start-info-item" data-i18n="how4"></div>
+    </div>
+    <button class="start-btn" id="startButton" data-i18n="startBtn"></button>
+    <button class="start-btn quick" id="quickStartButton" data-i18n="quickBtn"></button>
+  </div>
+</div>
+
+<!-- GAME -->
+<main class="game-shell">
+  <div class="game">
+    <header class="topbar">
+      <div class="brand">
+        <span class="kicker" data-i18n="kicker"></span>
+        <span class="title" data-i18n="title"></span>
+      </div>
+      <div class="wallets">
+        <div class="wallet"><i class="coin-icon"></i><span id="coins">120</span></div>
+        <div class="wallet"><i class="gem-icon"></i><span id="gems">8</span></div>
+        <button class="icon-btn" id="leaderBtn" style="background:linear-gradient(180deg,#ffd94a,#f3bd48);">🏆</button>
+        <button class="icon-btn" id="friendsBtn" style="background:linear-gradient(180deg,#4caf50,#2e7d32);color:#fff;">👥</button>
+        <button class="icon-btn" id="langBtn">🌐</button>
+        <button class="icon-btn" id="userBtn">👤</button>
+      </div>
+    </header>
+    <div class="xp-bar"><div class="xp-fill" id="xpFill"></div></div>
+
+    <section class="scene" id="scene">
+      <div class="sun"></div>
+      <svg class="mountain" viewBox="0 0 400 150" preserveAspectRatio="none"><polygon class="mountain-1" points="0,150 40,60 70,90 100,40 140,80 180,50 220,90 260,45 300,85 340,55 400,100 400,150"/></svg>
+      <svg class="mountain" viewBox="0 0 400 100" preserveAspectRatio="none" style="height:18%;bottom:46%;"><polygon class="mountain-2" points="0,100 60,40 120,70 180,30 240,60 300,35 360,65 400,45 400,100"/></svg>
+      <div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div>
+      <svg class="cactus cactus-1" viewBox="0 0 20 70"><rect x="7" width="6" height="70" rx="3" fill="#4e7860"/><rect y="15" width="6" height="20" rx="3" fill="#4e7860"/><rect x="14" y="25" width="6" height="18" rx="3" fill="#4e7860"/></svg>
+      <svg class="cactus cactus-2" viewBox="0 0 20 60"><rect x="7" width="6" height="60" rx="3" fill="#5c8a70"/><rect y="12" width="6" height="16" rx="3" fill="#5c8a70"/><rect x="14" y="20" width="6" height="15" rx="3" fill="#5c8a70"/></svg>
+      <div class="rock r1"></div><div class="rock r2"></div>
+      <div class="highway"></div>
+      <div class="station">
+        <div class="station-roof"></div>
+        <div class="station-body"><div class="station-window"></div><div class="station-door"></div></div>
+        <div class="station-sign">ROUTE 66</div>
+        <div class="pump"></div>
+      </div>
+      <div class="scene-label" data-i18n="sceneLabel"></div>
+      <div class="statusline" id="statusline" data-i18n="waiting"></div>
+      <div class="customers" id="customers"></div>
+      <div class="toast-layer" id="toastLayer"></div>
+    </section>
+
+    <section class="mission">
+      <div class="mission-icon">66</div>
+      <div class="mission-copy">
+        <div class="mission-title" data-i18n="missionTitle"></div>
+        <div class="mission-desc" id="missionDesc">-</div>
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      </div>
+      <button class="mission-reward" id="claimMission">90 + 2 💎</button>
+    </section>
+
+    <footer class="bottom">
+      <div class="hint-row"><span id="hint" data-i18n="hintTap"></span></div>
+      <div class="supplies" id="supplies">
+        <button class="supply-card" data-supply="food"><span class="supply-count" id="count-food">5</span><span class="supply-art"><i class="item-icon food"></i></span><span class="supply-name" data-i18n="food"></span></button>
+        <button class="supply-card" data-supply="water"><span class="supply-count" id="count-water">5</span><span class="supply-art"><i class="item-icon water"></i></span><span class="supply-name" data-i18n="water"></span></button>
+        <button class="supply-card" data-supply="medical"><span class="supply-count" id="count-medical">3</span><span class="supply-art"><i class="item-icon medical"></i></span><span class="supply-name" data-i18n="medical"></span></button>
+        <button class="supply-card" data-supply="fuel"><span class="supply-count" id="count-fuel">4</span><span class="supply-art"><i class="item-icon fuel"></i></span><span class="supply-name" data-i18n="fuel"></span></button>
+      </div>
+      <div class="toolbar">
+        <button class="tool-btn shop" id="openShop"><span class="icon">🛒</span><span data-i18n="shop"></span></button>
+        <button class="tool-btn upgrade" id="openUpgrade"><span class="icon">⬆️</span><span data-i18n="upgrade"></span></button>
+        <button class="tool-btn boost" id="boostButton"><span class="icon">⚡</span><span id="boostLabel" data-i18n="boost"></span></button>
+        <button class="tool-btn ach" id="openAch"><span class="icon">🏆</span><span data-i18n="ach"></span></button>
+        <button class="tool-btn workers" id="openWorkers"><span class="icon">👥</span><span data-i18n="chars"></span></button>
+        <button class="tool-btn rate" id="openRate"><span class="icon">⭐</span><span data-i18n="rateBtn"></span></button>
+        <button class="tool-btn contact" id="contactBtn"><span class="icon">✉️</span><span data-i18n="contact"></span></button>
+      </div>
+    </footer>
+
+    <div id="modalRoot"></div>
+  </div>
+</main>
+
+<script>
+// ==================== TRANSLATIONS ====================
+const I18N = {
+  ar: {
+    kicker:"ميل 143 · أريزونا", title:"محطة الطريق 66",
+    startSub:"استراحة صغيرة على الطريق الأم", loginSub:"سجل دخولك لحفظ تقدمك",
+    howTo:"🎯 كيف تلعب:", how1:"1️⃣ اضغط على مسافر", how2:"2️⃣ ثم اضغط على طلبه",
+    how3:"3️⃣ اربح العملات والجواهر!", how4:"👑 عملاء VIP = 5× مكافأة!",
+    startBtn:"▶ ابدأ اللعب", quickBtn:"⚡ وضع سريع",
+    login:"دخول", signup:"حساب جديد", emailPh:"البريد الإلكتروني",
+    passPh:"كلمة المرور (6+ أحرف)", or:"أو", googleBtn:"🔵 متابعة بحساب Google",
+    guestBtn:"👤 متابعة كزائر", sceneLabel:"الطريق الأم", waiting:"في انتظار المسافرين",
+    hintTap:"اضغط على مسافر، ثم اختر طلبه", missionTitle:"مهمة اليوم",
+    missionDesc:(s)=>"اخدم 5 مسافرين · "+s+" / 5",
+    food:"فطيرة", water:"ماء", medical:"إسعاف", fuel:"وقود",
+    shop:"متجر", upgrade:"ترقية", boost:"مضاعف", ach:"إنجاز", chars:"شخصيات", contact:"اتصل", rateBtn:"قيّمنا",
+    shopTitle:"🛒 المتجر", achTitle:"🏆 الإنجازات", charsTitle:"👥 الشخصيات",
+    contactTitle:"✉️ اتصل بنا", upgradeTitle:"⬆️ طوّر المحطة", userTitle:"👤 حسابي",
+    rateTitle:"⭐ قيّم اللعبة", rateThanks:"🎉 شكراً! +1000 عملة",
+    rateAlready:"قيّمت بالفعل", rateThanks2:"شكراً لك ❤️",
+    buy:"شراء", use:"استخدم", owned:"✅ مستخدم", close:"إغلاق", logout:"🚪 خروج",
+    email:"البريد", level:"المستوى", achievements:"الإنجازات",
+    noCoins:"لا تملك عملات", want:"يريد", needCoins:"تحتاج",
+    boostActive:"المضاعف يعمل", needGems:"تحتاج 3 جواهر", noSupply:"نفدت",
+    customerFirst:"اضغط على مسافر أولاً", missionNotReady:"اخدم", extra:"إضافيين",
+    ready:"استلم!", newArea:"🎉 منطقة جديدة!", levelUp:"⭐ مستوى",
+    boost2x:"⚡ ×2!", charsBought:"🎭 اشتريت",
+    charsSelected:"✅ اخترت", maxLevel:"أكملت!", loginBtn:"تسجيل الدخول", signupBtn:"إنشاء حساب",
+    leaderboard:"🏆 المتصدرون", friendsTitle:"👥 الأصدقاء", addFriend:"➕ أضف صديق",
+    friendEmailPh:"أدخل بريد الصديق", myFriends:"أصدقائي", noFriends:"ما عندك أصدقاء",
+    newRequests:"📬 طلبات جديدة", accept:"✅ قبول", visit:"🏪 زيارة",
+    remove:"🗑️", gift:"🎁 أرسل 100 عملة", online:"أونلاين", friend:"صديق",
+    you:"(أنت)", noPlayers:"لا يوجد لاعبون بعد"
+  },
+  en: {
+    kicker:"MILE 143 · ARIZONA", title:"Route 66 Station",
+    startSub:"A little rest stop on the Mother Road", loginSub:"Sign in to save progress",
+    howTo:"🎯 How to play:", how1:"1️⃣ Tap a traveler", how2:"2️⃣ Then tap their order",
+    how3:"3️⃣ Earn coins and gems!", how4:"👑 VIP customers = 5× reward!",
+    startBtn:"▶ Start Playing", quickBtn:"⚡ Quick Mode",
+    login:"Sign In", signup:"Sign Up", emailPh:"Email address",
+    passPh:"Password (6+ chars)", or:"or", googleBtn:"🔵 Continue with Google",
+    guestBtn:"👤 Continue as Guest", sceneLabel:"Mother Road", waiting:"Waiting for travelers",
+    hintTap:"Tap a traveler, then choose their order", missionTitle:"Today's Mission",
+    missionDesc:(s)=>"Serve 5 travelers · "+s+" / 5",
+    food:"Pie", water:"Water", medical:"First Aid", fuel:"Fuel",
+    shop:"Shop", upgrade:"Upgrade", boost:"Boost", ach:"Achieve", chars:"Chars", contact:"Contact", rateBtn:"Rate Us",
+    shopTitle:"🛒 Shop", achTitle:"🏆 Achievements", charsTitle:"👥 Characters",
+    contactTitle:"✉️ Contact", upgradeTitle:"⬆️ Upgrade", userTitle:"👤 Account",
+    rateTitle:"⭐ Rate Game", rateThanks:"🎉 Thanks! +1000 coins",
+    rateAlready:"Already rated", rateThanks2:"Thank you ❤️",
+    buy:"Buy", use:"Use", owned:"✅ Active", close:"Close", logout:"🚪 Logout",
+    email:"Email", level:"Level", achievements:"Achievements",
+    noCoins:"Not enough coins", want:"wants", needCoins:"Need",
+    boostActive:"Boost active", needGems:"Need 3 gems", noSupply:"Out of",
+    customerFirst:"Tap customer first", missionNotReady:"Serve", extra:"more",
+    ready:"Claim!", newArea:"🎉 New area!", levelUp:"⭐ Level",
+    boost2x:"⚡ ×2!", charsBought:"🎭 Bought",
+    charsSelected:"✅ Selected", maxLevel:"Max level!", loginBtn:"Sign In", signupBtn:"Create Account",
+    leaderboard:"🏆 Leaderboard", friendsTitle:"👥 Friends", addFriend:"➕ Add Friend",
+    friendEmailPh:"Friend's email", myFriends:"My Friends", noFriends:"No friends yet",
+    newRequests:"📬 New requests", accept:"✅ Accept", visit:"🏪 Visit",
+    remove:"🗑️", gift:"🎁 Send 100 coins", online:"online", friend:"Friend",
+    you:"(You)", noPlayers:"No players yet"
+  },
+  am: {
+    kicker:"ማይል 143 · አሪዞና", title:"የመንገድ 66 ጣቢያ",
+    startSub:"በእናት መንገድ ላይ ትንሽ ማረፊያ", loginSub:"ሂደትዎን ለማስቀመጥ ይግቡ",
+    howTo:"🎯 እንዴት መጫወት:", how1:"1️⃣ ተጓዥ ይንኩ", how2:"2️⃣ ከዚያ ትዕዛዙን ይንኩ",
+    how3:"3️⃣ ሳንቲሞች ያግኙ!", how4:"👑 ቪአይፒ = 5× ሽልማት!",
+    startBtn:"▶ ጨዋታ ጀምር", quickBtn:"⚡ ፈጣን",
+    login:"ግባ", signup:"ተመዝገብ", emailPh:"ኢሜይል",
+    passPh:"የይለፍ ቃል (6+)", or:"ወይም", googleBtn:"🔵 በ Google ይቀጥሉ",
+    guestBtn:"👤 እንደ እንግዳ", sceneLabel:"የእናት መንገድ", waiting:"በመጠበቅ ላይ",
+    hintTap:"ተጓዥ ይንኩ፣ ትዕዛዙን ይምረጡ", missionTitle:"የዛሬ ተልዕኮ",
+    missionDesc:(s)=>"5 ተጓዦች · "+s+" / 5",
+    food:"ፓይ", water:"ውሃ", medical:"እርዳታ", fuel:"ነዳጅ",
+    shop:"ሱቅ", upgrade:"ማሻሻል", boost:"ማጠናከሪያ", ach:"ስኬት", chars:"ገጸ-ባህሪያት", contact:"አግኙን", rateBtn:"ይመዝግቡ",
+    shopTitle:"🛒 ሱቅ", achTitle:"🏆 ስኬቶች", charsTitle:"👥 ገጸ-ባህሪያት",
+    contactTitle:"✉️ አግኙን", upgradeTitle:"⬆️ ያሻሽሉ", userTitle:"👤 መለያዬ",
+    rateTitle:"⭐ ጨዋታውን ይመዝግቡ", rateThanks:"🎉 አመሰግናለሁ! +1000",
+    rateAlready:"አስቀድመህ", rateThanks2:"አመሰግናለሁ ❤️",
+    buy:"ግዛ", use:"ተጠቀም", owned:"✅ ንቁ", close:"ዝጋ", logout:"🚪 ውጣ",
+    email:"ኢሜይል", level:"ደረጃ", achievements:"ስኬቶች",
+    noCoins:"በቂ ሳንቲም የለም", want:"ይፈልጋል", needCoins:"ያስፈልጋል",
+    boostActive:"ማጠናከሪያ ንቁ", needGems:"3 እንቁ", noSupply:"አልቋል",
+    customerFirst:"ደንበኛ ይንኩ", missionNotReady:"ያገልግሉ", extra:"ተጨማሪ",
+    ready:"ይውሰዱ!", newArea:"🎉 አዲስ!", levelUp:"⭐ ደረጃ",
+    boost2x:"⚡ ×2!", charsBought:"🎭 ገዛህ",
+    charsSelected:"✅ መረጥህ", maxLevel:"ከፍተኛ!", loginBtn:"ግባ", signupBtn:"መለያ ፍጠር",
+    leaderboard:"🏆 ደረጃ", friendsTitle:"👥 ጓደኞች", addFriend:"➕ ጓደኛ ጨምር",
+    friendEmailPh:"የጓደኛ ኢሜይል", myFriends:"ጓደኞቼ", noFriends:"ጓደኞች የሉም",
+    newRequests:"📬 አዲስ", accept:"✅ ተቀበል", visit:"🏪 ጎብኝ",
+    remove:"🗑️", gift:"🎁 100 ሳንቲም", online:"በመስመር ላይ", friend:"ጓደኛ",
+    you:"(አንተ)", noPlayers:"ተጫዋቾች የሉም"
+  }
+};
+
+let currentLang = localStorage.getItem('route66-lang') || 'ar';
+function t(key) { const v = I18N[currentLang][key]; return typeof v === 'function' ? v : (v || key); }
+function applyLang() {
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => { el.placeholder = t(el.dataset.i18nPh); });
+  document.documentElement.dir = currentLang === 'en' ? 'ltr' : 'rtl';
+  document.documentElement.lang = currentLang;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === currentLang));
+  updateAuthBtnText();
+  lastCustomerIds = '';
+  lastModal = '';
+  lastSelected = null;
+  render();
+}
+function setLang(lang) { currentLang = lang; localStorage.setItem('route66-lang', lang); applyLang(); }
+document.querySelectorAll('.lang-btn').forEach(b => b.addEventListener('click', () => setLang(b.dataset.lang)));
+document.getElementById('langBtn').addEventListener('click', () => {
+  const order = ['ar', 'en', 'am'];
+  const next = order[(order.indexOf(currentLang) + 1) % order.length];
+  setLang(next);
+  notify('🌐 ' + (next === 'ar' ? 'العربية' : next === 'en' ? 'English' : 'አማርኛ'));
+});
+
+// ==================== CONSTANTS ====================
+const KEY = "route66-v16";
+const CONTACT_EMAIL = "alarmedali996@gmail.com";
+const SUPPLIES = ["food", "water", "medical", "fuel"];
+const SLOTS = [5, 15, 25, 40, 55, 70, 80];
+
+const BUYABLE_CHARACTERS = [
+  { id:'default', icon:'🙂', name:{ar:'سالم',en:'Salem',am:'ሳሌም'}, desc:{ar:'الافتراضية',en:'Default',am:'ነባሪ'}, cost:0, skin:'#e9b883', shirt:'#c14b36', hat:'#503c32' },
+  { id:'cowboy', icon:'🤠', name:{ar:'كاوبوي',en:'Cowboy',am:'ካውቦይ'}, desc:{ar:'قبعة بنية',en:'Brown hat',am:'ቡናማ'}, cost:200, skin:'#f5cba7', shirt:'#8b4513', hat:'#654321' },
+  { id:'nurse', icon:'👩‍⚕️', name:{ar:'ممرضة',en:'Nurse',am:'ነርስ'}, desc:{ar:'زي أبيض',en:'White outfit',am:'ነጭ'}, cost:400, skin:'#f5cba7', shirt:'#ffffff', hat:'#ffffff' },
+  { id:'chef', icon:'👨‍🍳', name:{ar:'شيف',en:'Chef',am:'ሼፍ'}, desc:{ar:'قبعة طباخ',en:'Chef hat',am:'የሼፍ'}, cost:600, skin:'#d4a574', shirt:'#ffffff', hat:'#ffffff' },
+  { id:'doctor', icon:'👨‍⚕️', name:{ar:'دكتور',en:'Doctor',am:'ዶክተር'}, desc:{ar:'معطف أبيض',en:'White coat',am:'ነጭ'}, cost:900, skin:'#e9b883', shirt:'#ffffff', hat:'#2c3e50' },
+  { id:'police', icon:'👮', name:{ar:'شرطي',en:'Police',am:'ፖሊስ'}, desc:{ar:'زي أزرق',en:'Blue',am:'ሰማያዊ'}, cost:1200, skin:'#c68642', shirt:'#1a237e', hat:'#0d47a1' },
+  { id:'fireman', icon:'👨‍🚒', name:{ar:'رجل إطفاء',en:'Fireman',am:'እሳት አጥፊ'}, desc:{ar:'زي أحمر',en:'Red suit',am:'ቀይ'}, cost:1500, skin:'#d4a574', shirt:'#c62828', hat:'#b71c1c' },
+  { id:'soldier', icon:'💂', name:{ar:'جندي',en:'Soldier',am:'ወታደር'}, desc:{ar:'عسكري',en:'Military',am:'ወታደራዊ'}, cost:2000, skin:'#8d5524', shirt:'#4a5d23', hat:'#2e3a0e' },
+  { id:'astronaut', icon:'👨‍🚀', name:{ar:'رائد فضاء',en:'Astronaut',am:'ጠፈርተኛ'}, desc:{ar:'بدلة فضاء',en:'Space suit',am:'ጠፈር'}, cost:3000, skin:'#f5cba7', shirt:'#ffffff', hat:'#37474f' },
+  { id:'king', icon:'🤴', name:{ar:'ملك',en:'King',am:'ንጉስ'}, desc:{ar:'تاج ذهبي',en:'Gold crown',am:'ወርቅ'}, cost:5000, skin:'#f5cba7', shirt:'#f3bd48', hat:'#d99e2a' },
+  { id:'wizard', icon:'🧙‍♂️', name:{ar:'ساحر',en:'Wizard',am:'ጠንቋይ'}, desc:{ar:'قبعة سحرية',en:'Magic hat',am:'አስማት'}, cost:7500, skin:'#d4a574', shirt:'#7b1fa2', hat:'#4a148c' },
+  { id:'ninja', icon:'🥷', name:{ar:'نينجا',en:'Ninja',am:'ኒንጃ'}, desc:{ar:'زي أسود',en:'Black suit',am:'ጥቁር'}, cost:10000, skin:'#a0522d', shirt:'#000000', hat:'#1a1a1a' }
+];
+
+const ACHIEVEMENTS = [
+  { id:'serve1', icon:'👤', name:{ar:'أول مسافر',en:'First',am:'የመጀመሪያ'}, desc:{ar:'اخدم مسافراً',en:'Serve one',am:'አንድ'}, check: s => s.served >= 1, reward: 30 },
+  { id:'serve10', icon:'👥', name:{ar:'خدمة 10',en:'10 Served',am:'10'}, desc:{ar:'اخدم 10',en:'Serve 10',am:'10'}, check: s => s.served >= 10, reward: 100 },
+  { id:'serve50', icon:'👨‍👩‍👧', name:{ar:'خدمة 50',en:'50 Served',am:'50'}, desc:{ar:'اخدم 50',en:'Serve 50',am:'50'}, check: s => s.served >= 50, reward: 500 },
+  { id:'coins500', icon:'💰', name:{ar:'500 عملة',en:'500 Coins',am:'500'}, desc:{ar:'اجمع 500',en:'Collect 500',am:'500'}, check: s => s.totalCoins >= 500, reward: 100 },
+  { id:'coins2000', icon:'💵', name:{ar:'2000 عملة',en:'2000',am:'2000'}, desc:{ar:'اجمع 2000',en:'Collect 2000',am:'2000'}, check: s => s.totalCoins >= 2000, reward: 300 },
+  { id:'upgrade2', icon:'🏪', name:{ar:'محطة أكبر',en:'Bigger',am:'ትልቅ'}, desc:{ar:'طوّر مرة',en:'Upgrade',am:'አንዴ'}, check: s => s.level >= 2, reward: 150 },
+  { id:'upgrade4', icon:'🌟', name:{ar:'أسطورية',en:'Legendary',am:'አፈ-ታሪክ'}, desc:{ar:'أقصى مستوى',en:'Max level',am:'ከፍተኛ'}, check: s => s.level >= 4, reward: 1000 },
+  { id:'boost1', icon:'⚡', name:{ar:'المضاعف',en:'Boost',am:'ማጠናከሪያ'}, desc:{ar:'استخدم المضاعف',en:'Use boost',am:'ተጠቀም'}, check: s => s.usedBoost, reward: 50 },
+  { id:'vip1', icon:'👑', name:{ar:'خدمة VIP',en:'VIP',am:'VIP'}, desc:{ar:'اخدم 5 VIP',en:'Serve 5 VIPs',am:'5 VIP'}, check: s => s.vipsServed >= 5, reward: 500 },
+  { id:'chars3', icon:'🎭', name:{ar:'جامع',en:'Collector',am:'ሰብሳቢ'}, desc:{ar:'امتلك 3',en:'Own 3',am:'3'}, check: s => s.ownedChars && s.ownedChars.length >= 3, reward: 300 },
+  { id:'chars6', icon:'👑', name:{ar:'ملك المحطة',en:'King',am:'ንጉስ'}, desc:{ar:'امتلك 6',en:'Own 6',am:'6'}, check: s => s.ownedChars && s.ownedChars.length >= 6, reward: 1000 },
+  { id:'friend1', icon:'💚', name:{ar:'أول صديق',en:'First Friend',am:'ጓደኛ'}, desc:{ar:'أضف صديقاً',en:'Add friend',am:'ጨምር'}, check: s => s.friendsCount >= 1, reward: 200 },
+  { id:'rate1', icon:'⭐', name:{ar:'مقيّم',en:'Rater',am:'ደረጃ'}, desc:{ar:'قيّم اللعبة',en:'Rate game',am:'ደረጃ ስጥ'}, check: s => s.rated, reward: 100 }
+];
+
+const START = {
+  coins: 120, gems: 8,
+  inventory: { food: 5, water: 5, medical: 3, fuel: 4 },
+  level: 1, served: 0, totalCoins: 0, missionClaimed: 0,
+  boostUntil: 0, usedBoost: false, playedQuick: false,
+  vipsServed: 0, xp: 0, xpLevel: 1,
+  achievements: {}, workers: {},
+  ownedChars: ['default'], activeChar: 'default',
+  friendsCount: 0, rated: false
+};
+
+// ==================== STATE ====================
+let state = loadSave();
+let customers = [];
+let selected = null;
+let modal = "";
+let nextId = 1;
+let toastTimer = 0;
+let audio = null;
+let currentUser = null;
+let isSignupMode = false;
+let onlineCount = 0;
+let friends = [];
+let friendRequests = [];
+let onlineTimer = null;
+let ratingValue = 0;
+
+// ✅ Optimization variables
+let lastCustomerIds = '';
+let lastSelected = null;
+let lastModal = null;
+let renderScheduled = false;
+
+function loadSave() {
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (!raw) return { ...START, inventory: {...START.inventory} };
+    const old = JSON.parse(raw);
+    return { ...START, ...old,
+      inventory: { ...START.inventory, ...(old.inventory || {}) },
+      achievements: old.achievements || {},
+      ownedChars: old.ownedChars || ['default']
+    };
+  } catch(_) { return { ...START, inventory: {...START.inventory} }; }
+}
+
+function persist() {
+  try {
+    localStorage.setItem(KEY, JSON.stringify(state));
+    if (currentUser && window.FB && window.FB.ready) {
+      const ref = window.FB.doc(window.FB.db, 'route66_users', currentUser.uid);
+      const data = { ...state, email: currentUser.email, lastSeen: Date.now(), friendsCount: friends.length };
+      window.FB.setDoc(ref, data, { merge: true }).catch(() => {});
+    }
+  } catch(_) {}
+}
+
+function playSound(kind) {
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return;
+    audio = audio || new AC();
+    if (audio.state === 'suspended') audio.resume();
+    const osc = audio.createOscillator();
+    const gain = audio.createGain();
+    let base = 280, target = 1.12, type = "sine";
+    if (kind === "coin") { base = 680; target = 1.55; }
+    else if (kind === "upgrade") { base = 430; target = 1.4; type = "triangle"; }
+    else if (kind === "win") { base = 520; target = 2.0; }
+    else if (kind === "vip") { base = 900; target = 2.5; }
+    osc.type = type;
+    osc.connect(gain); gain.connect(audio.destination);
+    osc.frequency.setValueAtTime(base, audio.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(base * target, audio.currentTime + 0.15);
+    gain.gain.setValueAtTime(0.05, audio.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audio.currentTime + 0.18);
+    osc.start(); osc.stop(audio.currentTime + 0.19);
+  } catch(_) {}
+}
+
+function notify(msg) {
+  const layer = document.getElementById("toastLayer");
+  layer.innerHTML = '<div class="toast-card">' + msg + '</div>';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { layer.innerHTML = ""; }, 2000);
+}
+function bigText(text) {
+  const el = document.createElement("div");
+  el.className = "big-text";
+  el.textContent = text;
+  document.getElementById("scene").appendChild(el);
+  setTimeout(() => el.remove(), 1400);
+}
+function shakeScene() {
+  const scene = document.getElementById("scene");
+  scene.classList.add("shake");
+  setTimeout(() => scene.classList.remove("shake"), 400);
+}
+
+// ==================== AUTH ====================
+function updateAuthBtnText() {
+  const btn = document.getElementById('authSubmitBtn');
+  if (btn) btn.textContent = isSignupMode ? t('signupBtn') : t('loginBtn');
+}
+
+window.addEventListener('fb-ready', () => {
+  if (!window.FB || !window.FB.ready) {
+    document.getElementById('authScreen').classList.add('hide');
+    document.getElementById('startScreen').classList.remove('hide');
+    applyLang();
+    return;
+  }
+  document.getElementById('authScreen').classList.remove('hide');
+  document.getElementById('tabLogin').onclick = () => {
+    isSignupMode = false;
+    document.getElementById('tabLogin').classList.add('active');
+    document.getElementById('tabSignup').classList.remove('active');
+    updateAuthBtnText();
+  };
+  document.getElementById('tabSignup').onclick = () => {
+    isSignupMode = true;
+    document.getElementById('tabSignup').classList.add('active');
+    document.getElementById('tabLogin').classList.remove('active');
+    updateAuthBtnText();
+  };
+  document.getElementById('authSubmitBtn').onclick = async () => {
+    const email = document.getElementById('authEmail').value.trim();
+    const password = document.getElementById('authPassword').value;
+    if (!email || password.length < 6) { showAuthError('⚠️'); return; }
+    const btn = document.getElementById('authSubmitBtn');
+    btn.disabled = true;
+    try {
+      if (isSignupMode) await window.FB.createUserWithEmailAndPassword(window.FB.auth, email, password);
+      else await window.FB.signInWithEmailAndPassword(window.FB.auth, email, password);
+    } catch(e) { showAuthError(e.code); }
+    btn.disabled = false;
+  };
+  document.getElementById('googleBtn').onclick = async () => {
+    try { await window.FB.signInWithPopup(window.FB.auth, new window.FB.GoogleAuthProvider()); }
+    catch(e) { showAuthError('Google failed'); }
+  };
+  document.getElementById('guestBtn').onclick = () => {
+    document.getElementById('authScreen').classList.add('hide');
+    document.getElementById('startScreen').classList.remove('hide');
+  };
+  window.FB.onAuthStateChanged(window.FB.auth, async (user) => {
+    if (user) {
+      currentUser = user;
+      document.getElementById('authScreen').classList.add('hide');
+      document.getElementById('startScreen').classList.remove('hide');
+      try {
+        const ref = window.FB.doc(window.FB.db, 'route66_users', user.uid);
+        const snap = await window.FB.getDoc(ref);
+        if (snap.exists()) {
+          const data = snap.data();
+          friends = data.friends || [];
+          friendRequests = data.friendRequests || [];
+          delete data.friends; delete data.friendRequests;
+          Object.assign(state, data);
+        }
+      } catch(_) {}
+      updateUserBtn();
+      renderFriendsBadge();
+      startOnlineTracking();
+    }
+  });
+});
+
+function updateUserBtn() {
+  const btn = document.getElementById('userBtn');
+  if (currentUser) btn.textContent = (currentUser.email || '👤')[0].toUpperCase();
+  else btn.textContent = '👤';
+}
+function showAuthError(msg) {
+  const el = document.getElementById('authError');
+  el.textContent = '⚠️ ' + msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+// ==================== CUSTOMERS ====================
+function newCustomer() {
+  const usedSlots = customers.map(c => c.slot);
+  const availableSlots = SLOTS.filter(s => !usedSlots.includes(s));
+  if (availableSlots.length === 0) return null;
+  const slot = availableSlots[Math.floor(Math.random() * availableSlots.length)];
+  const request = SUPPLIES[(Math.random() * 4) | 0];
+  const isVIP = Math.random() < (state.served > 10 ? 0.25 : 0.15);
+  const activeChar = BUYABLE_CHARACTERS.find(c => c.id === state.activeChar) || BUYABLE_CHARACTERS[0];
+  return {
+    id: Date.now() + '-' + (nextId++),
+    slot, request, isVIP,
+    shirt: isVIP ? '#ffd700' : activeChar.shirt,
+    skin: isVIP ? '#f5cba7' : activeChar.skin,
+    hat: isVIP ? '#d99e2a' : activeChar.hat,
+    joinedAt: Date.now(), leaving: false
+  };
+}
+function addCustomers(n) {
+  let added = false;
+  for (let i = 0; i < n && customers.length < SLOTS.length; i++) {
+    const c = newCustomer();
+    if (c) { customers.push(c); added = true; }
+  }
+  if (added) scheduleRender();
+}
+
+// ==================== ONLINE ====================
+async function startOnlineTracking() {
+  if (!window.FB || !window.FB.ready || !currentUser) return;
+  try {
+    await window.FB.setDoc(window.FB.doc(window.FB.db, 'route66_online', currentUser.uid), { lastSeen: Date.now() });
+  } catch(e) {}
+  if (onlineTimer) clearInterval(onlineTimer);
+  onlineTimer = setInterval(async () => {
+    if (!currentUser) return;
+    try {
+      await window.FB.setDoc(window.FB.doc(window.FB.db, 'route66_online', currentUser.uid), { lastSeen: Date.now() });
+      const userRef = window.FB.doc(window.FB.db, 'route66_users', currentUser.uid);
+      await window.FB.setDoc(userRef, { ...state, email: currentUser.email, lastSeen: Date.now(), friendsCount: friends.length }, { merge: true });
+    } catch(e) {}
+  }, 60000);
+  updateOnlineCount();
+  setInterval(updateOnlineCount, 30000);
+}
+
+async function updateOnlineCount() {
+  if (!window.FB || !window.FB.ready) return;
+  try {
+    const fiveMinAgo = Date.now() - 5 * 60 * 1000;
+    const q = window.FB.query(
+      window.FB.collection(window.FB.db, 'route66_online'),
+      window.FB.where('lastSeen', '>', fiveMinAgo)
+    );
+    const snap = await window.FB.getDocs(q);
+    onlineCount = snap.size;
+    renderOnlineBadge();
+  } catch(e) {}
+}
+
+function renderOnlineBadge() {
+  let badge = document.getElementById('onlineBadge');
+  if (!badge) {
+    badge = document.createElement('div');
+    badge.id = 'onlineBadge';
+    badge.style.cssText = 'position:absolute;top:80px;right:10px;padding:4px 10px;background:linear-gradient(180deg,#4caf50,#2e7d32);color:#fff;border-radius:12px;font:900 10px monospace;z-index:15;border:2px solid #fff;box-shadow:0 3px 0 rgba(0,0,0,0.3);';
+    document.querySelector('.scene').appendChild(badge);
+  }
+  badge.textContent = '🟢 ' + onlineCount + ' ' + t('online');
+}
+
+async function showLeaderboard() {
+  if (!window.FB || !window.FB.ready) { notify('⚠️'); return; }
+  try {
+    const q = window.FB.query(
+      window.FB.collection(window.FB.db, 'route66_users'),
+      window.FB.orderBy('totalCoins', 'desc'),
+      window.FB.limit(10)
+    );
+    const snap = await window.FB.getDocs(q);
+    let html = '<div class="modal-scrim"><section class="modal"><div class="modal-head"><div class="modal-title">' + t('leaderboard') + '</div><button class="close-btn" data-close>×</button></div>';
+    let rank = 1;
+    snap.forEach(doc => {
+      const d = doc.data();
+      const isMe = currentUser && doc.id === currentUser.uid;
+      html += '<div class="shop-row" style="' + (isMe ? 'background:rgba(243,189,72,0.2);border-radius:8px;padding:10px;' : '') + '"><div class="shop-icon" style="font-size:18px;font-weight:900;background:' + (rank <= 3 ? 'linear-gradient(135deg,#ffd94a,#f3bd48)' : '#efdcaf') + ';">' + (rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : rank) + '</div><div class="shop-copy"><div class="shop-name">' + (d.email || 'Player') + (isMe ? ' ' + t('you') : '') + '</div><div class="shop-sub">' + Math.floor(d.totalCoins || 0).toLocaleString() + ' 💰 · Lv ' + (d.xpLevel || 1) + '</div></div></div>';
+      rank++;
+    });
+    if (snap.empty) html += '<p class="modal-note">' + t('noPlayers') + '</p>';
+    html += '</section></div>';
+    document.getElementById('modalRoot').innerHTML = html;
+  } catch(e) { notify('⚠️ Error'); }
+}
+
+// ==================== FRIENDS ====================
+async function loadFriends() {
+  if (!window.FB || !window.FB.ready || !currentUser) return;
+  try {
+    const meRef = window.FB.doc(window.FB.db, 'route66_users', currentUser.uid);
+    const meSnap = await window.FB.getDoc(meRef);
+    if (meSnap.exists()) {
+      const data = meSnap.data();
+      friends = data.friends || [];
+      friendRequests = data.friendRequests || [];
+    }
+    renderFriendsBadge();
+  } catch(e) {}
+}
+
+async function searchUser(email) {
+  if (!window.FB || !window.FB.ready) return null;
+  try {
+    const q = window.FB.query(
+      window.FB.collection(window.FB.db, 'route66_users'),
+      window.FB.where('email', '==', email)
+    );
+    const snap = await window.FB.getDocs(q);
+    if (snap.empty) return null;
+    const d = snap.docs[0];
+    return { uid: d.id, data: d.data() };
+  } catch(e) { return null; }
+}
+
+async function addFriend(email) {
+  if (!currentUser) { notify('⚠️ Login first'); return; }
+  if (email === currentUser.email) { notify('⚠️ That\'s you'); return; }
+  const target = await searchUser(email);
+  if (!target) { notify('❌ Not found'); return; }
+  if (friends.includes(target.uid)) { notify('⚠️ Already friends'); return; }
+  try {
+    const targetRef = window.FB.doc(window.FB.db, 'route66_users', target.uid);
+    await window.FB.updateDoc(targetRef, { friendRequests: window.FB.arrayUnion(currentUser.uid) });
+    const meRef = window.FB.doc(window.FB.db, 'route66_users', currentUser.uid);
+    await window.FB.updateDoc(meRef, { friends: window.FB.arrayUnion(target.uid) });
+    friends.push(target.uid);
+    notify('✅ Request sent');
+    modal = ""; renderModal();
+    persist();
+  } catch(e) { notify('❌ Failed'); }
+}
+
+async function acceptFriendRequest(uid) {
+  try {
+    const meRef = window.FB.doc(window.FB.db, 'route66_users', currentUser.uid);
+    const meSnap = await window.FB.getDoc(meRef);
+    const meData = meSnap.data() || {};
+    const newReqs = (meData.friendRequests || []).filter(id => id !== uid);
+    await window.FB.updateDoc(meRef, { friends: window.FB.arrayUnion(uid), friendRequests: newReqs });
+    await window.FB.updateDoc(window.FB.doc(window.FB.db, 'route66_users', uid), { friends: window.FB.arrayUnion(currentUser.uid) });
+    friendRequests = newReqs;
+    friends.push(uid);
+    notify('✅ Friend added');
+    renderModal();
+    persist();
+  } catch(e) { notify('❌ Failed'); }
+}
+
+async function removeFriend(uid) {
+  try {
+    const newFriends = friends.filter(id => id !== uid);
+    await window.FB.updateDoc(window.FB.doc(window.FB.db, 'route66_users', currentUser.uid), { friends: newFriends });
+    friends = newFriends;
+    notify('✅ Removed');
+    modal = ""; renderModal();
+    persist();
+  } catch(e) { notify('❌ Failed'); }
+}
+
+async function visitFriendStation(uid) {
+  try {
+    const snap = await window.FB.getDoc(window.FB.doc(window.FB.db, 'route66_users', uid));
+    if (!snap.exists()) { notify('❌'); return; }
+    const data = snap.data();
+    showFriendStation(uid, data);
+  } catch(e) { notify('❌'); }
+}
+
+function showFriendStation(uid, data) {
+  const coins = Math.floor(data.coins || 0);
+  const lvl = data.level || 1;
+  const served = data.served || 0;
+  const chars = (data.ownedChars || []).length;
+  let html = '<div class="modal-scrim"><section class="modal">';
+  html += '<div class="modal-head"><div class="modal-title">🏪 ' + (data.email || 'Player').split('@')[0] + '</div><button class="close-btn" data-close>×</button></div>';
+  html += '<div style="padding:14px;background:linear-gradient(180deg,#ffd94a,#f3bd48);border-radius:14px;margin-bottom:12px;text-align:center;"><div style="font:900 40px Georgia,serif;color:#70452d;">' + lvl + '</div><div style="font:900 12px monospace;color:#70452d;">LEVEL</div></div>';
+  html += '<div class="shop-row"><div class="shop-icon">💰</div><div class="shop-copy"><div class="shop-name">' + coins.toLocaleString() + '</div><div class="shop-sub">Coins</div></div></div>';
+  html += '<div class="shop-row"><div class="shop-icon">👥</div><div class="shop-copy"><div class="shop-name">' + served.toLocaleString() + '</div><div class="shop-sub">Served</div></div></div>';
+  html += '<div class="shop-row"><div class="shop-icon">🎭</div><div class="shop-copy"><div class="shop-name">' + chars + '</div><div class="shop-sub">Characters</div></div></div>';
+  html += '<button class="buy-btn full-width" data-gift="' + uid + '" style="background:linear-gradient(180deg,#e91e63,#c2185b);color:#fff;margin-top:12px;">' + t('gift') + '</button>';
+  html += '</section></div>';
+  document.getElementById('modalRoot').innerHTML = html;
+}
+
+async function giftCoins(uid) {
+  if (state.coins < 100) { notify('⚠️ Need 100 coins'); return; }
+  try {
+    state.coins -= 100;
+    persist();
+    await window.FB.updateDoc(window.FB.doc(window.FB.db, 'route66_users', uid), {
+      coins: window.FB.increment(100),
+      totalCoins: window.FB.increment(100)
+    });
+    notify('🎁 Sent 100 coins!');
+    modal = ""; renderModal();
+    render();
+  } catch(e) { notify('❌ Failed'); }
+}
+
+function renderFriendsBadge() {
+  let badge = document.getElementById('friendsBadge');
+  if (!badge) {
+    badge = document.createElement('div');
+    badge.id = 'friendsBadge';
+    badge.style.cssText = 'position:absolute;top:80px;left:10px;padding:4px 10px;background:linear-gradient(180deg,#4caf50,#2e7d32);color:#fff;border-radius:12px;font:900 10px monospace;z-index:15;border:2px solid #fff;';
+    document.querySelector('.scene').appendChild(badge);
+  }
+  badge.textContent = '👥 ' + friends.length + (friendRequests.length ? ' +' + friendRequests.length : '');
+}
+
+// ==================== RATE ====================
+function showRateModal() {
+  if (state.rated) {
+    document.getElementById('modalRoot').innerHTML = '<div class="modal-scrim"><section class="modal"><div class="modal-head"><div class="modal-title">' + t('rateTitle') + '</div><button class="close-btn" data-close>×</button></div><div style="text-align:center;padding:20px;"><div style="font-size:60px;margin-bottom:16px;">❤️</div><p class="modal-note" style="font-size:16px;text-align:center;">' + t('rateAlready') + '<br>' + t('rateThanks2') + '</p></div></section></div>';
+    return;
+  }
+  let html = '<div class="modal-scrim"><section class="modal"><div class="modal-head"><div class="modal-title">' + t('rateTitle') + '</div><button class="close-btn" data-close>×</button></div>';
+  html += '<p class="modal-note" style="text-align:center;font-size:14px;">' + (currentLang === 'ar' ? 'قيّم 5 نجوم واحصل على <b style="color:#2e7d32;font-size:18px;">1000 عملة</b>!' : currentLang === 'en' ? 'Rate 5 stars, get <b style="color:#2e7d32;font-size:18px;">1000 coins</b>!' : '5 ኮከብ ስጥ, <b style="color:#2e7d32;">1000 ሳንቲም</b>!') + '</p>';
+  html += '<div class="rate-stars" id="rateStars">';
+  for (let i = 1; i <= 5; i++) html += '<span class="rate-star" data-star="' + i + '">⭐</span>';
+  html += '</div>';
+  html += '<button class="buy-btn full-width" id="submitRating" disabled style="background:linear-gradient(180deg,#ffc107,#ff9800);color:#50331f;font-size:15px;padding:14px;">' + (currentLang === 'ar' ? 'اختر تقييمك' : currentLang === 'en' ? 'Select rating' : 'ደረጃ ይምረጡ') + '</button>';
+  html += '</section></div>';
+  document.getElementById('modalRoot').innerHTML = html;
+  ratingValue = 0;
+}
+
+function handleRatingClick(star) {
+  ratingValue = star;
+  document.querySelectorAll('.rate-star').forEach(s => {
+    const val = parseInt(s.dataset.star);
+    s.classList.toggle('active', val <= star);
+  });
+  const btn = document.getElementById('submitRating');
+  if (btn) {
+    btn.disabled = false;
+    if (star >= 4) btn.textContent = currentLang === 'ar' ? '🎉 أرسل (+1000)' : currentLang === 'en' ? '🎉 Submit (+1000)' : '🎉 ላክ (+1000)';
+    else btn.textContent = currentLang === 'ar' ? '📩 أرسل' : currentLang === 'en' ? '📩 Submit' : '📩 ላክ';
+  }
+}
+
+function submitRating() {
+  if (state.rated) { notify(t('rateAlready')); return; }
+  if (ratingValue >= 4) {
+    state.coins += 1000;
+    state.totalCoins += 1000;
+    state.rated = true;
+    playSound("win");
+    bigText("🎉 +1000 💰");
+    shakeScene();
+    ACHIEVEMENTS.forEach(a => {
+      if (!state.achievements[a.id] && a.check(state)) {
+        state.achievements[a.id] = true;
+        state.coins += a.reward;
+      }
+    });
+    render();
+    persist();
+    modal = ""; renderModal();
+    notify(t('rateThanks'));
+  } else {
+    state.rated = true;
+    playSound("upgrade");
+    render();
+    persist();
+    modal = ""; renderModal();
+    notify(t('rateThanks2'));
+  }
+}
+
+// ==================== RENDER (OPTIMIZED) ====================
+function scheduleRender() {
+  if (renderScheduled) return;
+  renderScheduled = true;
+  requestAnimationFrame(() => { renderScheduled = false; render(); });
+}
+
+function render() {
+  // Header
+  document.getElementById("coins").textContent = Math.floor(state.coins).toLocaleString();
+  document.getElementById("gems").textContent = state.gems;
+  for (const s of SUPPLIES) {
+    const el = document.getElementById("count-" + s);
+    if (el) el.textContent = state.inventory[s];
+  }
+  document.getElementById("statusline").textContent = customers.length ? customers.length + ' ' + (currentLang === 'ar' ? 'مسافر' : currentLang === 'en' ? 'travelers' : 'ተጓዦች') : t('waiting');
+
+  // Mission
+  const mp = Math.min(5, Math.max(0, state.served - state.missionClaimed * 5));
+  document.getElementById("missionDesc").textContent = t('missionDesc')(mp);
+  document.getElementById("progressFill").style.width = mp * 20 + "%";
+  const ready = Math.floor(state.served / 5) > state.missionClaimed;
+  const claim = document.getElementById("claimMission");
+  claim.classList.toggle("ready", ready);
+  claim.textContent = ready ? t('ready') : '90 + 2 💎';
+
+  // Boost
+  const boostActive = state.boostUntil > Date.now();
+  const boostLabel = document.getElementById("boostLabel");
+  boostLabel.textContent = boostActive ? "⚡" + Math.ceil((state.boostUntil - Date.now()) / 1000) + "s" : t('boost');
+
+  // XP
+  document.getElementById("xpFill").style.width = Math.min(100, (state.xp / (state.xpLevel * 20)) * 100) + "%";
+
+  // Hint
+  const chosen = customers.find(c => c.id === selected && !c.leaving);
+  const hint = document.getElementById("hint");
+  if (chosen) hint.innerHTML = "<strong>" + (chosen.isVIP ? "👑" : "") + "</strong> " + t('want') + " " + t(chosen.request) + (chosen.isVIP ? " (5×)" : "");
+  else hint.textContent = t('hintTap');
+
+  // Supply selection
+  document.querySelectorAll(".supply-card").forEach(b => {
+    const match = chosen && chosen.request === b.dataset.supply;
+    b.classList.toggle("selected", !!match);
+    b.classList.toggle("pulse", !!match);
+  });
+
+  // ✅ Customers - only rebuild when list changes
+  const currentIds = customers.map(c => c.id).join(',');
+  if (currentIds !== lastCustomerIds || selected !== lastSelected) {
+    const firstRender = lastCustomerIds === '';
+    lastCustomerIds = currentIds;
+    lastSelected = selected;
+    
+    let html = "";
+    for (let i = 0; i < customers.length; i++) {
+      const c = customers[i];
+      const isNew = !document.querySelector('[data-customer="' + c.id + '"]');
+      html += '<button class="character ' + (isNew && !firstRender ? 'enter ' : '') + (c.isVIP ? "vip " : "") + (c.id === selected ? "selected " : "") + (c.leaving ? "leaving" : "") + '" style="right:' + c.slot + '%;--shirt:' + c.shirt + ';--skin:' + c.skin + ';--hat:' + c.hat + '" data-customer="' + c.id + '">' +
+        '<span class="bubble' + (c.isVIP ? " vip" : "") + '">' + t(c.request) + (c.isVIP ? " ×5" : "") + '</span>' +
+        '<i class="char-hair"></i><i class="char-head"></i><i class="char-body"></i><i class="char-legs"></i>' +
+      '</button>';
+    }
+    document.getElementById("customers").innerHTML = html;
+  }
+
+  // ✅ Modal - only rebuild when changes
+  if (modal !== lastModal) {
+    lastModal = modal;
+    renderModal();
+  }
+}
+
+function renderModal() {
+  const root = document.getElementById("modalRoot");
+  if (!modal) { root.innerHTML = ""; return; }
+
+  if (modal === "shop") {
+    const rows = [["food",4,38],["water",5,34],["medical",2,52],["fuel",3,46]];
+    let html = '<div class="modal-scrim"><section class="modal"><div class="modal-head"><div class="modal-title">' + t('shopTitle') + '</div><button class="close-btn" data-close>×</button></div>';
+    for (const r of rows) html += '<div class="shop-row"><div class="shop-icon"><i class="item-icon ' + r[0] + '"></i></div><div class="shop-copy"><div class="shop-name">' + t(r[0]) + ' × ' + r[1] + '</div></div><button class="buy-btn" data-buy="' + r[0] + '" ' + (state.coins < r[2] ? "disabled" : "") + '>' + r[2] + ' 💰</button></div>';
+    const ba = state.boostUntil > Date.now();
+    html += '<div class="shop-row"><div class="shop-icon">⚡</div><div class="shop-copy"><div class="shop-name">' + t('boost') + '</div></div><button class="buy-btn" data-boost ' + (state.gems < 3 || ba ? "disabled" : "") + '>' + (ba ? t('boostActive') : "3 💎") + '</button></div>';
+    html += '</section></div>';
+    root.innerHTML = html; return;
+  }
+
+  if (modal === "ach") {
+    const done = ACHIEVEMENTS.filter(a => state.achievements[a.id]).length;
+    let html = '<div class="modal-scrim"><section class="modal"><div class="modal-head"><div class="modal-title">' + t('achTitle') + ' (' + done + '/' + ACHIEVEMENTS.length + ')</div><button class="close-btn" data-close>×</button></div>';
+    for (const a of ACHIEVEMENTS) {
+      const ok = state.achievements[a.id];
+      html += '<div class="ach-row"><div class="ach-icon ' + (ok ? "done" : "") + '">' + a.icon + '</div><div class="shop-copy"><div class="ach-name">' + a.name[currentLang] + '</div><div class="ach-desc">' + a.desc[currentLang] + ' · +' + a.reward + '</div></div>' + (ok ? '<div class="ach-check">✓</div>' : '') + '</div>';
+    }
+    html += '</section></div>';
+    root.innerHTML = html; return;
+  }
+
+  if (modal === "workers") {
+    let html = '<div class="modal-scrim"><section class="modal"><div class="modal-head"><div class="modal-title">' + t('charsTitle') + '</div><button class="close-btn" data-close>×</button></div>';
+    for (const c of BUYABLE_CHARACTERS) {
+      const owned = state.ownedChars.includes(c.id);
+      const active = state.activeChar === c.id;
+      const canBuy = state.coins >= c.cost;
+      html += '<div class="shop-row"><div class="shop-icon" style="font-size:22px;">' + c.icon + '</div><div class="shop-copy"><div class="shop-name">' + c.name[currentLang] + '</div><div class="shop-sub">' + c.desc[currentLang] + '</div></div>';
+      if (active) html += '<button class="buy-btn owned" disabled>' + t('owned') + '</button>';
+      else if (owned) html += '<button class="buy-btn" data-select="' + c.id + '">' + t('use') + '</button>';
+      else html += '<button class="buy-btn" data-charbuy="' + c.id + '" ' + (canBuy ? "" : "disabled") + '>' + c.cost.toLocaleString() + ' 💰</button>';
+      html += '</div>';
+    }
+    html += '</section></div>';
+    root.innerHTML = html; return;
+  }
+
+  if (modal === "friends") {
+    let html = '<div class="modal-scrim"><section class="modal"><div class="modal-head"><div class="modal-title">' + t('friendsTitle') + '</div><button class="close-btn" data-close>×</button></div>';
+    if (friendRequests.length > 0) {
+      html += '<div style="background:linear-gradient(180deg,#fff3a0,#ffd94a);border:2px solid #d4a017;border-radius:12px;padding:10px;margin-bottom:12px;">';
+      html += '<div style="font:900 12px Georgia;color:#6c4a00;margin-bottom:8px;">' + t('newRequests') + ' (' + friendRequests.length + ')</div>';
+      for (const uid of friendRequests.slice(0, 5)) html += '<button class="buy-btn full-width" data-accept="' + uid + '" style="background:linear-gradient(180deg,#4caf50,#2e7d32);color:#fff;margin-bottom:4px;">' + t('accept') + ' ' + uid.substring(0, 6) + '...</button>';
+      html += '</div>';
+    }
+    html += '<div style="margin-bottom:12px;">';
+    html += '<input type="email" id="friendEmailInput" class="auth-input" placeholder="' + t('friendEmailPh') + '">';
+    html += '<button class="buy-btn full-width" data-addfriend style="margin-top:4px;">' + t('addFriend') + '</button>';
+    html += '</div>';
+    html += '<div style="font:900 13px Georgia;color:#6c3b25;margin-top:12px;">' + t('myFriends') + ' (' + friends.length + ')</div>';
+    if (friends.length === 0) html += '<p class="modal-note">' + t('noFriends') + '</p>';
+    else {
+      for (const uid of friends.slice(0, 10)) {
+        html += '<div class="shop-row">';
+        html += '<div class="shop-icon" style="background:linear-gradient(135deg,#4caf50,#2e7d32);color:#fff;">👤</div>';
+        html += '<div class="shop-copy"><div class="shop-name">' + uid.substring(0, 8) + '...</div><div class="shop-sub">' + t('friend') + '</div></div>';
+        html += '<button class="buy-btn" data-visit="' + uid + '" style="background:linear-gradient(180deg,#2196f3,#1565c0);color:#fff;">' + t('visit') + '</button>';
+        html += '<button class="buy-btn" data-remove="' + uid + '" style="background:linear-gradient(180deg,#e74c3c,#c0392b);color:#fff;">' + t('remove') + '</button>';
+        html += '</div>';
+      }
+    }
+    html += '</section></div>';
+    root.innerHTML = html; return;
+  }
+
+  if (modal === "contact") {
+    root.innerHTML = '<div class="modal-scrim"><section class="modal"><div class="modal-head"><div class="modal-title">' + t('contactTitle') + '</div><button class="close-btn" data-close>×</button></div><a href="mailto:' + CONTACT_EMAIL + '" style="display:block;padding:14px;background:linear-gradient(180deg,#6bbf70,#4caf50);color:#fff;border-radius:14px;text-decoration:none;font-weight:900;text-align:center;font-size:14px;box-shadow:0 5px 0 #1b5e20;">📧 ' + CONTACT_EMAIL + '</a></section></div>';
+    return;
+  }
+
+  if (modal === "user") {
+    const email = currentUser ? currentUser.email : (currentLang === 'ar' ? 'زائر' : currentLang === 'en' ? 'Guest' : 'እንግዳ');
+    root.innerHTML = '<div class="modal-scrim"><section class="modal"><div class="modal-head"><div class="modal-title">' + t('userTitle') + '</div><button class="close-btn" data-close>×</button></div><p class="modal-note"><b>' + t('email') + ':</b> ' + email + '</p><p class="modal-note"><b>' + t('level') + ':</b> ' + state.xpLevel + ' · <b>' + t('achievements') + ':</b> ' + Object.keys(state.achievements).length + '/' + ACHIEVEMENTS.length + '</p>' + (currentUser ? '<button class="buy-btn full-width" data-logout style="background:#e74c3c;color:#fff;">' + t('logout') + '</button>' : '') + '</section></div>';
+    return;
+  }
+
+  if (modal === "rate") { showRateModal(); return; }
+
+  if (modal === "upgrade") {
+    const next = state.level + 1;
+    const cost = [0, 180, 520, 1100][state.level] || 0;
+    let html = '<div class="modal-scrim"><section class="modal"><div class="modal-head"><div class="modal-title">' + t('upgradeTitle') + '</div><button class="close-btn" data-close>×</button></div>';
+    if (state.level < 4) {
+      html += '<div style="padding:14px;border:2px solid #d0ad77;border-radius:12px;background:#efdcaf;margin-bottom:12px;"><div style="font:900 16px Georgia;color:#a1452e;">Lv ' + next + '</div><div style="margin-top:6px;color:#8c6747;font-weight:900;">' + cost + ' 💰</div></div>';
+      html += '<button class="buy-btn full-width" data-upgrade ' + (state.coins < cost ? "disabled" : "") + '>' + t('upgrade') + ' · ' + cost + ' 💰</button>';
+    } else html += '<p class="modal-note">' + t('maxLevel') + '</p>';
+    html += '</section></div>';
+    root.innerHTML = html;
+  }
+}
+
+// ==================== ACTIONS ====================
+function tapCustomer(id) {
+  const c = customers.find(x => x.id === id && !x.leaving);
+  if (!c) return;
+  selected = selected === id ? null : id;
+  playSound("click");
+  scheduleRender();
+}
+
+function deliver(supply) {
+  const c = customers.find(x => x.id === selected && !x.leaving);
+  if (!c) { notify(t('customerFirst')); return; }
+  if (c.request !== supply) { notify(t('want') + ' ' + t(c.request)); return; }
+  if (state.inventory[supply] < 1) { notify(t('noSupply') + ' ' + t(supply)); return; }
+
+  const reward = Math.floor((22 + state.level * 9 + (supply === "fuel" ? 7 : 0)) * (c.isVIP ? 5 : 1) * (state.boostUntil > Date.now() ? 2 : 1));
+  state.inventory[supply]--;
+  state.coins += reward; state.totalCoins += reward;
+  state.served++;
+  if (c.isVIP) state.vipsServed++;
+
+  c.leaving = true;
+  selected = null;
+  if (c.isVIP) { playSound("vip"); bigText("👑 +" + reward); shakeScene(); }
+  else playSound("coin");
+
+  state.xp += 5;
+  while (state.xp >= state.xpLevel * 20) {
+    state.xp -= state.xpLevel * 20;
+    state.xpLevel++;
+    state.coins += state.xpLevel * 10;
+    bigText(t('levelUp') + ' ' + state.xpLevel);
+  }
+
+  ACHIEVEMENTS.forEach(a => {
+    if (!state.achievements[a.id] && a.check(state)) {
+      state.achievements[a.id] = true;
+      state.coins += a.reward;
+      setTimeout(() => notify("🏆 " + a.name[currentLang]), 500);
+    }
+  });
+
+  const coin = document.createElement("span");
+  coin.className = "coin-float";
+  coin.textContent = "+" + reward;
+  coin.style.left = (50 + Math.random() * 20) + "%";
+  coin.style.top = (38 + Math.random() * 10) + "%";
+  document.getElementById("scene").appendChild(coin);
+  setTimeout(() => coin.remove(), 1200);
+
+  setTimeout(() => {
+    customers = customers.filter(x => x.id !== c.id);
+    scheduleRender();
+  }, 350);
+
+  scheduleRender();
+  persist();
+}
+
+function buySupply(supply) {
+  const goods = { food: [4,38], water: [5,34], medical: [2,52], fuel: [3,46] };
+  const [q, p] = goods[supply];
+  if (state.coins < p) { notify(t('noCoins')); return; }
+  state.coins -= p;
+  state.inventory[supply] = Math.min(999, state.inventory[supply] + q);
+  playSound("coin");
+  render();
+}
+
+function startBoost() {
+  if (state.boostUntil > Date.now()) { notify(t('boostActive')); return; }
+  if (state.gems < 3) { notify(t('needGems')); return; }
+  state.gems -= 3;
+  state.boostUntil = Date.now() + 5 * 60 * 1000;
+  state.usedBoost = true;
+  playSound("win"); bigText(t('boost2x')); shakeScene();
+  render();
+}
+
+function upgradeStation() {
+  if (state.level >= 4) { notify(t('maxLevel')); return; }
+  const cost = [0, 180, 520, 1100][state.level];
+  if (state.coins < cost) { notify(t('needCoins') + ' ' + (cost - state.coins)); return; }
+  state.coins -= cost;
+  state.level++;
+  playSound("upgrade"); modal = ""; bigText(t('newArea')); shakeScene();
+  render();
+}
+
+function buyCharacter(id) {
+  const c = BUYABLE_CHARACTERS.find(x => x.id === id);
+  if (!c) return;
+  if (state.ownedChars.includes(id)) { notify(t('owned')); return; }
+  if (state.coins < c.cost) { notify(t('needCoins') + ' ' + c.cost); return; }
+  state.coins -= c.cost;
+  state.ownedChars.push(id);
+  state.activeChar = id;
+  playSound("upgrade"); bigText(t('charsBought') + ' ' + c.name[currentLang]);
+  shakeScene();
+  render();
+  persist();
+}
+
+function selectCharacter(id) {
+  if (!state.ownedChars.includes(id)) return;
+  state.activeChar = id;
+  playSound("click");
+  notify(t('charsSelected'));
+  modal = ""; render();
+  persist();
+}
+
+function claimMission() {
+  if (Math.floor(state.served / 5) <= state.missionClaimed) {
+    notify(t('missionNotReady') + ' ' + Math.max(0, (state.missionClaimed + 1) * 5 - state.served) + ' ' + t('extra'));
+    return;
+  }
+  state.coins += 90; state.totalCoins += 90;
+  state.gems += 2; state.missionClaimed++;
+  playSound("upgrade"); bigText("🎉 +90 💰 +2 💎"); shakeScene();
+  render();
+}
+
+// ==================== EVENTS ====================
+document.getElementById("supplies").addEventListener("click", e => {
+  const b = e.target.closest("[data-supply]");
+  if (b) deliver(b.dataset.supply);
+});
+document.getElementById("customers").addEventListener("click", e => {
+  const b = e.target.closest("[data-customer]");
+  if (b) tapCustomer(b.dataset.customer);
+});
+document.getElementById("openShop").addEventListener("click", () => { modal = "shop"; playSound("click"); renderModal(); lastModal = "shop"; });
+document.getElementById("openUpgrade").addEventListener("click", () => { modal = "upgrade"; playSound("click"); renderModal(); lastModal = "upgrade"; });
+document.getElementById("openAch").addEventListener("click", () => { modal = "ach"; playSound("click"); renderModal(); lastModal = "ach"; });
+document.getElementById("openWorkers").addEventListener("click", () => { modal = "workers"; playSound("click"); renderModal(); lastModal = "workers"; });
+document.getElementById("openRate").addEventListener("click", () => { modal = "rate"; playSound("click"); renderModal(); lastModal = "rate"; });
+document.getElementById("contactBtn").addEventListener("click", () => { modal = "contact"; playSound("click"); renderModal(); lastModal = "contact"; });
+document.getElementById("userBtn").addEventListener("click", () => { modal = "user"; playSound("click"); renderModal(); lastModal = "user"; });
+document.getElementById("leaderBtn").addEventListener("click", () => { showLeaderboard(); playSound("click"); });
+document.getElementById("friendsBtn").addEventListener("click", async () => {
+  modal = "friends"; lastModal = "friends"; playSound("click");
+  await loadFriends();
+  renderModal();
+});
+document.getElementById("boostButton").addEventListener("click", startBoost);
+document.getElementById("claimMission").addEventListener("click", claimMission);
+
+document.getElementById("modalRoot").addEventListener("click", async e => {
+  if (e.target.classList.contains("modal-scrim") || e.target.closest("[data-close]")) {
+    modal = ""; lastModal = ""; renderModal(); return;
+  }
+  const star = e.target.closest(".rate-star");
+  if (star) { handleRatingClick(parseInt(star.dataset.star)); return; }
+  if (e.target.closest("#submitRating")) { submitRating(); return; }
+  const buy = e.target.closest("[data-buy]");
+  if (buy) { buySupply(buy.dataset.buy); return; }
+  if (e.target.closest("[data-boost]")) { startBoost(); return; }
+  if (e.target.closest("[data-upgrade]")) { upgradeStation(); return; }
+  const cb = e.target.closest("[data-charbuy]");
+  if (cb) { buyCharacter(cb.dataset.charbuy); return; }
+  const sel = e.target.closest("[data-select]");
+  if (sel) { selectCharacter(sel.dataset.select); return; }
+  if (e.target.closest("[data-addfriend]")) {
+    const email = document.getElementById('friendEmailInput').value.trim();
+    if (email) addFriend(email);
+    return;
+  }
+  const acc = e.target.closest("[data-accept]");
+  if (acc) { await acceptFriendRequest(acc.dataset.accept); return; }
+  const rem = e.target.closest("[data-remove]");
+  if (rem) { if (confirm('?')) await removeFriend(rem.dataset.remove); return; }
+  const vis = e.target.closest("[data-visit]");
+  if (vis) { await visitFriendStation(vis.dataset.visit); return; }
+  const gif = e.target.closest("[data-gift]");
+  if (gif) { await giftCoins(gif.dataset.gift); return; }
+  if (e.target.closest("[data-logout]")) {
+    if (window.FB && window.FB.ready) window.FB.signOut(window.FB.auth);
+    currentUser = null; modal = ""; lastModal = ""; renderModal();
+    document.getElementById("authScreen").classList.remove("hide");
+    document.getElementById("startScreen").classList.add("hide");
+    return;
+  }
+});
+
+document.getElementById("startButton").addEventListener("click", () => {
+  document.getElementById("startScreen").classList.add("hide");
+  playSound("upgrade");
+  if (!customers.length) addCustomers(7);
+  startOnlineTracking();
+});
+
+document.getElementById("quickStartButton").addEventListener("click", () => {
+  state.playedQuick = true;
+  document.getElementById("startScreen").classList.add("hide");
+  playSound("upgrade");
+  if (!customers.length) addCustomers(7);
+  startOnlineTracking();
+});
+
+// ==================== TIMERS ====================
+setInterval(persist, 60000);
+setInterval(() => {
+  const amount = 100 * (state.level + 1) * (state.boostUntil > Date.now() ? 2 : 1);
+  state.coins += amount;
+  state.totalCoins += amount;
+  const coinsEl = document.getElementById("coins");
+  if (coinsEl) coinsEl.textContent = Math.floor(state.coins).toLocaleString();
+}, 5000);
+
+setInterval(() => {
+  if (customers.length < 5) addCustomers(1);
+}, 8000);
+
+setInterval(() => {
+  const now = Date.now();
+  const expired = customers.filter(c => !c.leaving && now - c.joinedAt > 90000);
+  if (expired.length) {
+    expired.forEach(c => { c.leaving = true; if (selected === c.id) selected = null; });
+    scheduleRender();
+    setTimeout(() => { customers = customers.filter(c => !c.leaving); scheduleRender(); }, 400);
+  }
+}, 5000);
+
+// ==================== INIT ====================
+applyLang();
+updateUserBtn();
+render();
+</script>
+</body>
+                                                                                                               </html>
