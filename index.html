@@ -314,15 +314,17 @@ atOptions = {'key':'c23a38c1ab2fde5597f48a5a0ae691d4','format':'iframe','height'
 <section id="rate" class="section">
   <h2>⭐ قيّم GameZone40</h2>
   <p>كيف كانت تجربتك؟ قيّمنا من 1 إلى 5 نجوم.</p>
-  <div class="rating-form">
+  <form class="rating-form" id="ratingForm" action="https://formspree.io/f/mvkkrnay" method="POST">
     <div class="rating-stars" id="stars">
       <span data-val="1">★</span><span data-val="2">★</span><span data-val="3">★</span><span data-val="4">★</span><span data-val="5">★</span>
     </div>
-    <input type="text" placeholder="اسمك (اختياري)" id="rateName">
-    <textarea placeholder="ملاحظاتك (اختياري)" rows="2" id="rateMsg"></textarea>
-    <button class="btn" style="max-width:200px;" onclick="submitRating()">إرسال التقييم</button>
+    <input type="hidden" name="rating" id="ratingValue" value="0">
+    <input type="text" name="name" placeholder="اسمك (اختياري)" id="rateName">
+    <textarea name="message" placeholder="ملاحظاتك (اختياري)" rows="2" id="rateMsg"></textarea>
+    <input type="hidden" name="_subject" value="تقييم جديد من GameZone40">
+    <button type="submit" class="btn" style="max-width:200px;" id="rateSubmitBtn">إرسال التقييم</button>
     <p id="rateFeedback" style="color:var(--accent2); font-size:0.9rem;"></p>
-  </div>
+  </form>
 </section>
 
 <footer>
@@ -497,16 +499,53 @@ document.querySelectorAll('#stars span').forEach(s => {
     });
   });
 });
-function submitRating() {
+// تحديث قيمة النجوم المخفية
+document.querySelectorAll('#stars span').forEach(s => {
+  s.addEventListener('click', () => {
+    document.getElementById('ratingValue').value = selectedRating;
+  });
+});
+
+// إرسال التقييم عبر Formspree
+document.getElementById('ratingForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  
   if(selectedRating === 0) {
     document.getElementById('rateFeedback').textContent = 'اختر النجوم أولاً!';
     document.getElementById('rateFeedback').style.color = '#ff4757';
     return;
   }
-  document.getElementById('rateFeedback').textContent = 'شكراً! قيّمتنا بـ ' + selectedRating + ' نجوم.';
-  document.getElementById('rateFeedback').style.color = '#00d4aa';
-  document.getElementById('stars').style.pointerEvents = 'none';
-}
+  
+  document.getElementById('ratingValue').value = selectedRating;
+  const btn = document.getElementById('rateSubmitBtn');
+  btn.disabled = true;
+  btn.textContent = 'جاري الإرسال...';
+  
+  try {
+    const formData = new FormData(this);
+    const response = await fetch(this.action, {
+      method: 'POST',
+      body: formData,
+      headers: { 'Accept': 'application/json' }
+    });
+    
+    if(response.ok) {
+      document.getElementById('rateFeedback').textContent = 'شكراً! وصلنا تقييمك ⭐';
+      document.getElementById('rateFeedback').style.color = '#00d4aa';
+      this.reset();
+      selectedRating = 0;
+      document.querySelectorAll('#stars span').forEach(star => star.classList.remove('selected'));
+      document.getElementById('stars').style.pointerEvents = 'none';
+    } else {
+      throw new Error('فشل الإرسال');
+    }
+  } catch(err) {
+    document.getElementById('rateFeedback').textContent = 'حدث خطأ، حاول مرة أخرى';
+    document.getElementById('rateFeedback').style.color = '#ff4757';
+    btn.disabled = false;
+    btn.textContent = 'إرسال التقييم';
+  }
+});
 
 // ===== Game List =====
 const gameList = [
