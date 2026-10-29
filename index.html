@@ -198,6 +198,7 @@ footer{ text-align:center; padding:35px 20px; border-top:1px solid var(--border)
 
 .game-controls{ display:flex; justify-content:center; flex-wrap:wrap; gap:8px; margin-top:12px;}
 
+/* === إصلاح اتجاه الأسهم === */
 .dpad {
   display: grid;
   grid-template-columns: repeat(3, 58px);
@@ -205,6 +206,7 @@ footer{ text-align:center; padding:35px 20px; border-top:1px solid var(--border)
   gap: 8px;
   margin: 12px auto;
   justify-content: center;
+  direction: ltr; /* إصلاح اتجاه الأسهم */
 }
 .dpad button {
   background: linear-gradient(145deg, #1a1a28, #12121c);
@@ -225,33 +227,12 @@ footer{ text-align:center; padding:35px 20px; border-top:1px solid var(--border)
   box-shadow: 0 1px 0 #3a2a8a;
 }
 .dpad .up { grid-column: 2; grid-row: 1; }
-.dpad .left { grid-column: 3; grid-row: 2; }   /* معكوس بسبب RTL */
+.dpad .left { grid-column: 1; grid-row: 2; }   /* إصلاح اليسار */
 .dpad .down { grid-column: 2; grid-row: 2; }
-.dpad .right { grid-column: 1; grid-row: 2; }  /* معكوس بسبب RTL */
+.dpad .right { grid-column: 3; grid-row: 2; }  /* إصلاح اليمين */
 
 .modal-actions { display: flex; gap: 10px; margin-top: 14px; justify-content: center; }
 .modal-actions .btn { width: auto; padding: 10px 22px; font-family: 'Orbitron', sans-serif; font-size:0.85rem;}
-
-/* Beautiful game-specific styles */
-.game-btn-grid {
-  display: grid;
-  gap: 8px;
-  justify-content: center;
-}
-.big-emoji {
-  font-size: 2.8rem;
-  line-height: 1;
-  filter: drop-shadow(0 0 8px rgba(255,255,255,0.3));
-}
-.score-badge {
-  background: linear-gradient(135deg, var(--accent), var(--accent3));
-  color: white;
-  padding: 6px 16px;
-  border-radius: 20px;
-  font-weight: 800;
-  font-size: 0.95rem;
-  box-shadow: 0 0 15px rgba(255,0,127,0.4);
-}
 
 @media(max-width:600px){
   nav{ width:95%; gap:8px; padding:8px 12px;}
@@ -272,13 +253,13 @@ footer{ text-align:center; padding:35px 20px; border-top:1px solid var(--border)
 <nav id="mainNav">
   <label class="language-label" for="languageSelect">🌐 <select id="languageSelect"><option value="ar">العربية</option><option value="en">English</option><option value="am">አማርኛ</option></select></label>
   <span class="utility-chip">🕒 <span id="clock">--:--</span></span>
-  <button type="button" class="utility-chip" id="themeToggle">🌗 Theme</button>
-  <button type="button" class="utility-chip" id="fullscreenBtn">⛶ Fullscreen</button>
+  <button type="button" class="utility-chip" id="themeToggle">🌗 المظهر</button>
+  <button type="button" class="utility-chip" id="fullscreenBtn">⛶ ملء الشاشة</button>
 </nav>
 
 <header>
   <h1>GameZone40</h1>
-  <p>50 لعبة ممتعة · جميلة · سهلة · بدون تحميل</p>
+  <p id="subtitleText">50 لعبة ممتعة · جميلة · سهلة · بدون تحميل</p>
 </header>
 
 <div class="ad-slot">
@@ -312,8 +293,8 @@ atOptions = {'key':'c23a38c1ab2fde5597f48a5a0ae691d4','format':'iframe','height'
 </main>
 
 <section id="rate" class="section">
-  <h2>⭐ قيّم GameZone40</h2>
-  <p>كيف كانت تجربتك؟ قيّمنا من 1 إلى 5 نجوم.</p>
+  <h2 id="rateTitle">⭐ قيّم GameZone40</h2>
+  <p id="rateDesc">كيف كانت تجربتك؟ قيّمنا من 1 إلى 5 نجوم.</p>
   <form class="rating-form" id="ratingForm" action="https://formspree.io/f/mvkkrnay" method="POST">
     <div class="rating-stars" id="stars">
       <span data-val="1">★</span><span data-val="2">★</span><span data-val="3">★</span><span data-val="4">★</span><span data-val="5">★</span>
@@ -327,7 +308,7 @@ atOptions = {'key':'c23a38c1ab2fde5597f48a5a0ae691d4','format':'iframe','height'
   </form>
 </section>
 
-<footer>
+<footer id="footerText">
   © <span id="year"></span> GameZone40. جميع الحقوق محفوظة.<br>
   📧 <a href="mailto:alarmedali996@gmail.com" style="color:var(--accent2);text-decoration:none;">alarmedali996@gmail.com</a>
 </footer>
@@ -356,121 +337,214 @@ function updateSiteTime(){
 updateSiteTime(); setInterval(updateSiteTime, 1000);
 document.getElementById('year').textContent = new Date().getFullYear();
 
-// ===== Language System =====
+// ===== Translations =====
 const translations = {
   ar: {
     subtitle: '50 لعبة ممتعة · جميلة · سهلة · بدون تحميل',
     search: '🔎 ابحث عن لعبة...',
-    all: 'كل الألعاب',
-    arcade: 'أركيد',
-    puzzle: 'ألغاز',
-    classic: 'كلاسيك',
-    action: 'أكشن',
+    all: 'كل الألعاب', arcade: 'أركيد', puzzle: 'ألغاز', classic: 'كلاسيك', action: 'أكشن',
     play: 'العب الآن',
-    rateTitle: '⭐ قيّم GameZone40',
-    rateDesc: 'كيف كانت تجربتك؟ قيّمنا من 1 إلى 5 نجوم.',
-    namePh: 'اسمك (اختياري)',
-    msgPh: 'ملاحظاتك (اختياري)',
-    submitRate: 'إرسال التقييم',
-    restart: '🔄 إعادة',
-    close: '↩ إغلاق',
-    theme: '🌗 Theme',
-    fullscreen: '⛶ Fullscreen',
-    rights: 'جميع الحقوق محفوظة.'
+    rateTitle: '⭐ قيّم GameZone40', rateDesc: 'كيف كانت تجربتك؟ قيّمنا من 1 إلى 5 نجوم.',
+    namePh: 'اسمك (اختياري)', msgPh: 'ملاحظاتك (اختياري)', submitRate: 'إرسال التقييم',
+    restart: '🔄 إعادة', close: '↩ إغلاق', theme: '🌗 المظهر', fullscreen: '⛶ ملء الشاشة',
+    rights: 'جميع الحقوق محفوظة.',
+    congratsRate: '🎉 تم الوصول بنجاح!<br><b>مبروك جداً!</b>',
+    pickStars: 'اختر النجوم أولاً!',
+    sending: 'جاري الإرسال...',
+    errorMsg: 'حدث خطأ، حاول مرة أخرى',
+    themeLight: '☀️ مضيء'
   },
   en: {
     subtitle: '50 Fun Mini Games · Beautiful · Easy · No Download',
     search: '🔎 Search games...',
-    all: 'All games',
-    arcade: 'Arcade',
-    puzzle: 'Puzzle',
-    classic: 'Classic',
-    action: 'Action',
+    all: 'All games', arcade: 'Arcade', puzzle: 'Puzzle', classic: 'Classic', action: 'Action',
     play: 'Play Now',
-    rateTitle: '⭐ Rate GameZone40',
-    rateDesc: 'How was your experience? Rate us from 1 to 5 stars.',
-    namePh: 'Your Name (optional)',
-    msgPh: 'Your feedback (optional)',
-    submitRate: 'Submit Rating',
-    restart: '🔄 Restart',
-    close: '↩ Close',
-    theme: '🌗 Theme',
-    fullscreen: '⛶ Fullscreen',
-    rights: 'All rights reserved.'
+    rateTitle: '⭐ Rate GameZone40', rateDesc: 'How was your experience? Rate us from 1 to 5 stars.',
+    namePh: 'Your Name (optional)', msgPh: 'Your feedback (optional)', submitRate: 'Submit Rating',
+    restart: '🔄 Restart', close: '↩ Close', theme: '🌗 Theme', fullscreen: '⛶ Fullscreen',
+    rights: 'All rights reserved.',
+    congratsRate: '🎉 Successfully received!<br><b>Congratulations!</b>',
+    pickStars: 'Pick stars first!',
+    sending: 'Sending...',
+    errorMsg: 'Error, try again',
+    themeLight: '☀️ Light'
   },
   am: {
     subtitle: '50 አስደሳች ጨዋታዎች · ቆንጆ · ቀላል · ሳይወርድ',
     search: '🔎 ጨዋታዎችን ፈልግ...',
-    all: 'ሁሉም ጨዋታዎች',
-    arcade: 'አርኬድ',
-    puzzle: 'እንቆቅልሽ',
-    classic: 'ክላሲክ',
-    action: 'አክሽን',
+    all: 'ሁሉም ጨዋታዎች', arcade: 'አርኬድ', puzzle: 'እንቆቅልሽ', classic: 'ክላሲክ', action: 'አክሽን',
     play: 'አሁን ተጫወት',
-    rateTitle: '⭐ GameZone40ን ደረጃ ይስጡ',
-    rateDesc: 'ልምድዎ እንዴት ነበር? ከ1 እስከ 5 ኮከቦች ይስጡን።',
-    namePh: 'ስምዎ (አማራጭ)',
-    msgPh: 'አስተያየትዎ (አማራጭ)',
-    submitRate: 'ደረጃ ላክ',
-    restart: '🔄 እንደገና ጀምር',
-    close: '↩ ዝጋ',
-    theme: '🌗 ገጽታ',
-    fullscreen: '⛶ ሙሉ ማያ',
-    rights: 'መብቱ በሙሉ የተጠበቀ ነው።'
+    rateTitle: '⭐ GameZone40ን ደረጃ ይስጡ', rateDesc: 'ልምድዎ እንዴት ነበር? ከ1 እስከ 5 ኮከቦች ይስጡን።',
+    namePh: 'ስምዎ (አማራጭ)', msgPh: 'አስተያየትዎ (አማራጭ)', submitRate: 'ደረጃ ላክ',
+    restart: '🔄 እንደገና ጀምር', close: '↩ ዝጋ', theme: '🌗 ገጽታ', fullscreen: '⛶ ሙሉ ማያ',
+    rights: 'መብቱ በሙሉ የተጠበቀ ነው።',
+    congratsRate: '🎉 በተሳካ ሁኔታ ደርሶናል!<br><b>እንኳን ደስ አለዎት!</b>',
+    pickStars: 'መጀመሪያ ኮከቦችን ምረጥ!',
+    sending: 'በመላክ ላይ...',
+    errorMsg: 'ስህተት፣ እንደገና ሞክር',
+    themeLight: '☀️ ብርሃን'
   }
 };
 
+// ===== In-game translation helper =====
+function t(key){
+  const lang = document.getElementById('languageSelect')?.value || 'ar';
+  const dict = {
+    ar: {
+      score:'النتيجة', easy:'سهل', medium:'متوسط', hard:'صعب',
+      gameOver:'انتهت اللعبة', youWon:'مبروك جداً! Congratulations! 🎉', correct:'صحيح',
+      tryAgain:'حاول مجدداً', yourTurn:'دورك', computerWon:'الكمبيوتر فاز',
+      draw:'تعادل', timeUp:'انتهى الوقت', clickStart:'اضغط ابدأ',
+      restart:'إعادة', chooseMove:'اختر حركتك', lives:'أرواح',
+      start:'ابدأ', next:'التالي', submit:'تحقق', answer:'الإجابة',
+      newGame:'لعبة جديدة', play:'العب', ready:'جاهز',
+      turn:'الدور', highScore:'أعلى نتيجة', wrong:'خطأ', right:'صحيح', won:'فزت', lost:'خسرت',
+      red:'أحمر', blue:'أزرق', green:'أخضر', yellow:'أصفر', purple:'بنفسجي', orange:'برتقالي',
+      watch:'راقب...', repeat:'كرر', wait:'انتظر...', now:'اضغط الآن!',
+      reaction:'رد فعلك', milliseconds:'مللي ثانية', tryAgainBtn:'حاول مجدداً',
+      rocks:'الطوب', stars:'النجوم', fruits:'الفواكه', dodged:'تجاوزت',
+      target:'اضغط', left:'المتبقي', time:'الوقت', pairs:'الأزواج',
+      wrongCount:'الأخطاء', word:'الكلمة', coins:'الكنوز', popped:'المفجر',
+      movePlayer:'حرّك', goal:'وصلت', falls:'سقط', dodge:'تجنب', collect:'اجمع',
+      balance:'التوازن', survived:'صمدت', newRecord:'رقم قياسي!',
+      capital:'العاصمة', country:'الدولة', flag:'العلم'
+    },
+    en: {
+      score:'Score', easy:'Easy', medium:'Medium', hard:'Hard',
+      gameOver:'Game Over', youWon:'Congratulations! 🎉', correct:'Correct',
+      tryAgain:'Try Again', yourTurn:'Your Turn', computerWon:'Computer Won',
+      draw:'Draw', timeUp:'Time Up', clickStart:'Click Start',
+      restart:'Restart', chooseMove:'Choose your move', lives:'Lives',
+      start:'Start', next:'Next', submit:'Check', answer:'Answer',
+      newGame:'New Game', play:'Play', ready:'Ready',
+      turn:'Turn', highScore:'High Score', wrong:'Wrong', right:'Right', won:'You Won', lost:'You Lost',
+      red:'Red', blue:'Blue', green:'Green', yellow:'Yellow', purple:'Purple', orange:'Orange',
+      watch:'Watch...', repeat:'Repeat', wait:'Wait...', now:'Tap now!',
+      reaction:'Your reaction', milliseconds:'ms', tryAgainBtn:'Try Again',
+      rocks:'Bricks', stars:'Stars', fruits:'Fruits', dodged:'Dodged',
+      target:'Tap', left:'Left', time:'Time', pairs:'Pairs',
+      wrongCount:'Mistakes', word:'Word', coins:'Treasures', popped:'Popped',
+      movePlayer:'Move', goal:'You reached', falls:'Fell', dodge:'Dodge', collect:'Collect',
+      balance:'Balance', survived:'Survived', newRecord:'New Record!',
+      capital:'Capital', country:'Country', flag:'Flag'
+    },
+    am: {
+      score:'ውጤት', easy:'ቀላል', medium:'መካከለኛ', hard:'ከባድ',
+      gameOver:'ጨዋታ አለቀ', youWon:'እንኳን ደስ አለዎት! 🎉', correct:'ትክክል',
+      tryAgain:'እንደገና ሞክር', yourTurn:'ተራህ', computerWon:'ኮምፒውተር አሸነፈ',
+      draw:'አቻ', timeUp:'ጊዜ አለቀ', clickStart:'ጅምር ጠቅ አድርግ',
+      restart:'እንደገና', chooseMove:'እንቅስቃሴህን ምረጥ', lives:'ህይወቶች',
+      start:'ጀምር', next:'ቀጣይ', submit:'አረጋግጥ', answer:'መልስ',
+      newGame:'አዲስ ጨዋታ', play:'ተጫወት', ready:'ዝግጁ',
+      turn:'ተራ', highScore:'ከፍተኛ ውጤት', wrong:'ስህተት', right:'ትክክል', won:'አሸነፍክ', lost:'ተሸነፍክ',
+      red:'ቀይ', blue:'ሰማያዊ', green:'አረንጓዴ', yellow:'ቢጫ', purple:'ወይን ጠጅ', orange:'ብርቱካናማ',
+      watch:'ተመልከት...', repeat:'ድገም', wait:'ጠብቅ...', now:'አሁን ጠቅ አድርግ!',
+      reaction:'ምላሽህ', milliseconds:'ሚሊሰከንድ', tryAgainBtn:'እንደገና ሞክር',
+      rocks:'ጡቦች', stars:'ኮከቦች', fruits:'ፍራፍሬዎች', dodged:'አስወገድክ',
+      target:'ጠቅ አድርግ', left:'ቀሪ', time:'ጊዜ', pairs:'ጥንዶች',
+      wrongCount:'ስህተቶች', word:'ቃል', coins:'ሀብቶች', popped:'ፈንድቷል',
+      movePlayer:'አንቀሳቅስ', goal:'ደረስክ', falls:'ወደቀ', dodge:'አስወግድ', collect:'ሰብስብ',
+      balance:'ሚዛን', survived:'ተረፍክ', newRecord:'አዲስ ሪከርድ!',
+      capital:'ዋና ከተማ', country:'ሀገር', flag:'ባንዲራ'
+    }
+  };
+  return (dict[lang] || dict.ar)[key] || key;
+}
+
+// ===== Game Names =====
+const gameNames = {
+  ar: [
+    ['الثعبان','كل الطعام وتجنب ذيلَك.','arcade'], ['إكس أو','العب X ضد O.','classic'], ['2048','اجمع البلاطات للوصول لـ 2048.','puzzle'], ['مطابقة الذاكرة','اعثر على الأزواج المتطابقة.','puzzle'],
+    ['حجر ورقة مقص','العب ضد الكمبيوتر.','classic'], ['تخمين الرقم','خمّن رقماً من 1 إلى 50.','puzzle'], ['المشنقة','خمّن الكلمة المخفية.','puzzle'], ['بونغ','حافظ على الكرة.','arcade'],
+    ['اضرب الخلد','اضرب الخلد.','arcade'], ['اختبار رد الفعل','اختبر سرعة رد فعلك.','arcade'], ['التقط الفواكه','التقط الفواكه المتساقطة.','arcade'], ['الطائر','اطير بين الفجوات.','arcade'],
+    ['كسر الطوب','اكسر الطوب بالكرة.','arcade'], ['كاسحة الألغام','اكشف المربعات الآمنة.','puzzle'], ['أربعة متتالية','احصل على أربعة متتالية.','classic'], ['سايمون يقول','كرر تسلسل الألوان.','puzzle'],
+    ['فك الكلمة','فك تشويش الكلمة.','puzzle'], ['سرعة الكتابة','اكتب الجملة بسرعة.','classic'], ['نقر الكوكيز','اجمع الكوكيز.','arcade'], ['مطابقة الألوان','اختر اللون الصحيح.','arcade'],
+    ['فقع البالونات','فجّر البالونات.','arcade'], ['رمي النرد','ارمِ النرد.','classic'], ['اختبار المعلومات','أجب على سؤال.','classic'], ['الحيوان الأليف','اعتنِ بحيوانك الأليف.','arcade'],
+    ['قلب العملة','وجه أم كتابة؟','classic'], ['اضغط الهدف','اضغط على الهدف المتحرك.','action'], ['الأحجية المنزلقة','رتب الأرقام المبعثرة.','puzzle'], ['فقع الفقاعات','فجّر الفقاعات الملونة.','arcade'],
+    ['جامع النجوم','اجمع النجوم الساقطة.','arcade'], ['اندفاع الألوان','اضغط اللون المطلوب بسرعة.','action'], ['اختبار الرياضيات','حل مسائل رياضية سهلة.','puzzle'], ['تهجئة','تهجى الكلمة.','puzzle'],
+    ['اختبار الدول','خمّن عاصمة الدولة.','puzzle'], ['اختبار الأعلام','تعرّف على العلم.','puzzle'], ['تجنب الصخور','تجنب الصخور الساقطة.','action'], ['الثنائي','حوّل الرقم إلى ثنائي.','puzzle'],
+    ['مطابقة النمط','أكمل النمط.','puzzle'], ['سلسلة الكلمات','كلمة تبدأ بآخر حرف.','puzzle'], ['حجر ورقة مقص متقدم','حجر ورقة مقص سحلية سبوك.','classic'], ['تسلسل الأرقام','ابحث عن الرقم الناقص.','puzzle'],
+    ['ذاكرة الألوان','تذكر تسلسل الألوان.','puzzle'], ['سباق رد الفعل','انتظر الأخضر واضغط.','action'], ['كرة المتاهة','أوصل الكرة للهدف.','action'], ['سايمون المتقدم','كرر التسلسل المتزايد.','puzzle'],
+    ['ذاكرة الأرقام','اضغط الأرقام بالترتيب.','puzzle'], ['مراوغة النينجا','تجنب الأجسام الساقطة.','action'], ['مطابقة الثلاثية','اصنع ثلاثية من نفس الشكل.','puzzle'], ['مطلق الفضاء','أطلق على الأهداف.','action'],
+    ['كاسر الكود','اكسر الكود المكوّن من 3 أرقام.','puzzle'], ['حافظ على التوازن','حافظ على التوازن.','action']
+  ],
+  en: [
+    ['Snake','Eat food, avoid your tail.','arcade'], ['Tic-Tac-Toe','Play X vs O.','classic'], ['2048','Merge tiles to reach 2048.','puzzle'], ['Memory Match','Find matching pairs.','puzzle'],
+    ['Rock Paper Scissors','Play against the computer.','classic'], ['Number Guess','Guess a number from 1 to 50.','puzzle'], ['Hangman','Guess the hidden word.','puzzle'], ['Pong','Keep the ball in play.','arcade'],
+    ['Whack-a-Mole','Hit the mole.','arcade'], ['Reaction Test','Test your reaction speed.','arcade'], ['Fruit Catch','Catch the falling fruits.','arcade'], ['Flappy Dot','Fly through the gaps.','arcade'],
+    ['Breakout','Break bricks with the ball.','arcade'], ['Minesweeper Mini','Reveal safe squares.','puzzle'], ['Connect Four','Get four in a row.','classic'], ['Simon Says','Repeat the color sequence.','puzzle'],
+    ['Word Scramble','Unscramble the word.','puzzle'], ['Typing Speed','Type the sentence quickly.','classic'], ['Treasure Hunt','Collect treasures.','arcade'], ['Color Match','Pick the right color.','arcade'],
+    ['Balloon Pop','Pop the balloons.','arcade'], ['Dice Roller','Roll the dice.','classic'], ['Trivia Quiz','Answer a question.','classic'], ['Bubble Shooter','Shoot the bubbles.','arcade'],
+    ['Coin Flip','Heads or tails?','classic'], ['Target Tap','Tap the moving target.','action'], ['Sliding Puzzle','Arrange the scrambled numbers.','puzzle'], ['Bubble Pop','Pop the colorful bubbles.','arcade'],
+    ['Star Collector','Collect the falling stars.','arcade'], ['Color Rush','Tap the requested color fast.','action'], ['Math Speed','Solve math fast.','puzzle'], ['Spelling Bee','Spell the word.','puzzle'],
+    ['Country Quiz','Guess the country capital.','puzzle'], ['Flag Quiz','Identify the flag.','puzzle'], ['Dodge Rocks','Dodge the falling rocks.','action'], ['Binary Game','Convert the number to binary.','puzzle'],
+    ['Pattern Match','Complete the pattern.','puzzle'], ['Catch the Color','Tap the requested color.','action'], ['RPSLS','Rock Paper Scissors Lizard Spock.','classic'], ['Number Sequence','Find the missing number.','puzzle'],
+    ['Color Memory','Remember the color sequence.','puzzle'], ['Reaction Race','Wait for green and tap.','action'], ['Maze Ball','Get the ball to the goal.','action'], ['Simon Pro','Repeat the growing sequence.','puzzle'],
+    ['Number Memory','Tap the numbers in order.','puzzle'], ['Ninja Dodge','Dodge falling objects.','action'], ['Match Three','Make three of a kind.','puzzle'], ['Space Shooter','Shoot the targets.','action'],
+    ['Code Breaker','Crack the 3-digit code.','puzzle'], ['Keep Balance','Keep your balance.','action']
+  ],
+  am: [
+    ['እባብ','ምግብ ብላ ጅራትህን አስወግድ።','arcade'], ['ኤክስ ኦ','ኤክስ ከኦ ጋር ተጫወት።','classic'], ['2048','2048 ለመድረስ ሰድሮችን አዋህድ።','puzzle'], ['የትውስታ ግጥሚያ','ተመሳሳይ ጥንዶችን ፈልግ።','puzzle'],
+    ['ድንጋይ ወረቀት መቀስ','ከኮምፒውተር ጋር ተጫወት።','classic'], ['ቁጥር ግምት','ከ1 እስከ 50 ቁጥር ገምት።','puzzle'], ['ሰው ሰራሽ','የተደበቀውን ቃል ገምት።','puzzle'], ['ፖንግ','ኳሱን ጠብቅ።','arcade'],
+    ['አይጥ ምታ','አይጡን ምታ።','arcade'], ['የምላሽ ፈተና','የምላሽ ፍጥነትህን ፈትን።','arcade'], ['ፍራፍሬ ያዝ','የሚወድቁ ፍራፍሬዎችን ያዝ።','arcade'], ['ተንቦራ','በክፍተቶች መካከል ተንቦራ።','arcade'],
+    ['ጡብ ስብራ','ኳሱን ተጠቅሞ ጡቦችን ስብራ።','arcade'], ['ማዕድን ፈላጊ','ደህና ሳጥኖችን ክፈት።','puzzle'], ['አራት ተከታታይ','አራት ተከታታይ አግኝ።','classic'], ['ሳይሞን ይላል','የቀለም ቅደም ተከተል ድገም።','puzzle'],
+    ['ቃል ቀይር','የተዘበራረቀውን ቃል አስተካክል።','puzzle'], ['የፍጥነት ጽሁፍ','ዓረፍተ ነገሩን በፍጥነት ጻፍ።','classic'], ['ሀብት ፈልግ','ሀብቶችን ሰብስብ።','arcade'], ['ቀለም ግጥሚያ','ትክክለኛውን ቀለም ምረጥ።','arcade'],
+    ['ፊኛ ፍንዳታ','ፊኛዎችን ፈንዳ።','arcade'], ['ዳይስ ጣል','ዳይሱን ጣል።','classic'], ['ጥያቄ ፈተና','ጥያቄ መልስ።','classic'], ['አረፋ ተኳሽ','አረፋዎችን ተኩስ።','arcade'],
+    ['ሳንቲም ጣል','ራስ ወይስ ጅራት?','classic'], ['ዒላማ ጠቅ','የሚንቀሳቀሰውን ዒላማ ጠቅ አድርግ።','action'], ['ተንሸራታች እንቆቅልሽ','የተበተኑ ቁጥሮችን አዘጋጅ።','puzzle'], ['አረፋ ፍንዳታ','ባለቀለም አረፋዎችን ፈንዳ።','arcade'],
+    ['ኮከብ ሰብሳቢ','የሚወድቁ ኮከቦችን ሰብስብ።','arcade'], ['ቀለም ፍጥነት','የተጠየቀውን ቀለም በፍጥነት ጠቅ አድርግ።','action'], ['የሂሳብ ፍጥነት','በፍጥነት ፍታ።','puzzle'], ['ፊደል አሰላል','ቃሉን አሰላል።','puzzle'],
+    ['የሀገር ፈተና','የሀገር ዋና ከተማ ገምት።','puzzle'], ['ባንዲራ ፈተና','ባንዲራውን ለይ።','puzzle'], ['ዓለት አስወግድ','የሚወድቁ ዓለቶችን አስወግድ።','action'], ['ሁለትዮሽ','ቁጥሩን ወደ ሁለትዮሽ ቀይር።','puzzle'],
+    ['ንድፍ ግጥሚያ','ንድፉን አጠናቅቅ።','puzzle'], ['ቀለም ያዝ','የተጠየቀውን ቀለም ጠቅ አድርግ።','action'], ['የላቀ ድንጋይ ወረቀት መቀስ','ድንጋይ ወረቀት መቀስ እንሽሽት ስፖክ።','classic'], ['የቁጥር ቅደም ተከተል','የጎደለውን ቁጥር ፈልግ።','puzzle'],
+    ['የቀለም ትውስታ','የቀለም ቅደም ተከተል አስታውስ።','puzzle'], ['የምላሽ ሩጫ','አረንጓዴ ይጠብቁ እና ጠቅ ያድርጉ።','action'], ['የመንገድ ኳስ','ኳሱን ወደ ግቡ አድርስ።','action'], ['ሳይሞን ፕሮ','የሚያድገውን ቅደም ተከተል ድገም።','puzzle'],
+    ['የቁጥር ትውስታ','ቁጥሮችን በቅደም ተከተል ጠቅ አድርግ።','puzzle'], ['ኒንጃ ማስወገጃ','የሚወድቁ ነገሮችን አስወግድ።','action'], ['ሶስት ግጥሚያ','ሶስት ተመሳሳይ አድርግ።','puzzle'], ['የጠፈር ተኳሽ','ዒላማዎችን ተኩስ።','action'],
+    ['ኮድ ሰባሪ','ባለ3 አሃዝ ኮድን ስበር።','puzzle'], ['ሚዛን ጠብቅ','ሚዛንህን ጠብቅ።','action']
+  ]
+};
+
+function getLocalizedGames(lang){
+  const list = gameNames[lang] || gameNames.ar;
+  return list.map((g,i)=>({id:i+1, name:g[0], desc:g[1], cat:g[2]}));
+}
+
+// ===== Language setter =====
 function setLanguage(lang) {
-  const t = translations[lang] || translations.ar;
+  const tr = translations[lang] || translations.ar;
   document.documentElement.lang = lang;
   document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
   
-  const sub = document.querySelector('header p');
-  if(sub) sub.textContent = t.subtitle;
-  
-  const search = document.getElementById('search');
-  if(search) search.placeholder = t.search;
+  document.getElementById('subtitleText').textContent = tr.subtitle;
+  document.getElementById('search').placeholder = tr.search;
   
   const cats = document.querySelectorAll('.cat');
-  if(cats[0]) cats[0].textContent = t.all;
-  if(cats[1]) cats[1].textContent = t.arcade;
-  if(cats[2]) cats[2].textContent = t.puzzle;
-  if(cats[3]) cats[3].textContent = t.classic;
-  if(cats[4]) cats[4].textContent = t.action;
+  if(cats[0]) cats[0].textContent = tr.all;
+  if(cats[1]) cats[1].textContent = tr.arcade;
+  if(cats[2]) cats[2].textContent = tr.puzzle;
+  if(cats[3]) cats[3].textContent = tr.classic;
+  if(cats[4]) cats[4].textContent = tr.action;
   
-  document.querySelectorAll('.card .btn').forEach(b => b.textContent = t.play);
+  document.getElementById('rateTitle').textContent = tr.rateTitle;
+  document.getElementById('rateDesc').textContent = tr.rateDesc;
+  document.getElementById('rateName').placeholder = tr.namePh;
+  document.getElementById('rateMsg').placeholder = tr.msgPh;
+  document.getElementById('rateSubmitBtn').textContent = tr.submitRate;
   
-  const rateH = document.querySelector('#rate h2');
-  if(rateH) rateH.textContent = t.rateTitle;
-  const rateP = document.querySelector('#rate p');
-  if(rateP) rateP.textContent = t.rateDesc;
-  const rateName = document.getElementById('rateName');
-  if(rateName) rateName.placeholder = t.namePh;
-  const rateMsg = document.getElementById('rateMsg');
-  if(rateMsg) rateMsg.placeholder = t.msgPh;
-  const rateBtn = document.querySelector('#rate .btn');
-  if(rateBtn) rateBtn.textContent = t.submitRate;
+  document.getElementById('restartCurrentGame').textContent = tr.restart;
+  document.getElementById('closeCurrentGame').textContent = tr.close;
   
-  const restartBtn = document.getElementById('restartCurrentGame');
-  if(restartBtn) restartBtn.textContent = t.restart;
-  const closeBtn = document.getElementById('closeCurrentGame');
-  if(closeBtn) closeBtn.textContent = t.close;
+  document.getElementById('themeToggle').textContent = lightTheme ? tr.themeLight : tr.theme;
+  document.getElementById('fullscreenBtn').textContent = tr.fullscreen;
   
-  document.getElementById('themeToggle').textContent = t.theme;
-  document.getElementById('fullscreenBtn').textContent = t.fullscreen;
-  
-  // Update footer rights text (keep email)
-  const footer = document.querySelector('footer');
-  if(footer){
-    footer.innerHTML = `© <span id="year">${new Date().getFullYear()}</span> GameZone40. ${t.rights}<br>
+  document.getElementById('footerText').innerHTML = 
+    `© <span id="year">${new Date().getFullYear()}</span> GameZone40. ${tr.rights}<br>
     📧 <a href="mailto:alarmedali996@gmail.com" style="color:var(--accent2);text-decoration:none;">alarmedali996@gmail.com</a>`;
-  }
   
-  // Re-render cards to update Play buttons
-  if(typeof render === 'function') render();
+  render();
+  if(modal.classList.contains('open') && currentGameId){
+    openGame(currentGameId);
+  }
 }
 
 document.getElementById('languageSelect').addEventListener('change', function(){
+  localStorage.setItem('gz_lang', this.value);
   setLanguage(this.value);
 });
 
@@ -482,7 +556,10 @@ document.getElementById('themeToggle').addEventListener('click', () => {
   document.documentElement.style.setProperty('--text', lightTheme ? '#1a1a2e' : '#ffffff');
   document.documentElement.style.setProperty('--muted', lightTheme ? '#55556b' : '#8892b0');
   document.documentElement.style.setProperty('--border', lightTheme ? 'rgba(0,0,0,0.1)' : 'rgba(0,240,255,0.25)');
-  document.getElementById('themeToggle').textContent = lightTheme ? '🌙 Dark' : '☀️ Light';
+  
+  const lang = document.getElementById('languageSelect').value;
+  const tr = translations[lang] || translations.ar;
+  document.getElementById('themeToggle').textContent = lightTheme ? tr.themeLight : tr.theme;
 });
 
 document.getElementById('fullscreenBtn').addEventListener('click', () => {
@@ -497,1522 +574,1502 @@ document.querySelectorAll('#stars span').forEach(s => {
     document.querySelectorAll('#stars span').forEach(star => {
       star.classList.toggle('selected', parseInt(star.dataset.val) <= selectedRating);
     });
-  });
-});
-// تحديث قيمة النجوم المخفية
-document.querySelectorAll('#stars span').forEach(s => {
-  s.addEventListener('click', () => {
     document.getElementById('ratingValue').value = selectedRating;
   });
 });
 
-// إرسال التقييم عبر Formspree
 document.getElementById('ratingForm').addEventListener('submit', async function(e) {
   e.preventDefault();
+  const lang = document.getElementById('languageSelect').value;
+  const tr = translations[lang] || translations.ar;
   
   if(selectedRating === 0) {
-    document.getElementById('rateFeedback').textContent = 'اختر النجوم أولاً!';
+    document.getElementById('rateFeedback').innerHTML = tr.pickStars;
     document.getElementById('rateFeedback').style.color = '#ff4757';
     return;
   }
   
   document.getElementById('ratingValue').value = selectedRating;
   const btn = document.getElementById('rateSubmitBtn');
+  const originalText = tr.submitRate;
   btn.disabled = true;
-  btn.textContent = 'جاري الإرسال...';
+  btn.textContent = tr.sending;
   
   try {
     const formData = new FormData(this);
     const response = await fetch(this.action, {
-      method: 'POST',
-      body: formData,
-      headers: { 'Accept': 'application/json' }
+      method: 'POST', body: formData, headers: { 'Accept': 'application/json' }
     });
     
     if(response.ok) {
-      document.getElementById('rateFeedback').textContent = 'شكراً! وصلنا تقييمك ⭐';
+      document.getElementById('rateFeedback').innerHTML = tr.congratsRate;
       document.getElementById('rateFeedback').style.color = '#00d4aa';
       this.reset();
       selectedRating = 0;
       document.querySelectorAll('#stars span').forEach(star => star.classList.remove('selected'));
-      document.getElementById('stars').style.pointerEvents = 'none';
-    } else {
-      throw new Error('فشل الإرسال');
-    }
+    } else throw new Error('fail');
   } catch(err) {
-    document.getElementById('rateFeedback').textContent = 'حدث خطأ، حاول مرة أخرى';
+    document.getElementById('rateFeedback').textContent = tr.errorMsg;
     document.getElementById('rateFeedback').style.color = '#ff4757';
+  } finally {
     btn.disabled = false;
-    btn.textContent = 'إرسال التقييم';
+    btn.textContent = originalText;
   }
 });
 
-// ===== Game List =====
-const gameList = [
-['Snake','كل الطعام وتجنب ذيلَك.','arcade'],
-['Tic-Tac-Toe','العب X ضد O.','classic'],
-['2048','اجمع البلاطات للوصول لـ 2048.','puzzle'],
-['Memory Match','اعثر على الأزواج المتطابقة.','puzzle'],
-['Rock Paper Scissors','العب ضد الكمبيوتر.','classic'],
-['Number Guess','خمّن رقماً من 1 إلى 50.','puzzle'],
-['Hangman','خمّن الكلمة المخفية.','puzzle'],
-['Pong','حافظ على الكرة.','arcade'],
-['Whack-a-Mole','اضرب الخلد.','arcade'],
-['Reaction Test','اختبر سرعة رد فعلك.','arcade'],
-['Fruit Catch','التقط الفواكه المتساقطة.','arcade'],
-['Flappy Dot','اطير بين الفجوات.','arcade'],
-['Breakout','اكسر الطوب بالكرة.','arcade'],
-['Minesweeper Mini','اكشف المربعات الآمنة.','puzzle'],
-['Connect Four','احصل على أربعة متتالية.','classic'],
-['Simon Says','كرر تسلسل الألوان.','puzzle'],
-['Word Scramble','فك تشويش الكلمة.','puzzle'],
-['Typing Speed','اكتب الجملة بسرعة.','classic'],
-['Cookie Clicker','انقر لجمع الكوكيز.','arcade'],
-['Color Match','اختر اللون الصحيح.','arcade'],
-['Balloon Pop','فجّر البالونات.','arcade'],
-['Dice Roller','ارمِ النرد.','classic'],
-['Trivia Quiz','أجب على سؤال.','classic'],
-['Virtual Pet','اعتنِ بحيوانك الأليف.','arcade'],
-['Coin Flip','وجه أم كتابة؟','classic'],
-['Target Tap','اضغط على الهدف المتحرك.','action'],
-['Sliding Puzzle','رتب الصورة المبعثرة.','puzzle'],
-['Bubble Pop','فجّر الفقاعات الملونة.','arcade'],
-['Star Collector','اجمع النجوم الساقطة.','arcade'],
-['Color Rush','اضغط اللون المطلوب بسرعة.','action'],
-['Math Quiz','حل مسائل رياضية سهلة.','puzzle'],
-['Spelling Bee','تهجى الكلمة.','puzzle'],
-['Country Quiz','خمّن عاصمة الدولة.','puzzle'],
-['Flag Quiz','تعرّف على العلم.','puzzle'],
-['Dodge Rocks','تجنب الصخور الساقطة.','action'],
-['Binary Game','حوّل الرقم إلى ثنائي.','puzzle'],
-['Pattern Match','أكمل النمط.','puzzle'],
-['Word Chain','كلمة تبدأ بآخر حرف.','puzzle'],
-['RPSLS','حجر ورقة مقص سحلية سبوك.','classic'],
-['Number Sequence','ابحث عن الرقم الناقص.','puzzle'],
-['Color Memory','تذكر تسلسل الألوان.','puzzle'],
-['Reaction Race','انتظر الأخضر واضغط.','action'],
-['Maze Ball','أوصل الكرة للهدف.','action'],
-['Simon Pro','كرر التسلسل المتزايد.','puzzle'],
-['Number Memory','اضغط الأرقام بالترتيب.','puzzle'],
-['Ninja Dodge','تجنب الأجسام الساقطة.','action'],
-['Match Three','اصنع ثلاثية من نفس الشكل.','puzzle'],
-['Space Shooter','أطلق على الأهداف.','action'],
-['Code Breaker','اكسر الكود المكوّن من 3 أرقام.','puzzle'],
-['Keep Balance','حافظ على التوازن.','action']
-].map((g,i)=>({id:i+1,name:g[0],desc:g[1],cat:g[2]}));
-
+// ===== Game Grid =====
 const grid = document.getElementById('grid'), search = document.getElementById('search');
 let category = 'all', cleanups = [];
 
 function render(){
   grid.innerHTML='';
-  const q=search.value.toLowerCase();
-  const list=gameList.filter(g=>(category==='all'||g.cat===category)&&(!q||(g.name+' '+g.desc).toLowerCase().includes(q)));
+  const q = search.value.toLowerCase();
   const lang = document.getElementById('languageSelect')?.value || 'ar';
-  const playText = (translations[lang] || translations.ar).play;
-  list.forEach(g=>{
-    const c=document.createElement('article');
-    c.className='card';
-    c.innerHTML = `<div><h3>${g.id}. ${g.name}</h3><p>${g.desc}</p></div><button class="btn">${playText}</button>`;
-    c.querySelector('button').onclick = ()=>openGame(g.id);
+  const localizedGames = getLocalizedGames(lang);
+  const tr = translations[lang] || translations.ar;
+  
+  const list = localizedGames.filter(g =>
+    (category === 'all' || g.cat === category) && 
+    (!q || (g.name + ' ' + g.desc).toLowerCase().includes(q))
+  );
+  
+  list.forEach(g => {
+    const c = document.createElement('article');
+    c.className = 'card';
+    c.innerHTML = `<div><h3>${g.id}. ${g.name}</h3><p>${g.desc}</p></div><button class="btn">${tr.play}</button>`;
+    c.querySelector('button').onclick = () => openGame(g.id);
     grid.appendChild(c);
   });
 }
 
-search.addEventListener('input',render);
-document.querySelectorAll('.cat').forEach(b=>b.onclick=()=>{
-  document.querySelectorAll('.cat').forEach(x=>x.classList.remove('active'));
-  b.classList.add('active'); category=b.dataset.cat; render();
+search.addEventListener('input', render);
+document.querySelectorAll('.cat').forEach(b => b.onclick = () => {
+  document.querySelectorAll('.cat').forEach(x => x.classList.remove('active'));
+  b.classList.add('active'); category = b.dataset.cat; render();
 });
-render();
 
 // ===== Game Engine =====
-const modal=document.getElementById('modal'),area=document.getElementById('gameArea'),controls=document.getElementById('gameControls');
-function cleanup(){cleanups.forEach(fn=>{try{fn()}catch(e){}});cleanups=[];area.innerHTML='';controls.innerHTML='';}
-function closeGame(){cleanup();modal.classList.remove('open');document.onkeydown=null;}
-document.getElementById('closeModal').onclick=closeGame;
-modal.addEventListener('click',e=>{if(e.target===modal) closeGame()});
-document.getElementById('closeCurrentGame').addEventListener('click',closeGame);
-document.getElementById('restartCurrentGame').addEventListener('click',()=>{
-  openGame(currentGameId);
-});
+const modal = document.getElementById('modal');
+const area = document.getElementById('gameArea');
+const controls = document.getElementById('gameControls');
 
-// تحذير عند محاولة الخروج من الموقع
-window.addEventListener('beforeunload', function(e){
-  e.preventDefault();
-  e.returnValue = ''; // المتصفح يعرض رسالة Leave / Stay
-});
+function cleanup(){
+  cleanups.forEach(fn => { try{fn()}catch(e){} });
+  cleanups = [];
+  area.innerHTML = '';
+  controls.innerHTML = '';
+}
+
+function closeGame(){
+  cleanup();
+  modal.classList.remove('open');
+  document.onkeydown = null;
+}
+
+document.getElementById('closeModal').onclick = closeGame;
+modal.addEventListener('click', e => { if(e.target === modal) closeGame(); });
+document.getElementById('closeCurrentGame').addEventListener('click', closeGame);
+document.getElementById('restartCurrentGame').addEventListener('click', () => openGame(currentGameId));
 
 let currentGameId = 0;
 
-function el(tag,text='',cls=''){const n=document.createElement(tag);n.textContent=text;if(cls)n.className=cls;return n}
-function button(text,fn,cls='btn'){const b=el('button',text,cls);b.onclick=fn;return b}
-function status(text=''){const s=el('div',text,'status');area.appendChild(s);return s}
-function canvas(w=320,h=240){const c=document.createElement('canvas');c.width=w;c.height=h;area.appendChild(c);return c}
-function input(placeholder=''){const i=document.createElement('input');i.placeholder=placeholder;area.appendChild(i);return i}
-function startInterval(fn,ms){const t=setInterval(fn,ms);cleanups.push(()=>clearInterval(t));return t}
-function openGame(id){
-  currentGameId=id;cleanup();document.onkeydown=null;
-  modal.classList.add('open');
-  document.getElementById('gameTitle').textContent=gameList[id-1].name;
-  try{launch(id)}catch(e){area.append(el('p','حدث خطأ. أغلق وأعد الفتح.'));console.error(e)}
-}
+function el(tag, text='', cls=''){ const n = document.createElement(tag); n.textContent = text; if(cls) n.className = cls; return n; }
+function button(text, fn, cls='btn'){ const b = el('button', text, cls); b.onclick = fn; return b; }
+function status(text=''){ const s = el('div', text, 'status'); area.appendChild(s); return s; }
+function canvas(w=320, h=240){ const c = document.createElement('canvas'); c.width = w; c.height = h; area.appendChild(c); return c; }
+function input(placeholder=''){ const i = document.createElement('input'); i.placeholder = placeholder; area.appendChild(i); return i; }
+function startInterval(fn, ms){ const t = setInterval(fn, ms); cleanups.push(() => clearInterval(t)); return t; }
 function simulateKey(key){ if(document.onkeydown) document.onkeydown({key:key, preventDefault:()=>{}}); }
 function addDpad(controls, keys){
   const dpad = document.createElement('div'); dpad.className = 'dpad';
-  if(keys.includes('ArrowUp')){const b=document.createElement('button');b.className='up';b.textContent='↑';b.onclick=()=>simulateKey('ArrowUp');dpad.appendChild(b);}
-  if(keys.includes('ArrowLeft')){const b=document.createElement('button');b.className='left';b.textContent='←';b.onclick=()=>simulateKey('ArrowLeft');dpad.appendChild(b);}
-  if(keys.includes('ArrowDown')){const b=document.createElement('button');b.className='down';b.textContent='↓';b.onclick=()=>simulateKey('ArrowDown');dpad.appendChild(b);}
-  if(keys.includes('ArrowRight')){const b=document.createElement('button');b.className='right';b.textContent='→';b.onclick=()=>simulateKey('ArrowRight');dpad.appendChild(b);}
-  if(keys.includes('Space')){const b=document.createElement('button');b.className='action';b.style.gridColumn='1';b.style.gridRow='1';b.textContent='🚀';b.onclick=()=>simulateKey(' ');dpad.appendChild(b);}
+  if(keys.includes('ArrowUp')){ const b = document.createElement('button'); b.className='up'; b.textContent='↑'; b.onclick=()=>simulateKey('ArrowUp'); dpad.appendChild(b); }
+  if(keys.includes('ArrowLeft')){ const b = document.createElement('button'); b.className='left'; b.textContent='←'; b.onclick=()=>simulateKey('ArrowLeft'); dpad.appendChild(b); }
+  if(keys.includes('ArrowDown')){ const b = document.createElement('button'); b.className='down'; b.textContent='↓'; b.onclick=()=>simulateKey('ArrowDown'); dpad.appendChild(b); }
+  if(keys.includes('ArrowRight')){ const b = document.createElement('button'); b.className='right'; b.textContent='→'; b.onclick=()=>simulateKey('ArrowRight'); dpad.appendChild(b); }
+  if(keys.includes('Space')){ const b = document.createElement('button'); b.className='action'; b.style.gridColumn='1'; b.style.gridRow='1'; b.textContent='🚀'; b.onclick=()=>simulateKey(' '); dpad.appendChild(b); }
   controls.appendChild(dpad);
 }
 
-function launch(id){
-if(id===1) return snake();
-if(id===2) return ttt();
-if(id===3) return game2048();
-if(id===4) return memory();
-if(id===5) return rps(false);
-if(id===6) return guess();
-if(id===7) return hangman();
-if(id===8) return pong();
-if(id===9) return whack();
-if(id===10||id===42) return reaction();
-if(id===11) return fruitCatch();
-if(id===12) return flappy();
-if(id===13) return breakout();
-if(id===14) return mines();
-if(id===15) return connect4();
-if(id===16||id===44) return simon();
-if(id===17) return scramble();
-if(id===18) return typing();
-if(id===19) return cookie();
-if(id===20) return colorMatch();
-if(id===21) return balloon();
-if(id===22) return dice();
-if(id===23) return trivia();
-if(id===24) return pet();
-if(id===25) return coin();
-if(id===26) return targetTap();
-if(id===27) return slidingPuzzle();
-if(id===28) return bubblePop();
-if(id===29) return starCollector();
-if(id===30) return colorRush();
-if(id===31) return mathQuiz();
-if(id===32) return spelling();
-if(id===33) return countryQuiz();
-if(id===34) return flagQuiz();
-if(id===35) return dodgeRocks();
-if(id===36) return binary();
-if(id===37||id===40) return pattern();
-if(id===38) return wordChain();
-if(id===39) return rps(true);
-if(id===41) return colorMemory();
-if(id===43) return maze();
-if(id===45) return numberMemory();
-if(id===46) return ninja();
-if(id===47) return matchThree();
-if(id===48) return shooter();
-if(id===49) return codeBreaker();
-if(id===50) return keepBalance();
+function openGame(id){
+  currentGameId = id;
+  cleanup();
+  document.onkeydown = null;
+  modal.classList.add('open');
+  const lang = document.getElementById('languageSelect')?.value || 'ar';
+  const localizedGames = getLocalizedGames(lang);
+  document.getElementById('gameTitle').textContent = localizedGames[id-1].name;
+  try { launch(id); }
+  catch(e){ area.append(el('p', 'Error. Close and reopen.')); console.error(e); }
 }
 
-// ===== BEAUTIFUL & EASY GAMES =====
+function launch(id){
+  if(id===1) return snake();
+  if(id===2) return ttt();
+  if(id===3) return game2048();
+  if(id===4) return memory();
+  if(id===5) return rps(false);
+  if(id===6) return guess();
+  if(id===7) return hangman();
+  if(id===8) return pong();
+  if(id===9) return whack();
+  if(id===10||id===42) return reaction();
+  if(id===11) return fruitCatch();
+  if(id===12) return flappy();
+  if(id===13) return breakout();
+  if(id===14) return mines();
+  if(id===15) return connect4();
+  if(id===16||id===44) return simon();
+  if(id===17) return scramble();
+  if(id===18) return typing();
+  if(id===19) return cookie();
+  if(id===20) return colorMatch();
+  if(id===21) return balloon();
+  if(id===22) return dice();
+  if(id===23) return trivia();
+  if(id===24) return pet();
+  if(id===25) return coin();
+  if(id===26) return targetTap();
+  if(id===27) return slidingPuzzle();
+  if(id===28) return bubblePop();
+  if(id===29) return starCollector();
+  if(id===30) return colorRush();
+  if(id===31) return mathQuiz();
+  if(id===32) return spelling();
+  if(id===33) return countryQuiz();
+  if(id===34) return flagQuiz();
+  if(id===35) return dodgeRocks();
+  if(id===36) return binary();
+  if(id===37||id===40) return pattern();
+  if(id===38) return wordChain();
+  if(id===39) return rps(true);
+  if(id===41) return colorMemory();
+  if(id===43) return maze();
+  if(id===45) return numberMemory();
+  if(id===46) return ninja();
+  if(id===47) return matchThree();
+  if(id===48) return shooter();
+  if(id===49) return codeBreaker();
+  if(id===50) return keepBalance();
+}
 
-// 1. Snake - slower, bigger food, nicer colors
+// ===== GAMES =====
+
 function snake(){
-  let s=status('🟢 سهل | النتيجة: 0');
-  const c=canvas(300,300),x=c.getContext('2d');
-  let body=[{x:8,y:8},{x:7,y:8},{x:6,y:8}],dx=1,dy=0,food={x:14,y:10},score=0,dead=false;
-  const size=15;
-  let speed=180, level='سهل', levelColor='#00d4aa';
-  let timer=null;
-
+  let s = status(`🟢 ${t('easy')} | ${t('score')}: 0`);
+  const c = canvas(300,300), x = c.getContext('2d');
+  let body = [{x:8,y:8},{x:7,y:8},{x:6,y:8}], dx=1, dy=0, food={x:14,y:10}, score=0, dead=false;
+  const size = 15;
+  let speed = 180, level = t('easy'), levelColor = '#00d4aa';
+  let timer = null;
   function getLevel(){
-    if(score>=20){ speed=90; level='صعب'; levelColor='#ff4757'; }
-    else if(score>=8){ speed=130; level='متوسط'; levelColor='#ffd700'; }
-    else { speed=180; level='سهل'; levelColor='#00d4aa'; }
+    if(score>=20){ speed=90; level=t('hard'); levelColor='#ff4757'; }
+    else if(score>=8){ speed=130; level=t('medium'); levelColor='#ffd700'; }
+    else { speed=180; level=t('easy'); levelColor='#00d4aa'; }
   }
-
   function updateStatus(){
-    s.innerHTML=`<span style="color:${levelColor}">● ${level}</span> | النتيجة: ${score}`;
+    s.innerHTML = `<span style="color:${levelColor}">● ${level}</span> | ${t('score')}: ${score}`;
   }
-
   function draw(){
-    const g=x.createLinearGradient(0,0,300,300);
+    const g = x.createLinearGradient(0,0,300,300);
     g.addColorStop(0,'#0a0a18'); g.addColorStop(1,'#030308');
-    x.fillStyle=g; x.fillRect(0,0,300,300);
-
+    x.fillStyle = g; x.fillRect(0,0,300,300);
     x.strokeStyle='rgba(0,240,255,0.05)'; x.lineWidth=1;
     for(let i=0;i<=20;i++){
-      x.beginPath();x.moveTo(i*size,0);x.lineTo(i*size,300);x.stroke();
-      x.beginPath();x.moveTo(0,i*size);x.lineTo(300,i*size);x.stroke();
+      x.beginPath(); x.moveTo(i*size,0); x.lineTo(i*size,300); x.stroke();
+      x.beginPath(); x.moveTo(0,i*size); x.lineTo(300,i*size); x.stroke();
     }
-
     body.forEach((p,i)=>{
       const cx=p.x*size+size/2, cy=p.y*size+size/2;
-      const isHead=i===0;
-      const radius=isHead?7.5:Math.max(4.5,6.8-(i/body.length)*2.2);
-      if(isHead){x.shadowColor='#00f0ff';x.shadowBlur=16;} else x.shadowBlur=0;
-      const gradient=x.createRadialGradient(cx-2,cy-2,1,cx,cy,radius);
-      if(isHead){gradient.addColorStop(0,'#a0ffff');gradient.addColorStop(0.55,'#00e8ff');gradient.addColorStop(1,'#0088bb');}
-      else{const t=i/Math.max(body.length,1);gradient.addColorStop(0,`rgba(0,${230-t*90},${255-t*70},0.95)`);gradient.addColorStop(1,`rgba(0,${150-t*70},${210-t*90},0.9)`);}
-      x.fillStyle=gradient; x.beginPath(); x.arc(cx,cy,radius,0,7); x.fill();
+      const isHead = i===0;
+      const radius = isHead?7.5:Math.max(4.5,6.8-(i/body.length)*2.2);
+      if(isHead){ x.shadowColor='#00f0ff'; x.shadowBlur=16; } else x.shadowBlur=0;
+      const gradient = x.createRadialGradient(cx-2,cy-2,1,cx,cy,radius);
+      if(isHead){ gradient.addColorStop(0,'#a0ffff'); gradient.addColorStop(0.55,'#00e8ff'); gradient.addColorStop(1,'#0088bb'); }
+      else { const tt=i/Math.max(body.length,1); gradient.addColorStop(0,`rgba(0,${230-tt*90},${255-tt*70},0.95)`); gradient.addColorStop(1,`rgba(0,${150-tt*70},${210-tt*90},0.9)`); }
+      x.fillStyle = gradient; x.beginPath(); x.arc(cx,cy,radius,0,7); x.fill();
       if(isHead){
         x.shadowBlur=0; let ox=0,oy=0;
         if(dx===1)ox=2.5; else if(dx===-1)ox=-2.5; else if(dy===-1)oy=-2.5; else if(dy===1)oy=2.5;
-        x.fillStyle='#fff'; x.beginPath();x.arc(cx-2.8+ox*0.6,cy-2.2+oy*0.6,1.9,0,7);x.fill();
-        x.beginPath();x.arc(cx+2.8+ox*0.6,cy-2.2+oy*0.6,1.9,0,7);x.fill();
-        x.fillStyle='#001820'; x.beginPath();x.arc(cx-2.8+ox,cy-2.2+oy,0.95,0,7);x.fill();
-        x.beginPath();x.arc(cx+2.8+ox,cy-2.2+oy,0.95,0,7);x.fill();
-        x.strokeStyle='#ff4d6d';x.lineWidth=1.5;x.lineCap='round';
-        x.beginPath();x.moveTo(cx+ox*2.2,cy+oy*2.2);x.lineTo(cx+ox*3.8,cy+oy*3.8);x.stroke();
+        x.fillStyle='#fff'; x.beginPath(); x.arc(cx-2.8+ox*0.6,cy-2.2+oy*0.6,1.9,0,7); x.fill();
+        x.beginPath(); x.arc(cx+2.8+ox*0.6,cy-2.2+oy*0.6,1.9,0,7); x.fill();
+        x.fillStyle='#001820'; x.beginPath(); x.arc(cx-2.8+ox,cy-2.2+oy,0.95,0,7); x.fill();
+        x.beginPath(); x.arc(cx+2.8+ox,cy-2.2+oy,0.95,0,7); x.fill();
       }
     });
-
     const fx=food.x*size+size/2, fy=food.y*size+size/2;
-    x.shadowColor='#ff007f';x.shadowBlur=18;
-    const appleGrad=x.createRadialGradient(fx-2,fy-2,1,fx,fy,7);
-    appleGrad.addColorStop(0,'#ff8fb3');appleGrad.addColorStop(0.65,'#ff007f');appleGrad.addColorStop(1,'#bb0044');
-    x.fillStyle=appleGrad; x.beginPath();x.arc(fx,fy,6.8,0,7);x.fill();
-    x.shadowBlur=0; x.fillStyle='#00d4aa';
-    x.beginPath();x.ellipse(fx+3.2,fy-6.5,3.2,1.9,-0.5,0,7);x.fill();
+    x.shadowColor='#ff007f'; x.shadowBlur=18;
+    const appleGrad = x.createRadialGradient(fx-2,fy-2,1,fx,fy,7);
+    appleGrad.addColorStop(0,'#ff8fb3'); appleGrad.addColorStop(0.65,'#ff007f'); appleGrad.addColorStop(1,'#bb0044');
+    x.fillStyle = appleGrad; x.beginPath(); x.arc(fx,fy,6.8,0,7); x.fill();
+    x.shadowBlur = 0;
   }
-
   function step(){
     if(dead) return;
-    let h={x:body[0].x+dx, y:body[0].y+dy};
+    let h = {x:body[0].x+dx, y:body[0].y+dy};
     if(h.x<0||h.x>=20||h.y<0||h.y>=20){
-      dead=true; s.innerHTML='💀 <b>Game Over</b> — اصطدمت بالحائط<br>النتيجة: '+score; s.style.color='#ff4757'; return;
+      dead=true; s.innerHTML=`💀 <b>${t('gameOver')}</b> — ${t('score')}: ${score}`; s.style.color='#ff4757'; return;
     }
     if(body.some(p=>p.x===h.x&&p.y===h.y)){
-      dead=true; s.innerHTML='💀 <b>Game Over</b> — اصطدمت بنفسك<br>النتيجة: '+score; s.style.color='#ff4757'; return;
+      dead=true; s.innerHTML=`💀 <b>${t('gameOver')}</b> — ${t('score')}: ${score}`; s.style.color='#ff4757'; return;
     }
     body.unshift(h);
     if(h.x===food.x&&h.y===food.y){
-      score++;
-      getLevel(); updateStatus();
-      // إعادة ضبط السرعة
+      score++; getLevel(); updateStatus();
       clearInterval(timer);
-      timer=setInterval(step,speed);
+      timer = setInterval(step, speed);
       cleanups.push(()=>clearInterval(timer));
-      do{ food={x:Math.floor(Math.random()*20),y:Math.floor(Math.random()*20)}; }
+      do { food = {x:Math.floor(Math.random()*20), y:Math.floor(Math.random()*20)}; }
       while(body.some(p=>p.x===food.x&&p.y===food.y));
     } else body.pop();
     draw();
   }
-
-  document.onkeydown=e=>{
+  document.onkeydown = e => {
     if(dead) return;
-    const k=e.key;
-    if(k==='ArrowUp'&&dy!==1){dx=0;dy=-1;}
-    else if(k==='ArrowDown'&&dy!==-1){dx=0;dy=1;}
-    else if(k==='ArrowLeft'&&dx!==1){dx=-1;dy=0;}
-    else if(k==='ArrowRight'&&dx!==-1){dx=1;dy=0;}
-    else return; e.preventDefault();
+    const k = e.key;
+    if(k==='ArrowUp'&&dy!==1){ dx=0; dy=-1; }
+    else if(k==='ArrowDown'&&dy!==-1){ dx=0; dy=1; }
+    else if(k==='ArrowLeft'&&dx!==1){ dx=-1; dy=0; }
+    else if(k==='ArrowRight'&&dx!==-1){ dx=1; dy=0; }
+    else return;
+    e.preventDefault();
   };
   cleanups.push(()=>document.onkeydown=null);
-  timer=setInterval(step,speed);
+  timer = setInterval(step, speed);
   cleanups.push(()=>clearInterval(timer));
-  addDpad(controls,['ArrowUp','ArrowDown','ArrowLeft','ArrowRight']);
+  addDpad(controls, ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight']);
   draw();
 }
 
-// 2. Tic-Tac-Toe - prettier buttons
 function ttt(){
-  let board=Array(9).fill(''),turn='X',s=status('دورك: X');
-  const wrap=el('div');
-  wrap.style.cssText='display:grid;grid-template-columns:repeat(3,80px);gap:8px;';
+  let board = Array(9).fill(''), turn = 'X', s = status(`${t('yourTurn')}: X`);
+  const wrap = el('div');
+  wrap.style.cssText = 'display:grid;grid-template-columns:repeat(3,80px);gap:8px;';
   area.appendChild(wrap);
-  
   function win(){
     for(let a of [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]])
-      if(board[a[0]]&&board[a[0]]===board[a[1]]&&board[a[1]]===board[a[2]])return board[a[0]];
+      if(board[a[0]]&&board[a[0]]===board[a[1]]&&board[a[1]]===board[a[2]]) return board[a[0]];
     return '';
   }
-  
   function play(i){
-    if(board[i]||win())return;
-    board[i]=turn;
-    wrap.children[i].textContent=turn;
-    wrap.children[i].style.color=turn==='X'?'#00f0ff':'#ff007f';
-    let w=win();
-    if(w)s.textContent=w+' فاز! 🎉';
-    else if(board.every(Boolean))s.textContent='تعادل!';
-    else{turn=turn==='X'?'O':'X';s.textContent='الدور: '+turn}
+    if(board[i]||win()) return;
+    board[i] = turn;
+    wrap.children[i].textContent = turn;
+    wrap.children[i].style.color = turn==='X'?'#00f0ff':'#ff007f';
+    let w = win();
+    if(w) s.innerHTML = `🎉 ${t('youWon')}`;
+    else if(board.every(Boolean)) s.textContent = t('draw')+'!';
+    else { turn = turn==='X'?'O':'X'; s.textContent = `${t('turn')}: ${turn}`; }
   }
-  
   for(let i=0;i<9;i++){
-    let b=button('',()=>play(i),'btn secondary');
-    b.style.cssText='height:80px;font-size:2.2rem;font-weight:900;border-radius:12px;';
+    let b = button('', ()=>play(i), 'btn secondary');
+    b.style.cssText = 'height:80px;font-size:2.2rem;font-weight:900;border-radius:12px;';
     wrap.appendChild(b);
   }
 }
 
-// 3. 2048 - smoother, nicer colors
 function game2048(){
-  let board=Array(16).fill(0),s=status('النتيجة: 0'),score=0;
-  const c=canvas(300,300),ctx=c.getContext('2d');
-  
-  const colors={2:'#1a1a3e',4:'#2a2a5e',8:'#3a2a7e',16:'#4a2a9e',32:'#5a2abe',64:'#6a2ade',
-                128:'#7c5cff',256:'#00f0ff',512:'#00d4aa',1024:'#ffd700',2048:'#ff007f'};
-  
+  let board = Array(16).fill(0), s = status(`${t('score')}: 0`), score = 0;
+  const c = canvas(300,300), ctx = c.getContext('2d');
+  const colors = {2:'#1a1a3e',4:'#2a2a5e',8:'#3a2a7e',16:'#4a2a9e',32:'#5a2abe',64:'#6a2ade',128:'#7c5cff',256:'#00f0ff',512:'#00d4aa',1024:'#ffd700',2048:'#ff007f'};
   function add(){
-    let a=board.map((v,i)=>v?null:i).filter(v=>v!==null);
-    if(a.length)board[a[Math.random()*a.length|0]]=Math.random()<.9?2:4;
+    let a = board.map((v,i)=>v?null:i).filter(v=>v!==null);
+    if(a.length) board[a[Math.random()*a.length|0]] = Math.random()<.9?2:4;
   }
-  
   function draw(){
-    ctx.fillStyle='#0a0a15';ctx.fillRect(0,0,300,300);
+    ctx.fillStyle = '#0a0a15'; ctx.fillRect(0,0,300,300);
     board.forEach((v,i)=>{
-      let x=i%4*75,y=(i/4|0)*75;
-      ctx.fillStyle=v?(colors[v]||'#ff007f'):'#151525';
-      ctx.beginPath();ctx.roundRect(x+4,y+4,67,67,10);ctx.fill();
+      let x = i%4*75, y = (i/4|0)*75;
+      ctx.fillStyle = v?(colors[v]||'#ff007f'):'#151525';
+      ctx.beginPath(); ctx.roundRect(x+4,y+4,67,67,10); ctx.fill();
       if(v){
-        ctx.fillStyle='white';
-        ctx.font=v>100?'bold 20px Cairo':'bold 26px Cairo';
-        ctx.textAlign='center';ctx.textBaseline='middle';
-        ctx.fillText(v,x+37.5,y+37.5);
+        ctx.fillStyle = 'white';
+        ctx.font = v>100?'bold 20px Cairo':'bold 26px Cairo';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(v, x+37.5, y+37.5);
       }
     });
   }
-  
   function move(dir){
-    let changed=false;
+    let changed = false;
     for(let r=0;r<4;r++){
-      let ids=Array.from({length:4},(_,i)=>dir==='left'?r*4+i:dir==='right'?r*4+3-i:dir==='up'?i*4+r:(3-i)*4+r);
-      let a=ids.map(i=>board[i]).filter(Boolean),out=[];
+      let ids = Array.from({length:4},(_,i)=>dir==='left'?r*4+i:dir==='right'?r*4+3-i:dir==='up'?i*4+r:(3-i)*4+r);
+      let a = ids.map(i=>board[i]).filter(Boolean), out = [];
       for(let i=0;i<a.length;i++){
-        if(a[i]===a[i+1]){out.push(a[i]*2);score+=a[i]*2;i++}
+        if(a[i]===a[i+1]){ out.push(a[i]*2); score += a[i]*2; i++; }
         else out.push(a[i]);
       }
-      while(out.length<4)out.push(0);
-      ids.forEach((id,i)=>{if(board[id]!==out[i])changed=true;board[id]=out[i]});
+      while(out.length<4) out.push(0);
+      ids.forEach((id,i)=>{ if(board[id]!==out[i]) changed=true; board[id]=out[i]; });
     }
-    if(changed){add();s.textContent='النتيجة: '+score;draw()}
+    if(changed){ add(); s.textContent = `${t('score')}: ${score}`; draw(); }
   }
-  
-  document.onkeydown=e=>{
-    let d={'ArrowLeft':'left','ArrowRight':'right','ArrowUp':'up','ArrowDown':'down'}[e.key];
-    if(d){e.preventDefault();move(d)}
+  document.onkeydown = e => {
+    let d = {'ArrowLeft':'left','ArrowRight':'right','ArrowUp':'up','ArrowDown':'down'}[e.key];
+    if(d){ e.preventDefault(); move(d); }
   };
   cleanups.push(()=>document.onkeydown=null);
-  addDpad(controls,['ArrowUp','ArrowDown','ArrowLeft','ArrowRight']);
-  add();add();draw();
+  addDpad(controls, ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight']);
+  add(); add(); draw();
 }
 
-// 4. Memory - bigger cards, clearer
 function memory(){
-  let vals=['🍎','🍇','🍋','🍒','🐸','🚀','⚽','⭐'].flatMap(x=>[x,x]).sort(()=>Math.random()-.5);
-  let opened=[],matched=0,s=status('اعثر على كل الأزواج');
-  const grid=el('div');
-  grid.style.cssText='display:grid;grid-template-columns:repeat(4,64px);gap:9px;';
+  let vals = ['🍎','🍇','🍋','🍒','🐸','🚀','⚽','⭐'].flatMap(x=>[x,x]).sort(()=>Math.random()-.5);
+  let opened = [], matched = 0, s = status(t('clickStart'));
+  const grid = el('div');
+  grid.style.cssText = 'display:grid;grid-template-columns:repeat(4,64px);gap:9px;';
   area.appendChild(grid);
-  
   vals.forEach((v,i)=>{
-    let b=button('?',()=>{
-      if(opened.length===2||b.dataset.done||opened.some(o=>o.b===b))return;
-      b.textContent=v;
-      b.style.fontSize='1.7rem';
-      b.style.background='rgba(0,240,255,0.15)';
+    let b = button('?', ()=>{
+      if(opened.length===2||b.dataset.done||opened.some(o=>o.b===b)) return;
+      b.textContent = v; b.style.fontSize = '1.7rem';
+      b.style.background = 'rgba(0,240,255,0.15)';
       opened.push({b,v});
       if(opened.length===2){
         if(opened[0].v===opened[1].v){
           opened.forEach(o=>{
-            o.b.dataset.done='1';
-            o.b.style.background='rgba(0,212,170,0.25)';
-            o.b.style.borderColor='#00d4aa';
-            o.b.style.boxShadow='0 0 12px #00d4aa66';
+            o.b.dataset.done = '1';
+            o.b.style.background = 'rgba(0,212,170,0.25)';
+            o.b.style.borderColor = '#00d4aa';
+            o.b.style.boxShadow = '0 0 12px #00d4aa66';
           });
-          matched+=2;opened=[];
-          s.textContent='الأزواج: '+matched/2;
+          matched += 2; opened = [];
+          s.textContent = `${t('pairs')}: ${matched/2}`;
           if(matched===16){
-            s.innerHTML='🎉 فزت! أكملت كل الأزواج';
-            s.style.color='#00d4aa';
+            s.innerHTML = `🎉 ${t('youWon')}`;
+            s.style.color = '#00d4aa';
           }
         } else {
           setTimeout(()=>{
             opened.forEach(o=>{
-              o.b.textContent='?';
-              o.b.style.fontSize='';
-              o.b.style.background='';
+              o.b.textContent = '?';
+              o.b.style.fontSize = '';
+              o.b.style.background = '';
             });
-            opened=[];
-          },650);
+            opened = [];
+          }, 650);
         }
       }
-    },'btn secondary');
-    b.style.cssText='height:64px;font-size:1.4rem;border-radius:12px;transition:0.2s;';
+    }, 'btn secondary');
+    b.style.cssText = 'height:64px;font-size:1.4rem;border-radius:12px;transition:0.2s;';
     grid.appendChild(b);
   });
 }
 
-// 5 & 39. RPS / RPSLS
 function rps(five){
-  let opts=five?['🪨 حجر','📄 ورقة','✂️ مقص','🦎 سحلية','🖖 سبوك']:['🪨 حجر','📄 ورقة','✂️ مقص'];
-  const s=status('اختر حركتك');
+  let opts = five?['🪨 Rock','📄 Paper','✂️ Scissors','🦎 Lizard','🖖 Spock']:['🪨 Rock','📄 Paper','✂️ Scissors'];
+  const s = status(t('chooseMove'));
   opts.forEach(v=>{
-    let pure=v.split(' ')[1]||v;
-    controls.appendChild(button(v,()=>{
-      let cpu=opts[Math.random()*opts.length|0];
-      let wins=five?{'حجر':['مقص','سحلية'],'ورقة':['حجر','سبوك'],'مقص':['ورقة','سحلية'],'سحلية':['سبوك','ورقة'],'سبوك':['مقص','حجر']}:
-                   {حجر:['مقص'],ورقة:['حجر'],مقص:['ورقة']};
-      let you=pure,them=cpu.split(' ')[1]||cpu;
-      s.textContent=v+' ضد '+cpu+' — '+(you===them?'تعادل!':(wins[you]||[]).includes(them)?'فزت! 🎉':'الكمبيوتر فاز');
+    let pure = v.split(' ')[1]||v;
+    controls.appendChild(button(v, ()=>{
+      let cpu = opts[Math.random()*opts.length|0];
+      let wins = five?{Rock:['Scissors','Lizard'],Paper:['Rock','Spock'],Scissors:['Paper','Lizard'],Lizard:['Spock','Paper'],Spock:['Scissors','Rock']}:
+                    {Rock:['Scissors'],Paper:['Rock'],Scissors:['Paper']};
+      let you = pure, them = cpu.split(' ')[1]||cpu;
+      s.textContent = v+' vs '+cpu+' — '+(you===them?t('draw'):(wins[you]||[]).includes(them)?`🎉 ${t('youWon')}`:t('computerWon'));
     }));
   });
 }
 
-// 6. Number Guess - easier range 1-50
 function guess(){
-  let n=1+(Math.random()*50|0),tries=0,s=status('خمّن رقماً من 1 إلى 50');
-  let i=input('رقمك');
-  controls.appendChild(button('خمّن',()=>{
-    let v=+i.value;tries++;
-    if(!v||v>50)s.textContent='أدخل رقماً بين 1–50';
-    else if(v===n)s.textContent='صحيح! في '+tries+' محاولات 🎉';
-    else s.textContent=v<n?'أكبر شوي':'أصغر شوي';
-  }));
-  controls.appendChild(button('رقم جديد',()=>{n=1+(Math.random()*50|0);tries=0;s.textContent='رقم جديد جاهز'},'btn secondary'));
+  let s = status(`🧠 ${t('watch')} ...`);
+  let seq = [], userSeq = [], level = 1, showing = true;
+  function nextLevel() {
+    showing = true; userSeq = []; seq = [];
+    for(let i=0; i<level+2; i++) seq.push(Math.floor(Math.random()*9)+1);
+    s.textContent = `🧠 ${t('watch')}: ${seq.join(' ')}`;
+    setTimeout(()=>{ s.textContent = `✍️ ${t('repeat')}`; showing = false; }, 1500 + (level*300));
+  }
+  function checkWin() {
+    if(userSeq.join('') === seq.join('')) {
+      level++;
+      if(level > 5) { s.innerHTML = `🏆 ${t('youWon')}<br>${t('score')}: ${level-1}`; s.style.color = '#00d4aa'; }
+      else { s.textContent = `✅ ${t('correct')}! Level ${level}`; setTimeout(nextLevel, 1000); }
+    } else {
+      s.innerHTML = `💀 ${t('gameOver')}! ${t('score')}: ${level-1}`; s.style.color = '#ff4757';
+    }
+  }
+  for(let i=1; i<=9; i++){
+    controls.appendChild(button(i, ()=>{
+      if(showing) return;
+      userSeq.push(i);
+      if(userSeq.length === seq.length) checkWin();
+    }, 'btn secondary'));
+  }
+  nextLevel();
 }
 
-// 7. Hangman - easier words
 function hangman(){
-  let words=['قمر','شمس','نجمة','كتاب','قلم','بيت','ورد','سماء'];
-  let word=words[Math.random()*words.length|0],used=[],s=status('الأخطاء: 0');
-  let display=el('div','_ '.repeat(word.length));
-  display.style.cssText='font-size:2rem;letter-spacing:6px;margin:10px 0;';
+  let words = {ar:['قمر','شمس','نجمة','كتاب','قلم','بيت','ورد','سماء'], en:['moon','sun','star','book','pen','house','rose','sky'], am:['ጨረቃ','ፀሐይ','ኮከብ','መጽሐፍ','ብዕር','ቤት','ሰማይ']};
+  const lang = document.getElementById('languageSelect').value;
+  let list = words[lang] || words.ar;
+  let word = list[Math.random()*list.length|0], used = [], s = status(`${t('wrongCount')}: 0`);
+  let display = el('div', '_ '.repeat(word.length));
+  display.style.cssText = 'font-size:2rem;letter-spacing:6px;margin:10px 0;';
   area.appendChild(display);
-  let i=input('حرف واحد');
-  controls.appendChild(button('خمّن',()=>{
-    let ch=i.value[0];i.value='';
-    if(!ch||used.includes(ch))return;
+  let i = input('حرف / letter');
+  controls.appendChild(button(t('submit'), ()=>{
+    let ch = i.value[0]; i.value = '';
+    if(!ch||used.includes(ch)) return;
     used.push(ch);
-    let wrong=used.filter(c=>!word.includes(c)).length;
-    display.textContent=[...word].map(c=>used.includes(c)?c:'_').join(' ');
-    s.textContent='الأخطاء: '+wrong;
-    if([...word].every(c=>used.includes(c)))s.textContent='فزت! الكلمة: '+word+' 🎉';
-    else if(wrong>=6)s.textContent='انتهت — الكلمة: '+word;
+    let wrong = used.filter(c=>!word.includes(c)).length;
+    display.textContent = [...word].map(c=>used.includes(c)?c:'_').join(' ');
+    s.textContent = `${t('wrongCount')}: ${wrong}`;
+    if([...word].every(c=>used.includes(c))) s.innerHTML = `🎉 ${t('youWon')} ${word}`;
+    else if(wrong>=6) s.textContent = `${t('gameOver')} — ${word}`;
   }));
 }
 
-// 8. Pong - larger paddle, slower
 function pong(){
-  const c=canvas(320,240),ctx=c.getContext('2d'),s=status('حرّك المضرب بالماوس أو الإصبع');
-  let x=160,y=120,vx=2.3,vy=1.6,p=110,score=0;
-  
+  const c = canvas(320,240), ctx = c.getContext('2d'), s = status(t('movePlayer'));
+  let x=160, y=120, vx=2.3, vy=1.6, p=110, score=0;
   function draw(){
-    const g=ctx.createLinearGradient(0,0,0,240);
-    g.addColorStop(0,'#0a0a18');g.addColorStop(1,'#030308');
-    ctx.fillStyle=g;ctx.fillRect(0,0,320,240);
-    
-    // خط الوسط
-    ctx.setLineDash([6,8]);
-    ctx.strokeStyle='rgba(0,240,255,0.15)';
-    ctx.beginPath();ctx.moveTo(160,10);ctx.lineTo(160,230);ctx.stroke();
+    const g = ctx.createLinearGradient(0,0,0,240);
+    g.addColorStop(0,'#0a0a18'); g.addColorStop(1,'#030308');
+    ctx.fillStyle = g; ctx.fillRect(0,0,320,240);
+    ctx.setLineDash([6,8]); ctx.strokeStyle='rgba(0,240,255,0.15)';
+    ctx.beginPath(); ctx.moveTo(160,10); ctx.lineTo(160,230); ctx.stroke();
     ctx.setLineDash([]);
-
-    // الكرة
-    ctx.shadowColor='#00f0ff';ctx.shadowBlur=14;
+    ctx.shadowColor='#00f0ff'; ctx.shadowBlur=14;
     ctx.fillStyle='#00f0ff';
-    ctx.beginPath();ctx.arc(x,y,9,0,7);ctx.fill();
+    ctx.beginPath(); ctx.arc(x,y,9,0,7); ctx.fill();
     ctx.shadowBlur=0;
-    
-    // المضرب
-    const pg=ctx.createLinearGradient(p,0,p+90,0);
-    pg.addColorStop(0,'#7c5cff');pg.addColorStop(1,'#00f0ff');
-    ctx.fillStyle=pg;
-    ctx.beginPath();ctx.roundRect(p,218,90,14,7);ctx.fill();
-    
-    x+=vx;y+=vy;
-    if(x<9||x>311)vx*=-1;
-    if(y<9)vy*=-1;
+    const pg = ctx.createLinearGradient(p,0,p+90,0);
+    pg.addColorStop(0,'#7c5cff'); pg.addColorStop(1,'#00f0ff');
+    ctx.fillStyle = pg;
+    ctx.beginPath(); ctx.roundRect(p,218,90,14,7); ctx.fill();
+    x+=vx; y+=vy;
+    if(x<9||x>311) vx*=-1;
+    if(y<9) vy*=-1;
     if(y>205&&x>p&&x<p+90){
-      vy=-Math.abs(vy);
-      // زاوية حسب مكان الاصطدام
-      let hit=(x-p)/90;
-      vx= (hit-0.5)*5;
-      y=205;
-      score++;
-      s.textContent='النتيجة: '+score;
+      vy = -Math.abs(vy);
+      let hit = (x-p)/90;
+      vx = (hit-0.5)*5;
+      y = 205; score++;
+      s.textContent = `${t('score')}: ${score}`;
     }
     if(y>245){
-      s.innerHTML='💀 فاتتك! النتيجة: '+score+' — اضغط إعادة';
-      s.style.color='#ff4757';
-      x=160;y=120;vx=2.3;vy=1.6;p=110;
+      s.innerHTML = `💀 ${t('gameOver')} — ${t('score')}: ${score}`;
+      s.style.color = '#ff4757';
+      x=160; y=120; vx=2.3; vy=1.6; p=110;
     }
     requestAnimationFrame(draw);
   }
-  c.onpointermove=e=>{p=Math.max(0,Math.min(230,e.offsetX-45))};
+  c.onpointermove = e => { p = Math.max(0, Math.min(230, e.offsetX-45)); };
   draw();
 }
 
-// 9. Whack-a-Mole - slower, clearer
 function whack(){
-  let score=0,left=25,s=status('اضرب الخلد! 25 ثانية');
-  const grid=el('div');
-  grid.style.cssText='display:grid;grid-template-columns:repeat(3,70px);gap:10px;';
+  let s = status(`🐹 ${t('score')}: 0 | ${t('time')}: 20`);
+  let score = 0, time = 20, over = false;
+  const grid = el('div');
+  grid.style.cssText = 'display:grid;grid-template-columns:repeat(3,70px);gap:8px;';
   area.appendChild(grid);
-  let holes=[];
+  let holes = [];
   for(let i=0;i<9;i++){
-    let b=button('🕳️',()=>{
-      if(b.textContent==='🐹'){score++;s.textContent='النتيجة: '+score;b.textContent='🕳️';b.style.transform='scale(1.2)';setTimeout(()=>b.style.transform='',100)}
-    },'btn secondary');
-    b.style.cssText='height:70px;font-size:1.8rem;border-radius:12px;transition:0.1s;';
-    grid.appendChild(b);holes.push(b);
+    let b = button('🕳️', ()=>{
+      if(over || b.textContent!=='🐹') return;
+      score++; s.textContent = `🐹 ${t('score')}: ${score} | ${t('time')}: ${time}`;
+      b.textContent = '🕳️'; b.style.transform = 'scale(1.2)'; setTimeout(()=>b.style.transform='', 100);
+    }, 'btn secondary');
+    b.style.cssText = 'height:70px;font-size:1.8rem;border-radius:12px;transition:0.1s;';
+    grid.appendChild(b); holes.push(b);
   }
   startInterval(()=>{
+    if(over) return;
     holes.forEach(b=>b.textContent='🕳️');
-    holes[Math.random()*9|0].textContent='🐹';
-    left--;
-    if(left<=0){s.textContent='انتهى الوقت! النتيجة: '+score;holes.forEach(b=>b.disabled=true)}
-  },900);
+    holes[Math.random()*9|0].textContent = '🐹';
+    time--;
+    if(time<=0){ over=true; s.innerHTML=`🎉 ${t('youWon')}<br>${t('score')}: ${score}`; s.style.color='#00d4aa'; holes.forEach(b=>b.disabled=true); }
+    else s.textContent = `🐹 ${t('score')}: ${score} | ${t('time')}: ${time}`;
+  }, 800);
 }
 
-// 10 & 42. Reaction
 function reaction(){
-  let s=status('اضغط ابدأ، ثم اضغط عندما يصبح أخضر');
-  let b=button('ابدأ',()=>{
-    b.disabled=true;b.style.background='#ff4757';b.textContent='انتظر...';
-    let delay=800+Math.random()*2000;
-    let t=setTimeout(()=>{
-      b.disabled=false;b.style.background='#00d4aa';b.textContent='اضغط الآن!';
-      let start=performance.now();
-      b.onclick=()=>{
-        s.textContent='رد فعلك: '+Math.round(performance.now()-start)+' مللي ثانية';
-        b.onclick=()=>openGame(currentGameId);
-        b.textContent='حاول مجدداً';b.style.background='';
+  let s = status(t('clickStart'));
+  let b = button(t('start'), ()=>{
+    b.disabled = true; b.style.background = '#ff4757'; b.textContent = t('wait');
+    let delay = 800+Math.random()*2000;
+    let tm = setTimeout(()=>{
+      b.disabled = false; b.style.background = '#00d4aa'; b.textContent = t('now');
+      let start = performance.now();
+      b.onclick = ()=>{
+        s.textContent = `${t('reaction')}: ${Math.round(performance.now()-start)} ${t('milliseconds')}`;
+        b.onclick = ()=>openGame(currentGameId);
+        b.textContent = t('tryAgainBtn'); b.style.background = '';
       };
-    },delay);
-    cleanups.push(()=>clearTimeout(t));
+    }, delay);
+    cleanups.push(()=>clearTimeout(tm));
   });
   area.appendChild(b);
 }
 
-// 11. Tetris Mini - slower, simpler
-// 11. Fruit Catch - التقط الفواكه
 function fruitCatch(){
-  let s=status('🟢 سهل | التقط الفواكه!'),score=0,lives=3,over=false;
-  const c=canvas(300,280),ctx=c.getContext('2d');
-  let basketX=120, fruits=[], frame=0, spawnRate=40, baseSpeed=1.6;
-  const emojis=['🍎','🍊','🍋','🍇','🍓','🍒'];
-  
+  let s = status(`🟢 ${t('easy')} | ${t('fruits')}: 0`), score = 0, lives = 3, over = false;
+  const c = canvas(300,280), ctx = c.getContext('2d');
+  let basketX = 120, fruits = [], frame = 0, spawnRate = 40, baseSpeed = 1.6;
+  const emojis = ['🍎','🍊','🍋','🍇','🍓','🍒'];
   function getLevel(){
-    if(score>=15){spawnRate=18; baseSpeed=3.2; s.innerHTML='🔴 <b>صعب</b> | النتيجة: '+score+' | أرواح: '+lives;}
-    else if(score>=6){spawnRate=28; baseSpeed=2.3; s.innerHTML='🟡 <b>متوسط</b> | النتيجة: '+score+' | أرواح: '+lives;}
-    else {spawnRate=40; baseSpeed=1.6; s.innerHTML='🟢 <b>سهل</b> | النتيجة: '+score+' | أرواح: '+lives;}
+    if(score>=15){ spawnRate=18; baseSpeed=3.2; s.innerHTML = `🔴 <b>${t('hard')}</b> | ${t('score')}: ${score} | ${t('lives')}: ${lives}`; }
+    else if(score>=6){ spawnRate=28; baseSpeed=2.3; s.innerHTML = `🟡 <b>${t('medium')}</b> | ${t('score')}: ${score} | ${t('lives')}: ${lives}`; }
+    else { spawnRate=40; baseSpeed=1.6; s.innerHTML = `🟢 <b>${t('easy')}</b> | ${t('score')}: ${score} | ${t('lives')}: ${lives}`; }
   }
-  
-  document.onkeydown=e=>{
-    if(e.key==='ArrowLeft')basketX=Math.max(0,basketX-22);
-    if(e.key==='ArrowRight')basketX=Math.min(240,basketX+22);
+  document.onkeydown = e => {
+    if(e.key==='ArrowLeft') basketX = Math.max(0, basketX-22);
+    if(e.key==='ArrowRight') basketX = Math.min(240, basketX+22);
   };
   cleanups.push(()=>document.onkeydown=null);
-  addDpad(controls,['ArrowLeft','ArrowRight']);
-  
+  addDpad(controls, ['ArrowLeft','ArrowRight']);
   function draw(){
-    const g=ctx.createLinearGradient(0,0,0,280);
-    g.addColorStop(0,'#0a1520');g.addColorStop(1,'#030308');
-    ctx.fillStyle=g;ctx.fillRect(0,0,300,280);
-    
-    ctx.fillStyle='#7c5cff';
-    ctx.beginPath();ctx.roundRect(basketX,245,60,22,8);ctx.fill();
-    ctx.fillStyle='#00f0ff'; ctx.fillRect(basketX+5,250,50,4);
-    
+    const g = ctx.createLinearGradient(0,0,0,280);
+    g.addColorStop(0,'#0a1520'); g.addColorStop(1,'#030308');
+    ctx.fillStyle = g; ctx.fillRect(0,0,300,280);
+    ctx.fillStyle = '#7c5cff';
+    ctx.beginPath(); ctx.roundRect(basketX,245,60,22,8); ctx.fill();
+    ctx.fillStyle = '#00f0ff'; ctx.fillRect(basketX+5,250,50,4);
     if(!over){
       frame++;
-      if(frame%spawnRate===0)fruits.push({x:20+Math.random()*240,y:-20,emoji:emojis[Math.random()*6|0],speed:baseSpeed+Math.random()*0.8});
-      
+      if(frame%spawnRate===0) fruits.push({x:20+Math.random()*240, y:-20, emoji:emojis[Math.random()*6|0], speed:baseSpeed+Math.random()*0.8});
       fruits.forEach(f=>{
-        f.y+=f.speed;
-        ctx.font='22px serif'; ctx.fillText(f.emoji,f.x,f.y);
-        if(f.y>235&&f.y<265&&f.x>basketX-10&&f.x<basketX+50){
-          f.y=400; score++; getLevel();
-        }
-        if(f.y>290){f.y=400; lives--; getLevel();}
+        f.y += f.speed;
+        ctx.font = '22px serif'; ctx.fillText(f.emoji, f.x, f.y);
+        if(f.y>235&&f.y<265&&f.x>basketX-10&&f.x<basketX+50){ f.y=400; score++; getLevel(); }
+        if(f.y>290){ f.y=400; lives--; getLevel(); }
       });
-      fruits=fruits.filter(f=>f.y<350);
-      if(lives<=0){over=true; s.innerHTML='💀 انتهت — النتيجة: '+score; s.style.color='#ff4757';}
+      fruits = fruits.filter(f=>f.y<350);
+      if(lives<=0){ over=true; s.innerHTML = `💀 ${t('gameOver')} — ${t('score')}: ${score}`; s.style.color='#ff4757'; }
     }
     requestAnimationFrame(draw);
   }
   draw();
 }
 
-// 12. Flappy - مع مستويات
 function flappy(){
-  let y=120,v=0,pipeX=340,gapY=80,score=0,over=false;
+  let y=120, v=0, pipeX=340, gapY=80, score=0, over=false;
   let pipeSpeed=1.8, gapSize=95, grav=0.18;
-  const c=canvas(320,240),ctx=c.getContext('2d'),s=status('🟢 سهل | اضغط للطيران');
-  
+  const c = canvas(320,240), ctx = c.getContext('2d'), s = status(`🟢 ${t('easy')} | ${t('flappyHint')}`);
   function getLevel(){
-    if(score>=12){pipeSpeed=3.2; gapSize=70; grav=0.24; s.innerHTML='🔴 <b>صعب</b> | النتيجة: '+score;}
-    else if(score>=5){pipeSpeed=2.4; gapSize=82; grav=0.20; s.innerHTML='🟡 <b>متوسط</b> | النتيجة: '+score;}
-    else {pipeSpeed=1.8; gapSize=95; grav=0.18; s.innerHTML='🟢 <b>سهل</b> | النتيجة: '+score;}
+    if(score>=12){ pipeSpeed=3.2; gapSize=70; grav=0.24; s.innerHTML = `🔴 <b>${t('hard')}</b> | ${t('score')}: ${score}`; }
+    else if(score>=5){ pipeSpeed=2.4; gapSize=82; grav=0.20; s.innerHTML = `🟡 <b>${t('medium')}</b> | ${t('score')}: ${score}`; }
+    else { pipeSpeed=1.8; gapSize=95; grav=0.18; s.innerHTML = `🟢 <b>${t('easy')}</b> | ${t('score')}: ${score}`; }
   }
-  
   function flap(){
-    if(over){
-      y=120;v=0;pipeX=340;gapY=80;score=0;over=false;
-      getLevel(); s.style.color='';
-    }
-    v=-4.0;
+    if(over){ y=120; v=0; pipeX=340; gapY=80; score=0; over=false; getLevel(); s.style.color=''; }
+    v = -4.0;
   }
-  c.onclick=flap;
-  document.onkeydown=e=>{if(e.code==='Space'){e.preventDefault();flap()}};
+  c.onclick = flap;
+  document.onkeydown = e => { if(e.code==='Space'){ e.preventDefault(); flap(); } };
   cleanups.push(()=>document.onkeydown=null);
-  
   function draw(){
-    const g=ctx.createLinearGradient(0,0,0,240);
-    g.addColorStop(0,'#0a1830');g.addColorStop(1,'#030308');
-    ctx.fillStyle=g;ctx.fillRect(0,0,320,240);
-    
+    const g = ctx.createLinearGradient(0,0,0,240);
+    g.addColorStop(0,'#0a1830'); g.addColorStop(1,'#030308');
+    ctx.fillStyle = g; ctx.fillRect(0,0,320,240);
     if(!over){
-      v+=grav; y+=v; pipeX-=pipeSpeed;
-      if(pipeX<-50){
-        pipeX=340;
-        gapY=30+Math.random()*(180-gapSize);
-        score++;
-        getLevel();
-      }
-      
-      ctx.fillStyle='#7c5cff';
-      ctx.shadowColor='#7c5cff';ctx.shadowBlur=8;
-      ctx.beginPath();ctx.roundRect(pipeX,0,42,gapY,6);ctx.fill();
-      ctx.beginPath();ctx.roundRect(pipeX,gapY+gapSize,42,240-(gapY+gapSize),6);ctx.fill();
-      ctx.shadowBlur=0;
-      
+      v += grav; y += v; pipeX -= pipeSpeed;
+      if(pipeX<-50){ pipeX=340; gapY=30+Math.random()*(180-gapSize); score++; getLevel(); }
+      ctx.fillStyle = '#7c5cff';
+      ctx.shadowColor='#7c5cff'; ctx.shadowBlur=8;
+      ctx.beginPath(); ctx.roundRect(pipeX,0,42,gapY,6); ctx.fill();
+      ctx.beginPath(); ctx.roundRect(pipeX,gapY+gapSize,42,240-(gapY+gapSize),6); ctx.fill();
+      ctx.shadowBlur = 0;
       if(y<8||y>232||(pipeX<62&&pipeX>8&&(y<gapY+8||y>gapY+gapSize-8))){
-        over=true;
-        s.innerHTML='💀 انتهت — النتيجة: '+score;
-        s.style.color='#ff4757';
+        over = true;
+        s.innerHTML = `💀 ${t('gameOver')} — ${t('score')}: ${score}`;
+        s.style.color = '#ff4757';
       }
     }
-    
-    ctx.shadowColor='#00f0ff';ctx.shadowBlur=14;
+    ctx.shadowColor='#00f0ff'; ctx.shadowBlur=14;
     ctx.fillStyle='#00f0ff';
-    ctx.beginPath();ctx.arc(50,y,11,0,7);ctx.fill();
+    ctx.beginPath(); ctx.arc(50,y,11,0,7); ctx.fill();
     ctx.shadowBlur=0;
-    ctx.fillStyle='#fff'; ctx.beginPath();ctx.arc(54,y-3,3,0,7);ctx.fill();
-    ctx.fillStyle='#001'; ctx.beginPath();ctx.arc(55,y-3,1.5,0,7);ctx.fill();
-    
+    ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(54,y-3,3,0,7); ctx.fill();
+    ctx.fillStyle='#001'; ctx.beginPath(); ctx.arc(55,y-3,1.5,0,7); ctx.fill();
     requestAnimationFrame(draw);
   }
   draw();
 }
 
-// 13 & 50. Breakout - أجمل وأسهل
 function breakout(){
-  let c=canvas(320,280),ctx=c.getContext('2d'),s=status('حرّك المضرب بالماوس أو الإصبع');
-  let x=160,y=230,vx=2.0,vy=-2.5,px=115,score=0,over=false;
-  const colors=['#ff007f','#7c5cff','#00f0ff','#00d4aa','#ffd700'];
-  let bricks=Array.from({length:20},(_,i)=>({
-    x:14+(i%5)*60, y:22+Math.floor(i/5)*26, on:true, color:colors[Math.floor(i/5)]
-  }));
-  
-  c.onpointermove=e=>px=Math.max(0,Math.min(235,e.offsetX-42));
-  
+  let c = canvas(320,280), ctx = c.getContext('2d'), s = status(t('movePlayer'));
+  let x=160, y=230, vx=2.0, vy=-2.5, px=115, score=0, over=false;
+  const colors = ['#ff007f','#7c5cff','#00f0ff','#00d4aa','#ffd700'];
+  let bricks = Array.from({length:20}, (_,i)=>({x:14+(i%5)*60, y:22+Math.floor(i/5)*26, on:true, color:colors[Math.floor(i/5)]}));
+  c.onpointermove = e => px = Math.max(0, Math.min(235, e.offsetX-42));
   function draw(){
-    const bg=ctx.createLinearGradient(0,0,0,280);
-    bg.addColorStop(0,'#0a0a18');bg.addColorStop(1,'#030308');
-    ctx.fillStyle=bg;ctx.fillRect(0,0,320,280);
-    
+    const bg = ctx.createLinearGradient(0,0,0,280);
+    bg.addColorStop(0,'#0a0a18'); bg.addColorStop(1,'#030308');
+    ctx.fillStyle = bg; ctx.fillRect(0,0,320,280);
     bricks.forEach(b=>{
       if(b.on){
-        ctx.shadowColor=b.color;ctx.shadowBlur=6;
-        ctx.fillStyle=b.color;
-        ctx.beginPath();ctx.roundRect(b.x,b.y,52,18,5);ctx.fill();
-        ctx.shadowBlur=0;
+        ctx.shadowColor = b.color; ctx.shadowBlur = 6;
+        ctx.fillStyle = b.color;
+        ctx.beginPath(); ctx.roundRect(b.x,b.y,52,18,5); ctx.fill();
+        ctx.shadowBlur = 0;
       }
     });
-    
-    // المضرب
-    const pg=ctx.createLinearGradient(px,0,px+85,0);
-    pg.addColorStop(0,'#00f0ff');pg.addColorStop(1,'#7c5cff');
-    ctx.fillStyle=pg;
-    ctx.beginPath();ctx.roundRect(px,252,85,14,7);ctx.fill();
-    
-    // الكرة
-    ctx.shadowColor='#ff007f';ctx.shadowBlur=12;
+    const pg = ctx.createLinearGradient(px,0,px+85,0);
+    pg.addColorStop(0,'#00f0ff'); pg.addColorStop(1,'#7c5cff');
+    ctx.fillStyle = pg;
+    ctx.beginPath(); ctx.roundRect(px,252,85,14,7); ctx.fill();
+    ctx.shadowColor='#ff007f'; ctx.shadowBlur=12;
     ctx.fillStyle='#ff4d8d';
-    ctx.beginPath();ctx.arc(x,y,8,0,7);ctx.fill();
+    ctx.beginPath(); ctx.arc(x,y,8,0,7); ctx.fill();
     ctx.shadowBlur=0;
-    
     if(!over){
-      x+=vx;y+=vy;
-      if(x<8||x>312)vx*=-1;
-      if(y<8)vy*=-1;
+      x+=vx; y+=vy;
+      if(x<8||x>312) vx*=-1;
+      if(y<8) vy*=-1;
       if(y>242&&x>px&&x<px+85){
-        vy=-Math.abs(vy);
-        let hit=(x-px)/85;
-        vx=(hit-0.5)*4.5;
-        y=242;
+        vy = -Math.abs(vy);
+        let hit = (x-px)/85;
+        vx = (hit-0.5)*4.5;
+        y = 242;
       }
       bricks.forEach(b=>{
         if(b.on&&x>b.x&&x<b.x+52&&y>b.y&&y<b.y+18){
-          b.on=false; vy*=-1; score++;
-          s.textContent='الطوب: '+score;
+          b.on = false; vy*=-1; score++;
+          s.textContent = `${t('rocks')}: ${score}`;
         }
       });
-      if(y>285){
-        over=true;
-        s.innerHTML='💀 انتهت — النتيجة: '+score;
-        s.style.color='#ff4757';
-      }
-      if(bricks.every(b=>!b.on)){
-        over=true;
-        s.innerHTML='🎉 فزت! كسرت كل الطوب';
-        s.style.color='#00d4aa';
-      }
+      if(y>285){ over=true; s.innerHTML = `💀 ${t('gameOver')} — ${t('score')}: ${score}`; s.style.color='#ff4757'; }
+      if(bricks.every(b=>!b.on)){ over=true; s.innerHTML = `🎉 ${t('youWon')}`; s.style.color='#00d4aa'; }
     }
     requestAnimationFrame(draw);
   }
   draw();
 }
 
-// 14. Minesweeper Mini - fewer mines
 function mines(){
-  let mine=new Set();
-  while(mine.size<3)mine.add(Math.random()*25|0); // only 3 mines
-  let s=status('اكشف المربعات الآمنة'),wrap=el('div');
-  wrap.style.cssText='display:grid;grid-template-columns:repeat(5,48px);gap:5px;';
+  let mine = new Set();
+  while(mine.size<3) mine.add(Math.random()*25|0);
+  let s = status(t('clickStart')), wrap = el('div');
+  wrap.style.cssText = 'display:grid;grid-template-columns:repeat(5,48px);gap:5px;';
   area.appendChild(wrap);
-  
   for(let i=0;i<25;i++){
-    let b=button('?',()=>{
+    let b = button('?', ()=>{
       if(mine.has(i)){
-        b.textContent='💣';b.style.background='#ff475733';
-        s.textContent='انفجرت! 💥';
+        b.textContent = '💣'; b.style.background = '#ff475733';
+        s.textContent = `💥 ${t('gameOver')}`;
         wrap.querySelectorAll('button').forEach(x=>x.disabled=true);
       } else {
-        b.textContent='✓';b.disabled=true;b.style.background='#00d4aa33';
-        let safe=wrap.querySelectorAll('button:disabled').length;
-        s.textContent='آمن: '+safe;
-        if(safe===22)s.textContent='فزت! 🎉';
+        b.textContent = '✓'; b.disabled = true; b.style.background = '#00d4aa33';
+        let safe = wrap.querySelectorAll('button:disabled').length;
+        s.textContent = `${t('found')}: ${safe}`;
+        if(safe===22) s.innerHTML = `🎉 ${t('youWon')}`;
       }
-    },'btn secondary');
-    b.style.cssText='height:48px;padding:0;border-radius:8px;font-size:1.1rem;';
+    }, 'btn secondary');
+    b.style.cssText = 'height:48px;padding:0;border-radius:8px;font-size:1.1rem;';
     wrap.appendChild(b);
   }
-  controls.appendChild(button('إعادة',()=>openGame(14)));
 }
 
-// 15. Connect Four
 function connect4(){
-  let b=Array(42).fill(0),turn=1,s=status('الأحمر يبدأ');
-  const wrap=el('div');
-  wrap.style.cssText='display:grid;grid-template-columns:repeat(7,40px);gap:4px;';
+  let b = Array(42).fill(0), turn = 1, s = status(t('turn')+': 🔴');
+  const wrap = el('div');
+  wrap.style.cssText = 'display:grid;grid-template-columns:repeat(7,40px);gap:4px;';
   area.appendChild(wrap);
-  
   function win(i){
-    let r=i/7|0,c=i%7;
+    let r = i/7|0, c = i%7;
     for(let [dr,dc] of [[0,1],[1,0],[1,1],[1,-1]]){
-      let n=1;
+      let n = 1;
       for(let k of [-1,1]){
-        let rr=r+dr*k,cc=c+dc*k;
-        while(rr>=0&&rr<6&&cc>=0&&cc<7&&b[rr*7+cc]===turn){n++;rr+=dr*k;cc+=dc*k}
+        let rr = r+dr*k, cc = c+dc*k;
+        while(rr>=0&&rr<6&&cc>=0&&cc<7&&b[rr*7+cc]===turn){ n++; rr+=dr*k; cc+=dc*k; }
       }
-      if(n>=4)return true;
+      if(n>=4) return true;
     }
     return false;
   }
-  
   for(let i=0;i<42;i++){
-    let bt=button('·',()=>{
-      let col=i%7,row=5;
-      while(row>=0&&b[row*7+col])row--;
-      if(row<0)return;
-      let ix=row*7+col;
-      b[ix]=turn;
-      wrap.children[ix].textContent=turn===1?'🔴':'🟡';
-      wrap.children[ix].style.fontSize='1.4rem';
-      if(win(ix)){s.textContent=(turn===1?'الأحمر':'الأصفر')+' فاز! 🎉';wrap.querySelectorAll('button').forEach(x=>x.disabled=true)}
-      else{turn=3-turn;s.textContent=turn===1?'دور الأحمر':'دور الأصفر'}
-    },'btn secondary');
-    bt.style.cssText='width:40px;height:40px;padding:0;border-radius:50%;font-size:1.2rem;';
+    let bt = button('·', ()=>{
+      let col = i%7, row = 5;
+      while(row>=0&&b[row*7+col]) row--;
+      if(row<0) return;
+      let ix = row*7+col;
+      b[ix] = turn;
+      wrap.children[ix].textContent = turn===1?'🔴':'🟡';
+      wrap.children[ix].style.fontSize = '1.4rem';
+      if(win(ix)){ s.innerHTML = `🎉 ${t('youWon')}`; wrap.querySelectorAll('button').forEach(x=>x.disabled=true); }
+      else { turn = 3-turn; s.textContent = t('turn')+': '+(turn===1?'🔴':'🟡'); }
+    }, 'btn secondary');
+    bt.style.cssText = 'width:40px;height:40px;padding:0;border-radius:50%;font-size:1.2rem;';
     wrap.appendChild(bt);
   }
 }
 
-// 16 & 44. Simon
 function simon(){
-  let colors=['#ff4757','#2ed573','#1e90ff','#ffa502'],seq=[],pos=0,showing=false,score=0,s=status('اضغط ابدأ');
-  const wrap=el('div');
-  wrap.style.cssText='display:grid;grid-template-columns:repeat(2,100px);gap:10px;';
+  let colors = ['#ff4757','#2ed573','#1e90ff','#ffa502'], seq = [], pos = 0, showing = false, score = 0, s = status(t('clickStart'));
+  const wrap = el('div');
+  wrap.style.cssText = 'display:grid;grid-template-columns:repeat(2,100px);gap:10px;';
   area.appendChild(wrap);
-  
   function flash(i){
-    wrap.children[i].style.opacity='1';
-    wrap.children[i].style.transform='scale(1.08)';
-    setTimeout(()=>{wrap.children[i].style.opacity='.55';wrap.children[i].style.transform=''},350);
+    wrap.children[i].style.opacity = '1';
+    wrap.children[i].style.transform = 'scale(1.08)';
+    setTimeout(()=>{ wrap.children[i].style.opacity='.55'; wrap.children[i].style.transform=''; }, 350);
   }
-  
   function next(){
-    showing=true;pos=0;
+    showing = true; pos = 0;
     seq.push(Math.random()*4|0);
-    s.textContent='راقب...';
-    seq.forEach((v,i)=>setTimeout(()=>flash(v),i*650));
-    setTimeout(()=>{showing=false;s.textContent='كرر التسلسل'},seq.length*650+200);
+    s.textContent = t('watch');
+    seq.forEach((v,i)=>setTimeout(()=>flash(v), i*650));
+    setTimeout(()=>{ showing=false; s.textContent = t('repeat'); }, seq.length*650+200);
   }
-  
   colors.forEach((c,i)=>{
-    let b=button('',()=>{
-      if(showing||!seq.length)return;
+    let b = button('', ()=>{
+      if(showing||!seq.length) return;
       flash(i);
-      if(seq[pos]!==i){s.textContent='خطأ! النتيجة: '+score;seq=[];return}
+      if(seq[pos]!==i){ s.textContent = `${t('wrong')}! ${t('score')}: ${score}`; seq=[]; return; }
       pos++;
-      if(pos===seq.length){score+=seq.length;s.textContent='النتيجة: '+score;setTimeout(next,600)}
-    },'btn');
-    b.style.cssText=`height:90px;background:${c};opacity:.55;border-radius:14px;border:none;transition:0.15s;`;
+      if(pos===seq.length){ score+=seq.length; s.textContent = `${t('score')}: ${score}`; setTimeout(next, 600); }
+    }, 'btn');
+    b.style.cssText = `height:90px;background:${c};opacity:.55;border-radius:14px;border:none;transition:0.15s;`;
     wrap.appendChild(b);
   });
-  controls.appendChild(button('ابدأ',()=>{seq=[];score=0;next()}));
+  controls.appendChild(button(t('start'), ()=>{ seq=[]; score=0; next(); }));
 }
 
-// 17. Scramble - easy Arabic/English mix
 function scramble(){
-  let words=['قمر','شمس','ورد','بيت','قلم','سماء','نجمة','كتاب'];
-  let word=words[Math.random()*words.length|0];
-  let scr=word.split('').sort(()=>Math.random()-.5).join('');
-  let s=status('فك التشويش: '+scr);
-  let i=input('الإجابة');
-  controls.appendChild(button('تحقق',()=>s.textContent=i.value===word?'صحيح! 🎉':'حاول مجدداً'));
+  let s = status('🧮 حل بسرعة!');
+  let score = 0, time = 20, over = false;
+  let currentAns = 0;
+  const question = el('div', '', 'status');
+  question.style.fontSize = '2rem'; area.appendChild(question);
+  let i = input(t('answer'));
+  function newQuestion() {
+    let a = Math.floor(Math.random()*20)+1, b = Math.floor(Math.random()*20)+1;
+    let op = ['+', '-', '*'][Math.floor(Math.random()*3)];
+    if(op === '+') currentAns = a + b;
+    else if(op === '-') currentAns = a - b;
+    else currentAns = a * b;
+    question.textContent = `${a} ${op} ${b} = ?`;
+  }
+  controls.appendChild(button(t('submit'), ()=>{
+    if(over) return;
+    if(parseInt(i.value) === currentAns) { score += 10; s.textContent = `✅ ${t('correct')}! ${t('score')}: ${score}`; }
+    else { s.textContent = `❌ ${t('wrong')}!`; time -= 2; }
+    i.value = ''; newQuestion();
+  }));
+  startInterval(()=>{
+    if(over) return;
+    time--;
+    if(time <= 0) { over = true; s.innerHTML = `🎉 ${t('youWon')}<br>${t('score')}: ${score}`; s.style.color = '#00d4aa'; }
+    else s.textContent = `⏱️ ${t('time')}: ${time} | ${t('score')}: ${score}`;
+  }, 1000);
+  newQuestion();
 }
 
-// 18. Typing
 function typing(){
-  let phrase='GameZone40 ألعاب ممتعة',s=status('اكتب هذه الجملة:');
-  let p=el('p',phrase);p.style.cssText='font-size:1.1rem;color:#00f0ff;margin:8px 0;';
+  let phrase = {ar:'GameZone40 ألعاب ممتعة', en:'GameZone40 fun games', am:'GameZone40 አስደሳች ጨዋታዎች'}[document.getElementById('languageSelect').value] || 'GameZone40 ألعاب ممتعة';
+  let s = status(t('typing')+':');
+  let p = el('p', phrase); p.style.cssText = 'font-size:1.1rem;color:#00f0ff;margin:8px 0;';
   area.appendChild(p);
-  let i=input('اكتب هنا');
-  controls.appendChild(button('تحقق',()=>s.textContent=i.value===phrase?'ممتاز! 🎉':'حاول مجدداً'));
+  let i = input(t('answer'));
+  controls.appendChild(button(t('submit'), ()=>s.innerHTML = i.value===phrase?`🎉 ${t('youWon')}`:t('tryAgain')));
 }
 
-// 19. Cookie
 function cookie(){
-  let n=0,s=status('الكوكيز: 0');
-  let b=button('🍪 انقرني!',()=>{n++;s.textContent='الكوكيز: '+n;b.style.transform='scale(1.15)';setTimeout(()=>b.style.transform='',80)});
-  b.style.cssText='font-size:1.4rem;padding:16px 30px;';
-  controls.appendChild(b);
+  let n = 0, s = status(`💰 ${t('score')}: 0 | ${t('time')}: 15`);
+  let time = 15, over = false;
+  const wrap = el('div');
+  wrap.style.cssText = 'display:grid;grid-template-columns:repeat(3, 70px);gap:10px;';
+  area.appendChild(wrap);
+  for(let i=0; i<9; i++){
+    let b = button('❓', ()=>{
+      if(over || b.disabled) return;
+      if(Math.random() > 0.6) { b.textContent = '💎'; n += 10; s.textContent = `💰 ${t('score')}: ${n} | ${t('time')}: ${time}`; b.style.background = 'rgba(0,212,170,0.3)'; } 
+      else { b.textContent = '💣'; time -= 3; s.textContent = `💥 -3! | ${t('time')}: ${time}`; b.style.background = 'rgba(255,71,87,0.3)'; }
+      b.disabled = true;
+    }, 'btn secondary');
+    b.style.cssText = 'height:70px;font-size:1.5rem;border-radius:12px;';
+    wrap.appendChild(b);
+  }
+  startInterval(()=>{
+    if(over) return;
+    time--;
+    if(time <= 0) { over = true; s.innerHTML = `🎉 ${t('youWon')}<br>${t('score')}: ${n}`; s.style.color = '#00d4aa'; wrap.querySelectorAll('button').forEach(x=>x.disabled=true); } 
+    else s.textContent = `💰 ${t('score')}: ${n} | ${t('time')}: ${time}`;
+  }, 1000);
 }
 
-// 20. Color Match
 function colorMatch(){
-  let colors=['أحمر','أزرق','أخضر','برتقالي','بنفسجي'],target='',s=status();
-  const b=button('جولة جديدة',next);area.appendChild(b);
+  const lang = document.getElementById('languageSelect').value;
+  const colorNames = { ar:['أحمر','أزرق','أخضر','برتقالي','بنفسجي'], en:['Red','Blue','Green','Orange','Purple'], am:['ቀይ','ሰማያዊ','አረንጓዴ','ብርቱካናማ','ወይን ጠጅ'] };
+  let colors = colorNames[lang] || colorNames.ar;
+  let target = '', s = status();
+  const b = button(t('newGame'), next); area.appendChild(b);
   function next(){
-    target=colors[Math.random()*5|0];
-    s.textContent='اضغط: '+target;
-    controls.innerHTML='';
-    colors.slice().sort(()=>Math.random()-.5).forEach(c=>controls.appendChild(button(c,()=>{
-      s.textContent=c===target?'صحيح! 🎉':'حاول مجدداً';
-      if(c===target)b.textContent='الجولة التالية';
+    target = colors[Math.random()*5|0];
+    s.textContent = `${t('target')}: ${target}`;
+    controls.innerHTML = '';
+    colors.slice().sort(()=>Math.random()-.5).forEach(c=>controls.appendChild(button(c, ()=>{
+      s.textContent = c===target?`${t('correct')}! 🎉`:t('tryAgain');
+      if(c===target) b.textContent = t('next');
     })));
   }
 }
 
-// 21. Balloon
 function balloon(){
-  let n=0,s=status('فجّر البالونات!');
+  let n = 0, s = status(`🎈 ${t('popped')}: 0`);
   for(let i=0;i<9;i++){
-    let b=button('🎈',()=>{n++;b.textContent='💥';s.textContent='المفجر: '+n;b.disabled=true},'btn secondary');
-    b.style.cssText='font-size:1.8rem;height:60px;width:60px;border-radius:50%;';
+    let b = button('🎈', ()=>{ n++; b.textContent='💥'; s.textContent = `${t('popped')}: ${n}`; b.disabled=true; }, 'btn secondary');
+    b.style.cssText = 'font-size:1.8rem;height:60px;width:60px;border-radius:50%;';
     area.appendChild(b);
   }
 }
 
-// 22. Dice
 function dice(){
-  let s=status('ارمِ النرد');
-  controls.appendChild(button('🎲 ارمي',()=>{
-    let r=1+(Math.random()*6|0);
-    s.textContent='النتيجة: '+r+(r===6?' 🎉':'');
-  }));
+  let s = status('🎨 تذكر الألوان!');
+  let seq = [], userSeq = [], showing = true, score = 0;
+  const colors = ['🔴', '🟢', '🔵', '🟡'];
+  function nextLevel() {
+    showing = true; userSeq = [];
+    seq.push(colors[Math.floor(Math.random() * 4)]);
+    s.textContent = `👀 ${seq.join(' ')}`;
+    setTimeout(()=>{ s.textContent = `✍️ ${t('repeat')}`; showing = false; }, 1000 + (seq.length * 200));
+  }
+  function checkWin() {
+    if(userSeq.join('') === seq.join('')) {
+      score += seq.length;
+      s.textContent = `✅ ${t('correct')}! ${t('score')}: ${score}`;
+      setTimeout(nextLevel, 1000);
+    } else {
+      s.innerHTML = `🎉 ${t('youWon')}<br>${t('score')}: ${score}`; s.style.color = '#00d4aa';
+    }
+  }
+  colors.forEach(c => controls.appendChild(button(c, ()=>{
+    if(showing) return;
+    userSeq.push(c);
+    if(userSeq.length === seq.length) checkWin();
+  }, 'btn')));
+  controls.appendChild(button('ابدأ Start', ()=>{ seq=[]; score=0; nextLevel(); }, 'btn secondary'));
 }
 
-// 23. Trivia - easy
 function trivia(){
-  let qs=[['عاصمة مصر؟','القاهرة'],['كم يوماً في الأسبوع؟','7'],['الكوكب الأحمر؟','المريخ'],['5 × 4؟','20'],['لون السماء؟','أزرق']];
-  let q=qs[Math.random()*qs.length|0],s=status(q[0]),i=input('الإجابة');
-  controls.appendChild(button('أجب',()=>s.textContent=i.value.toLowerCase()===q[1].toLowerCase()?'صحيح! 🎉':'الإجابة: '+q[1]));
+  const lang = document.getElementById('languageSelect').value;
+  const qs = { ar:[['عاصمة مصر؟','القاهرة'],['كم يوماً في الأسبوع؟','7'],['الكوكب الأحمر؟','المريخ'],['5 × 4؟','20'],['لون السماء؟','أزرق']], en:[['Capital of Egypt?','Cairo'],['Days in a week?','7'],['Red planet?','Mars'],['5 × 4?','20'],['Sky color?','Blue']], am:[['የግብፅ ዋና ከተማ?','ካይሮ'],['በሳምንት ስንት ቀናት?','7'],['ቀይ ፕላኔት?','ማርስ'],['5 × 4?','20'],['የሰማይ ቀለም?','ሰማያዊ']] };
+  let list = qs[lang] || qs.ar;
+  let q = list[Math.random()*list.length|0], s = status(q[0]), i = input(t('answer'));
+  controls.appendChild(button(t('submit'), ()=>s.innerHTML = i.value.toLowerCase()===q[1].toLowerCase()?`${t('correct')}! 🎉`:`${t('answer')}: ${q[1]}`));
 }
 
-// 24. Pet
 function pet(){
-  let n=0,s=status('حيوانك سعيد 🐶');
-  ['🍖 أطعم','🎾 العب','💤 نم'].forEach(t=>controls.appendChild(button(t,()=>{
-    n++;s.textContent='🐶 '+(n%3===0?'يرتاح الآن':'يحبك كثيراً!')+' — نقاط: '+n;
-  })));
-}
-
-// 25. Coin
-function coin(){
-  let s=status('اقلب العملة');
-  controls.appendChild(button('🪙 اقلب',()=>s.textContent=Math.random()<.5?'وجه!':'كتابة!'));
-}
-
-// 26. Target Tap
-function targetTap(){
-  let s=status('اضغط على الهدف!'),score=0,time=20,over=false;
-  const c=canvas(300,260),ctx=c.getContext('2d');
-  let tx=150,ty=130,tr=28;
-  
-  function place(){tx=40+Math.random()*220; ty=40+Math.random()*160; tr=22+Math.random()*12;}
-  place();
-  
-  c.onclick=e=>{
-    if(over)return;
-    const r=c.getBoundingClientRect();
-    const mx=(e.clientX-r.left)*(c.width/r.width);
-    const my=(e.clientY-r.top)*(c.height/r.height);
-    if(Math.hypot(mx-tx,my-ty)<tr+8){score++;s.textContent='النتيجة: '+score;place();}
+  let s = status(`🫧 ${t('score')}: 0 | ${t('time')}: 15`);
+  let score = 0, time = 15, over = false;
+  const c = canvas(300, 300), ctx = c.getContext('2d');
+  let bubbles = [];
+  for(let i=0; i<6; i++) bubbles.push({x: 30+Math.random()*240, y: 30+Math.random()*240, r: 15+Math.random()*15, color: `hsl(${Math.random()*360}, 80%, 60%)`});
+  c.onclick = (e) => {
+    if(over) return;
+    const rect = c.getBoundingClientRect();
+    const mx = (e.clientX - rect.left) * (c.width / rect.width);
+    const my = (e.clientY - rect.top) * (c.height / rect.height);
+    bubbles.forEach((b, idx) => {
+      if(Math.hypot(mx - b.x, my - b.y) < b.r) {
+        score += 10; s.textContent = `🫧 ${t('score')}: ${score} | ${t('time')}: ${time}`;
+        bubbles[idx] = {x: 30+Math.random()*240, y: 30+Math.random()*240, r: 15+Math.random()*15, color: `hsl(${Math.random()*360}, 80%, 60%)`};
+      }
+    });
   };
-  
   startInterval(()=>{
-    if(over)return;
+    if(over) return;
     time--;
-    if(time<=0){over=true;s.innerHTML='🎉 انتهى الوقت! النتيجة: '+score;s.style.color='#00d4aa';}
-  },1000);
-  
+    if(time <= 0) { over = true; s.innerHTML = `🎉 ${t('youWon')}<br>${t('score')}: ${score}`; s.style.color = '#00d4aa'; }
+  }, 1000);
+  function draw() {
+    ctx.fillStyle = '#0a0a15'; ctx.fillRect(0, 0, 300, 300);
+    bubbles.forEach(b => { ctx.fillStyle = b.color; ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, 7); ctx.fill(); });
+    if(over) { ctx.fillStyle = 'rgba(0,0,0,0.7)'; ctx.fillRect(0, 0, 300, 300); }
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+function coin(){
+  let s = status('🎮 اختر بسرعة!');
+  let score = 0, timeLeft = 10, over = false;
+  const emojis = ['🪨', '📄', '✂️'];
+  function play(player){
+    if(over) return;
+    let cpu = Math.floor(Math.random() * 3);
+    let result = '';
+    if(player === cpu) result = '🤝 تعادل';
+    else if((player === 0 && cpu === 2) || (player === 1 && cpu === 0) || (player === 2 && cpu === 1)) { result = `🎉 ${t('youWon')}`; score += 5; }
+    else { result = '❌ خسرت'; score -= 2; }
+    s.innerHTML = `${emojis[player]} vs ${emojis[cpu]} — ${result} | ${t('score')}: ${score}`;
+  }
+  emojis.forEach((e, i) => controls.appendChild(button(e, () => play(i), 'btn')));
+  startInterval(()=>{
+    if(over) return;
+    timeLeft--;
+    if(timeLeft <= 0) { over = true; s.innerHTML = `⏰ ${t('timeUp')}! ${t('score')}: ${score}`; s.style.color = '#ff4757'; }
+  }, 1000);
+}
+
+function targetTap(){
+  let s = status(t('clickStart')), score = 0, time = 20, over = false;
+  const c = canvas(300,260), ctx = c.getContext('2d');
+  let tx = 150, ty = 130, tr = 28;
+  function place(){ tx = 40+Math.random()*220; ty = 40+Math.random()*160; tr = 22+Math.random()*12; }
+  place();
+  c.onclick = e => {
+    if(over) return;
+    const r = c.getBoundingClientRect();
+    const mx = (e.clientX-r.left)*(c.width/r.width);
+    const my = (e.clientY-r.top)*(c.height/r.height);
+    if(Math.hypot(mx-tx, my-ty)<tr+8){ score++; s.textContent = `${t('score')}: ${score} | ${t('time')}: ${time}`; place(); }
+  };
+  startInterval(()=>{
+    if(over) return;
+    time--;
+    if(time<=0){ over=true; s.innerHTML = `🎉 ${t('youWon')}<br>${t('score')}: ${score}`; s.style.color='#00d4aa'; }
+    else s.textContent = `${t('score')}: ${score} | ${t('time')}: ${time}`;
+  }, 1000);
   function draw(){
-    ctx.fillStyle='#0a0a15';ctx.fillRect(0,0,300,260);
+    ctx.fillStyle = '#0a0a15'; ctx.fillRect(0,0,300,260);
     if(!over){
-      ctx.shadowColor='#ff007f';ctx.shadowBlur=16;
+      ctx.shadowColor='#ff007f'; ctx.shadowBlur=16;
       ctx.fillStyle='#ff007f';
-      ctx.beginPath();ctx.arc(tx,ty,tr,0,7);ctx.fill();
-      ctx.shadowBlur=0;
-      ctx.fillStyle='#fff';ctx.font='bold 14px Cairo';ctx.textAlign='center';
-      ctx.fillText('اضغط',tx,ty+5);
+      ctx.beginPath(); ctx.arc(tx,ty,tr,0,7); ctx.fill();
+      ctx.shadowBlur = 0;
     }
     requestAnimationFrame(draw);
   }
   draw();
 }
 
-// 27. Sliding Puzzle
 function slidingPuzzle(){
-  let s=status('رتب الأرقام 1-8');
-  let tiles=[1,2,3,4,5,6,7,8,0].sort(()=>Math.random()-0.5);
-  // تأكد إنه قابل للحل بشكل بسيط
-  while(tiles[8]===0 && Math.random()>0.3) tiles=tiles.sort(()=>Math.random()-0.5);
-  
-  const wrap=el('div');
-  wrap.style.cssText='display:grid;grid-template-columns:repeat(3,70px);gap:6px;';
+  let s = status(t('clickStart'));
+  let tiles = [1,2,3,4,5,6,7,8,0].sort(()=>Math.random()-0.5);
+  while(tiles[8]===0 && Math.random()>0.3) tiles = tiles.sort(()=>Math.random()-0.5);
+  const wrap = el('div');
+  wrap.style.cssText = 'display:grid;grid-template-columns:repeat(3,70px);gap:6px;';
   area.appendChild(wrap);
-  
   function draw(){
-    wrap.innerHTML='';
+    wrap.innerHTML = '';
     tiles.forEach((v,i)=>{
-      let b=button(v===0?'':v,()=>{
-        let empty=tiles.indexOf(0);
+      let b = button(v===0?'':v, ()=>{
+        let empty = tiles.indexOf(0);
         if([empty-1,empty+1,empty-3,empty+3].includes(i) && !(empty%3===0&&i===empty-1) && !(empty%3===2&&i===empty+1)){
-          [tiles[empty],tiles[i]]=[tiles[i],tiles[empty]];
+          [tiles[empty],tiles[i]] = [tiles[i],tiles[empty]];
           draw();
           if(tiles.slice(0,8).every((n,idx)=>n===idx+1)){
-            s.innerHTML='🎉 فزت! رتبتها';
-            s.style.color='#00d4aa';
+            s.innerHTML = `🎉 ${t('youWon')}`;
+            s.style.color = '#00d4aa';
           }
         }
-      },'btn secondary');
-      b.style.cssText='height:70px;font-size:1.5rem;border-radius:12px;'+(v===0?'background:#111;border-color:#333;':'');
+      }, 'btn secondary');
+      b.style.cssText = 'height:70px;font-size:1.5rem;border-radius:12px;'+(v===0?'background:#111;border-color:#333;':'');
       wrap.appendChild(b);
     });
   }
   draw();
 }
 
-// 28. Bubble Pop
 function bubblePop(){
-  let s=status('فجّر الفقاعات!'),score=0;
-  const colors=['#ff007f','#00f0ff','#7c5cff','#00d4aa','#ffd700'];
-  const wrap=el('div');
-  wrap.style.cssText='display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:280px;';
+  let s = status(`${t('popped')}: 0`), score = 0;
+  const colors = ['#ff007f','#00f0ff','#7c5cff','#00d4aa','#ffd700'];
+  const wrap = el('div');
+  wrap.style.cssText = 'display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:280px;';
   area.appendChild(wrap);
-  
   for(let i=0;i<12;i++){
-    let b=button('○',()=>{
-      if(b.dataset.popped)return;
-      b.dataset.popped=1;
-      b.textContent='💥';
-      b.style.background=colors[i%5];
-      b.style.transform='scale(1.2)';
+    let b = button('○', ()=>{
+      if(b.dataset.popped) return;
+      b.dataset.popped = 1;
+      b.textContent = '💥';
+      b.style.background = colors[i%5];
       score++;
-      s.textContent='المفجر: '+score;
-      if(score===12){s.innerHTML='🎉 فجرت كلها!';s.style.color='#00d4aa';}
-    },'btn secondary');
-    b.style.cssText=`width:60px;height:60px;border-radius:50%;font-size:1.4rem;border-color:${colors[i%5]};color:${colors[i%5]};`;
+      s.textContent = `${t('popped')}: ${score}`;
+      if(score===12){ s.innerHTML = `🎉 ${t('youWon')}`; s.style.color = '#00d4aa'; }
+    }, 'btn secondary');
+    b.style.cssText = `width:60px;height:60px;border-radius:50%;font-size:1.4rem;border-color:${colors[i%5]};color:${colors[i%5]};`;
     wrap.appendChild(b);
   }
 }
 
-// 29. Star Collector
 function starCollector(){
-  let s=status('اجمع النجوم! ← →'),score=0,over=false;
-  const c=canvas(300,260),ctx=c.getContext('2d');
-  let px=130, stars=[], frame=0;
-  
-  document.onkeydown=e=>{
-    if(e.key==='ArrowLeft')px=Math.max(0,px-20);
-    if(e.key==='ArrowRight')px=Math.min(260,px+20);
+  let s = status(`⭐ ${t('stars')}: 0`), score = 0, over = false;
+  const c = canvas(300,260), ctx = c.getContext('2d');
+  let px = 130, stars = [], frame = 0;
+  document.onkeydown = e => {
+    if(e.key==='ArrowLeft') px = Math.max(0, px-20);
+    if(e.key==='ArrowRight') px = Math.min(260, px+20);
   };
   cleanups.push(()=>document.onkeydown=null);
-  addDpad(controls,['ArrowLeft','ArrowRight']);
-  
+  addDpad(controls, ['ArrowLeft','ArrowRight']);
   function draw(){
-    ctx.fillStyle='#050510';ctx.fillRect(0,0,300,260);
-    // اللاعب
-    ctx.fillStyle='#00f0ff';
-    ctx.beginPath();ctx.roundRect(px,230,40,20,6);ctx.fill();
-    
+    ctx.fillStyle = '#050510'; ctx.fillRect(0,0,300,260);
+    ctx.fillStyle = '#00f0ff';
+    ctx.beginPath(); ctx.roundRect(px,230,40,20,6); ctx.fill();
     if(!over){
       frame++;
-      if(frame%28===0)stars.push({x:Math.random()*270,y:-15});
+      if(frame%28===0) stars.push({x:Math.random()*270, y:-15});
       stars.forEach(st=>{
-        st.y+=2.4;
-        ctx.font='20px serif';ctx.fillText('⭐',st.x,st.y);
-        if(st.y>220&&st.x>px-10&&st.x<px+35){st.y=400;score++;s.textContent='النجوم: '+score;}
-        if(st.y>270){st.y=400;}
+        st.y += 2.4;
+        ctx.font = '20px serif'; ctx.fillText('⭐', st.x, st.y);
+        if(st.y>220&&st.x>px-10&&st.x<px+35){ st.y=400; score++; s.textContent = `${t('stars')}: ${score}`; }
+        if(st.y>270){ st.y=400; }
       });
-      stars=stars.filter(st=>st.y<300);
-      if(score>=15){over=true;s.innerHTML='🎉 جمعت 15 نجمة!';s.style.color='#00d4aa';}
+      stars = stars.filter(st=>st.y<300);
+      if(score>=15){ over=true; s.innerHTML = `🎉 ${t('youWon')}`; s.style.color='#00d4aa'; }
     }
     requestAnimationFrame(draw);
   }
   draw();
 }
 
-// 30. Color Rush
 function colorRush(){
-  let colors=['أحمر','أزرق','أخضر','أصفر','بنفسجي'];
-  let hex=['#ff4757','#1e90ff','#2ed573','#ffd700','#7c5cff'];
-  let s=status('اضغط اللون المطلوب');
-  let target=0,score=0,round=0;
-  
+  const lang = document.getElementById('languageSelect').value;
+  const cn = {ar:['أحمر','أزرق','أخضر','أصفر','بنفسجي'], en:['Red','Blue','Green','Yellow','Purple'], am:['ቀይ','ሰማያዊ','አረንጓዴ','ቢጫ','ወይን ጠጅ']};
+  let colors = cn[lang] || cn.ar;
+  let hex = ['#ff4757','#1e90ff','#2ed573','#ffd700','#7c5cff'];
+  let s = status(t('clickStart'));
+  let target = 0, score = 0;
   function next(){
-    target=Math.random()*5|0;
-    s.innerHTML=`اضغط: <span style="color:${hex[target]};font-weight:900">${colors[target]}</span>`;
-    controls.innerHTML='';
+    target = Math.random()*5|0;
+    s.innerHTML = `${t('target')}: <span style="color:${hex[target]};font-weight:900">${colors[target]}</span>`;
+    controls.innerHTML = '';
     colors.forEach((c,i)=>{
-      let b=button(c,()=>{
-        if(i===target){score++;s.textContent='صحيح! النتيجة: '+score;setTimeout(next,500);}
-        else{s.textContent='خطأ! حاول مجدداً';}
+      let b = button(c, ()=>{
+        if(i===target){ score++; s.textContent = `${t('correct')}! ${t('score')}: ${score}`; setTimeout(next, 500); }
+        else s.textContent = t('wrong')+'!';
       });
-      b.style.borderColor=hex[i];
-      b.style.color=hex[i];
+      b.style.borderColor = hex[i]; b.style.color = hex[i];
       controls.appendChild(b);
     });
   }
   next();
 }
 
-// 31. Math Quiz - easy
 function mathQuiz(){
-  let a=1+(Math.random()*12|0),b=1+(Math.random()*12|0),ans=a+b;
-  let s=status(`${a} + ${b} = ؟`),i=input('الإجابة');
-  controls.appendChild(button('تحقق',()=>s.textContent=+i.value===ans?'صحيح! 🎉':'حاول مجدداً'));
+  let a = 1+(Math.random()*12|0), b = 1+(Math.random()*12|0), ans = a+b;
+  let s = status(`${a} + ${b} = ?`), i = input(t('answer'));
+  controls.appendChild(button(t('submit'), ()=>s.innerHTML = +i.value===ans?`${t('correct')}! 🎉`:t('tryAgain')));
 }
 
-// 32. Spelling
 function spelling(){
-  let pairs=[['جسم كبير من الماء','بحر'],['مكان لنوم','سرير'],['عكس الليل','نهار'],['فاكهة صفراء','موز']];
-  let p=pairs[Math.random()*pairs.length|0],s=status(p[0]),i=input('تهجى الكلمة');
-  controls.appendChild(button('تحقق',()=>s.textContent=i.value===p[1]?'صحيح! 🎉':'حاول مجدداً'));
+  const lang = document.getElementById('languageSelect').value;
+  const pairs = { ar:[['جسم كبير من الماء','بحر'],['مكان لنوم','سرير'],['عكس الليل','نهار'],['فاكهة صفراء','موز']], en:[['Large body of water','sea'],['Place to sleep','bed'],['Opposite of night','day'],['Yellow fruit','banana']], am:[['ትልቅ የውሃ አካል','ባህር'],['የመተኛት ቦታ','አልጋ'],['የሌሊት ተቃራኒ','ቀን'],['ቢጫ ፍራፍሬ','ሙዝ']] };
+  let list = pairs[lang] || pairs.ar;
+  let p = list[Math.random()*list.length|0], s = status(p[0]), i = input(t('answer'));
+  controls.appendChild(button(t('submit'), ()=>s.innerHTML = i.value===p[1]?`${t('correct')}! 🎉`:`${t('answer')}: ${p[1]}`));
 }
 
-// 33. Country Quiz
 function countryQuiz(){
-  let p=[['مصر','القاهرة'],['السعودية','الرياض'],['الإمارات','أبوظبي'],['المغرب','الرباط'],['الأردن','عمان']][Math.random()*5|0];
-  let s=status('عاصمة '+p[0]+'؟'),i=input('العاصمة');
-  controls.appendChild(button('تحقق',()=>s.textContent=i.value===p[1]?'صحيح! 🎉':'الإجابة: '+p[1]));
-}
-
-// 34. Flag Quiz
-function flagQuiz(){
-  let p=[['🇪🇬','مصر'],['🇸🇦','السعودية'],['🇦🇪','الإمارات'],['🇲🇦','المغرب'],['🇯🇴','الأردن']][Math.random()*5|0];
-  let s=status('أي دولة؟ '+p[0]),i=input('الدولة');
-  controls.appendChild(button('تحقق',()=>s.textContent=i.value===p[1]?'صحيح! 🎉':'الإجابة: '+p[1]));
-}
-
-// 35. Coin Counter
-// 35. Dodge Rocks
-function dodgeRocks(){
-  let s=status('تجنب الصخور! ← →'),score=0,over=false;
-  const c=canvas(300,260),ctx=c.getContext('2d');
-  let px=130, rocks=[], frame=0;
-  
-  document.onkeydown=e=>{
-    if(e.key==='ArrowLeft')px=Math.max(0,px-22);
-    if(e.key==='ArrowRight')px=Math.min(260,px+22);
-  };
+  let s = status(`🏃 ${t('score')}: 0`);
+  const c = canvas(300, 200), ctx = c.getContext('2d');
+  let score = 0, over = false, playerY = 150, velocity = 0, jumping = false;
+  let obstacles = [], frame = 0, speed = 4;
+  function jump() {
+    if(jumping || over) return;
+    velocity = -12; jumping = true;
+  }
+  c.onclick = jump;
+  document.onkeydown = e => { if(e.code === 'Space' || e.key === 'ArrowUp'){ e.preventDefault(); jump(); } };
   cleanups.push(()=>document.onkeydown=null);
-  addDpad(controls,['ArrowLeft','ArrowRight']);
-  
-  function draw(){
-    ctx.fillStyle='#0a0a15';ctx.fillRect(0,0,300,260);
-    ctx.fillStyle='#00f0ff';
-    ctx.beginPath();ctx.roundRect(px,230,40,22,8);ctx.fill();
-    
-    if(!over){
+  const jumpBtn = button('⬆️ اقفز', jump);
+  controls.appendChild(jumpBtn);
+  function draw() {
+    ctx.fillStyle = '#0a0a15'; ctx.fillRect(0, 0, 300, 200);
+    ctx.fillStyle = '#333'; ctx.fillRect(0, 180, 300, 20);
+    ctx.fillStyle = '#00f0ff';
+    ctx.beginPath(); ctx.roundRect(40, playerY, 30, 30, 5); ctx.fill();
+    obstacles.forEach(o => { ctx.fillStyle = '#ff4757'; ctx.fillRect(o.x, 160, 20, 20); });
+    if(!over) {
       frame++;
-      if(frame%32===0)rocks.push({x:Math.random()*270,y:-20});
-      rocks.forEach(r=>{
-        r.y+=2.6;
-        ctx.fillStyle='#888';
-        ctx.beginPath();ctx.roundRect(r.x,r.y,18,18,4);ctx.fill();
-        if(r.y>215&&r.x>px-12&&r.x<px+35)over=true;
-        if(r.y>270){score++;s.textContent='تجاوزت: '+score;}
+      velocity += 0.6; playerY += velocity;
+      if(playerY > 150) { playerY = 150; jumping = false; velocity = 0; }
+      if(frame % 60 === 0) obstacles.push({x: 300});
+      obstacles.forEach(o => {
+        o.x -= speed;
+        if(o.x < 70 && o.x > 30 && playerY > 130) { over = true; }
+        if(o.x === 40) { score++; s.textContent = `🏃 ${t('score')}: ${score}`; }
       });
-      rocks=rocks.filter(r=>r.y<290);
-      if(over){s.innerHTML='💀 انتهت — النتيجة: '+score;s.style.color='#ff4757';}
+      obstacles = obstacles.filter(o => o.x > -20);
+      if(score >= 10) speed = 6;
+      if(score >= 20) speed = 8;
+      if(over) { s.innerHTML = `🎉 ${t('youWon')}<br>${t('score')}: ${score}`; s.style.color = '#00d4aa'; }
     }
     requestAnimationFrame(draw);
   }
   draw();
 }
 
-// 36. Binary - easier numbers
+function flagQuiz(){
+  const lang = document.getElementById('languageSelect').value;
+  const p = { ar:[['🇪🇬','مصر'],['🇸🇦','السعودية'],['🇦🇪','الإمارات'],['🇲🇦','المغرب'],['🇯🇴','الأردن']], en:[['🇪🇬','Egypt'],['🇸🇦','Saudi Arabia'],['🇦🇪','UAE'],['🇲🇦','Morocco'],['🇯🇴','Jordan']], am:[['🇪🇬','ግብፅ'],['🇸🇦','ሳዑዲ አረቢያ'],['🇦🇪','ተባባሪ አረብ ኤሚሬቶች'],['🇲🇦','ሞሮኮ'],['🇯🇴','ጆርዳን']] };
+  let list = p[lang] || p.ar;
+  let pair = list[Math.random()*list.length|0];
+  let s = status(`${t('flag')}? ${pair[0]}`), i = input(t('country'));
+  controls.appendChild(button(t('submit'), ()=>s.innerHTML = i.value===pair[1]?`${t('correct')}! 🎉`:`${t('answer')}: ${pair[1]}`));
+}
+
+function dodgeRocks(){
+  let s = status(t('clickStart')), score = 0, over = false;
+  const c = canvas(300,260), ctx = c.getContext('2d');
+  let px = 130, rocks = [], frame = 0;
+  document.onkeydown = e => {
+    if(e.key==='ArrowLeft') px = Math.max(0, px-22);
+    if(e.key==='ArrowRight') px = Math.min(260, px+22);
+  };
+  cleanups.push(()=>document.onkeydown=null);
+  addDpad(controls, ['ArrowLeft','ArrowRight']);
+  function draw(){
+    ctx.fillStyle = '#0a0a15'; ctx.fillRect(0,0,300,260);
+    ctx.fillStyle = '#00f0ff';
+    ctx.beginPath(); ctx.roundRect(px,230,40,22,8); ctx.fill();
+    if(!over){
+      frame++;
+      if(frame%32===0) rocks.push({x:Math.random()*270, y:-20});
+      rocks.forEach(r=>{
+        r.y += 2.6;
+        ctx.fillStyle = '#888';
+        ctx.beginPath(); ctx.roundRect(r.x,r.y,18,18,4); ctx.fill();
+        if(r.y>215&&r.x>px-12&&r.x<px+35) over = true;
+        if(r.y>270){ score++; s.textContent = `${t('dodged')}: ${score}`; }
+      });
+      rocks = rocks.filter(r=>r.y<290);
+      if(over){ s.innerHTML = `💀 ${t('gameOver')} — ${t('score')}: ${score}`; s.style.color='#ff4757'; }
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
 function binary(){
-  let n=1+(Math.random()*15|0),s=status('حوّل '+n+' إلى ثنائي'),i=input('الثنائي');
-  controls.appendChild(button('تحقق',()=>s.textContent=i.value===n.toString(2)?'صحيح! 🎉':'الإجابة: '+n.toString(2)));
+  let n = 1+(Math.random()*15|0), s = status(`${t('binary')}: ${n}`), i = input(t('answer'));
+  controls.appendChild(button(t('submit'), ()=>s.innerHTML = i.value===n.toString(2)?`${t('correct')}! 🎉`:`${t('answer')}: ${n.toString(2)}`));
 }
 
-// 37 & 40. Pattern
 function pattern(){
-  let a=2+(Math.random()*6|0),step=1+(Math.random()*3|0),ans=a+step*3;
-  let s=status(`${a} ، ${a+step} ، ${a+2*step} ، ؟`),i=input('الرقم التالي');
-  controls.appendChild(button('تحقق',()=>s.textContent=+i.value===ans?'صحيح! 🎉':'الإجابة: '+ans));
+  let a = 2+(Math.random()*6|0), step = 1+(Math.random()*3|0), ans = a+step*3;
+  let s = status(`${a} , ${a+step} , ${a+2*step} , ?`), i = input(t('answer'));
+  controls.appendChild(button(t('submit'), ()=>s.innerHTML = +i.value===ans?`${t('correct')}! 🎉`:`${t('answer')}: ${ans}`));
 }
 
-// 38. Word Chain
 function wordChain(){
-  let s=status('الكلمة التالية تبدأ بآخر حرف'),i=input('أدخل كلمة');
-  let last='';
-  controls.appendChild(button('أرسل',()=>{
-    let v=i.value.trim();
-    if(!v)return;
-    if(last&&v[0]!==last)s.textContent='يجب أن تبدأ بـ '+last;
-    else{last=v[v.length-1];s.textContent='الكلمة التالية تبدأ بـ '+last;i.value=''}
-  }));
+  let s = status(`🎯 ${t('target')}: ...`);
+  const c = canvas(300, 280), ctx = c.getContext('2d');
+  let score = 0, timeLeft = 20, over = false, targetColor = '';
+  let blockColors = [];
+  const colorNames = { ar: ['أحمر', 'أزرق', 'أخضر', 'أصفر'], en: ['Red', 'Blue', 'Green', 'Yellow'], am: ['ቀይ', 'ሰማያዊ', 'አረንጓዴ', 'ቢጫ'] };
+  const lang = document.getElementById('languageSelect').value;
+  const names = colorNames[lang] || colorNames.ar;
+  const hexColors = ['#ff4757', '#1e90ff', '#2ed573', '#ffd700'];
+
+  function newRound() {
+    targetColor = hexColors[Math.floor(Math.random() * 4)];
+    const targetIndex = hexColors.indexOf(targetColor);
+    s.innerHTML = `🎯 ${t('target')}: <span style="color:${targetColor}; font-weight:900;">${names[targetIndex]}</span> | ${t('score')}: ${score} | ${t('time')}: ${timeLeft}`;
+    s.style.color = 'var(--accent2)';
+    blockColors = [];
+    let shuffledColors = [...hexColors].sort(() => Math.random() - 0.5);
+    for (let i = 0; i < 4; i++) {
+      blockColors.push({ color: shuffledColors[i], x: (i % 2) * 150, y: Math.floor(i / 2) * 140, w: 150, h: 140 });
+    }
+  }
+
+  c.onclick = (e) => {
+    if (over) return;
+    const rect = c.getBoundingClientRect();
+    const mx = (e.clientX - rect.left) * (c.width / rect.width);
+    const my = (e.clientY - rect.top) * (c.height / rect.height);
+    for (let b of blockColors) {
+      if (mx >= b.x && mx <= b.x + b.w && my >= b.y && my <= b.y + b.h) {
+        if (b.color === targetColor) { score += 10; newRound(); } 
+        else { timeLeft -= 2; if (timeLeft < 0) timeLeft = 0; }
+        break;
+      }
+    }
+  };
+
+  startInterval(() => {
+    if (over) return;
+    timeLeft--;
+    if (timeLeft <= 0) { over = true; s.innerHTML = `🎉 ${t('youWon')}<br>${t('score')}: ${score}`; s.style.color = '#00d4aa'; } 
+    else {
+      const targetIndex = hexColors.indexOf(targetColor);
+      s.innerHTML = `🎯 ${t('target')}: <span style="color:${targetColor}; font-weight:900;">${names[targetIndex]}</span> | ${t('score')}: ${score} | ${t('time')}: ${timeLeft}`;
+    }
+  }, 1000);
+
+  function draw() {
+    ctx.fillStyle = '#0a0a15'; ctx.fillRect(0, 0, 300, 280);
+    blockColors.forEach(b => { ctx.fillStyle = b.color; ctx.fillRect(b.x + 5, b.y + 5, b.w - 10, b.h - 10); });
+    if (over) { ctx.fillStyle = 'rgba(0,0,0,0.7)'; ctx.fillRect(0, 0, 300, 280); }
+    requestAnimationFrame(draw);
+  }
+  newRound(); draw();
 }
 
-// 41. Color Memory
 function colorMemory(){
-  let seq=[],i=0,s=status('اضغط ابدأ'),colors=['🟥','🟩','🟦','🟨'];
-  controls.appendChild(button('ابدأ',()=>{
-    seq.push(Math.random()*4|0);i=0;
-    s.textContent='تذكر: '+seq.map(x=>colors[x]).join(' ');
-    setTimeout(()=>s.textContent='كرر التسلسل',1400);
+  let seq = [], i = 0, s = status(t('clickStart')), colors = ['🟥','🟩','🟦','🟨'];
+  controls.appendChild(button(t('start'), ()=>{
+    seq.push(Math.random()*4|0); i = 0;
+    s.textContent = t('watch')+' '+seq.map(x=>colors[x]).join(' ');
+    setTimeout(()=>s.textContent = t('repeat'), 1400);
   }));
-  colors.forEach((v,k)=>controls.appendChild(button(v,()=>{
-    if(!seq.length)return;
-    if(seq[i]!==k){s.textContent='خطأ!';seq=[];return}
+  colors.forEach((v,k)=>controls.appendChild(button(v, ()=>{
+    if(!seq.length) return;
+    if(seq[i]!==k){ s.textContent = t('wrong')+'!'; seq=[]; return; }
     i++;
     if(i===seq.length){
-      s.textContent='صحيح! 🎉';
-      setTimeout(()=>{seq.push(Math.random()*4|0);i=0;s.textContent='تذكر: '+seq.map(x=>colors[x]).join(' ');setTimeout(()=>s.textContent='كرر',1400)},600);
+      s.textContent = `${t('correct')}! 🎉`;
+      setTimeout(()=>{ seq.push(Math.random()*4|0); i=0; s.textContent = t('watch')+' '+seq.map(x=>colors[x]).join(' '); setTimeout(()=>s.textContent = t('repeat'), 1400); }, 600);
     }
   })));
 }
 
-// 43. Maze - easier walls
 function maze(){
-  let x=15,y=15,s=status('وصل للهدف الأخضر'),c=canvas(280,280),ctx=c.getContext('2d');
-  
+  let x = 15, y = 15, s = status(t('clickStart')), c = canvas(280,280), ctx = c.getContext('2d');
   function draw(){
-    ctx.fillStyle='#0a0a15';ctx.fillRect(0,0,280,280);
-    
-    // Soft walls
-    ctx.fillStyle='#7c5cff88';
+    ctx.fillStyle = '#0a0a15'; ctx.fillRect(0,0,280,280);
+    ctx.fillStyle = '#7c5cff88';
     [[60,0,12,200],[120,80,12,200],[180,0,12,200]].forEach(a=>ctx.fillRect(...a));
-    
-    // Goal
-    ctx.fillStyle='#00d4aa';
-    ctx.beginPath();ctx.roundRect(240,240,30,30,6);ctx.fill();
-    
-    // Player
-    ctx.fillStyle='#00f0ff';
-    ctx.beginPath();ctx.arc(x+8,y+8,10,0,7);ctx.fill();
+    ctx.fillStyle = '#00d4aa';
+    ctx.beginPath(); ctx.roundRect(240,240,30,30,6); ctx.fill();
+    ctx.fillStyle = '#00f0ff';
+    ctx.beginPath(); ctx.arc(x+8,y+8,10,0,7); ctx.fill();
   }
-  
   function move(dx,dy){
-    x=Math.max(5,Math.min(255,x+dx));
-    y=Math.max(5,Math.min(255,y+dy));
-    if(x>230&&y>230)s.textContent='وصلت! 🎉';
+    x = Math.max(5, Math.min(255, x+dx));
+    y = Math.max(5, Math.min(255, y+dy));
+    if(x>230&&y>230) s.textContent = `${t('goal')}! 🎉`;
     draw();
   }
-  
-  document.onkeydown=e=>{
-    if(e.key==='ArrowUp')move(0,-12);
-    if(e.key==='ArrowDown')move(0,12);
-    if(e.key==='ArrowLeft')move(-12,0);
-    if(e.key==='ArrowRight')move(12,0);
+  document.onkeydown = e => {
+    if(e.key==='ArrowUp') move(0,-12);
+    if(e.key==='ArrowDown') move(0,12);
+    if(e.key==='ArrowLeft') move(-12,0);
+    if(e.key==='ArrowRight') move(12,0);
   };
   cleanups.push(()=>document.onkeydown=null);
-  addDpad(controls,['ArrowUp','ArrowDown','ArrowLeft','ArrowRight']);
+  addDpad(controls, ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight']);
   draw();
 }
 
-// 45. Number Memory
 function numberMemory(){
-  let nums=[1,2,3,4,5,6,7,8,9].sort(()=>Math.random()-.5),target=1,s=status('اضغط بالترتيب');
-  const wrap=el('div');
-  wrap.style.cssText='display:grid;grid-template-columns:repeat(3,65px);gap:8px;';
+  let nums = [1,2,3,4,5,6,7,8,9].sort(()=>Math.random()-.5), target = 1, s = status(t('clickStart'));
+  const wrap = el('div');
+  wrap.style.cssText = 'display:grid;grid-template-columns:repeat(3,65px);gap:8px;';
   area.appendChild(wrap);
-  
   nums.forEach(n=>{
-    let b=button(n,()=>{
+    let b = button(n, ()=>{
       if(n===target){
-        b.disabled=true;b.textContent='✓';b.style.background='#00d4aa33';
+        b.disabled = true; b.textContent = '✓'; b.style.background = '#00d4aa33';
         target++;
-        s.textContent=target===10?'فزت! 🎉':'ابحث عن '+target;
-      } else s.textContent='ابحث عن '+target;
-    },'btn secondary');
-    b.style.cssText='height:60px;font-size:1.3rem;border-radius:12px;';
+        s.textContent = target===10?`🎉 ${t('youWon')}`:`→ ${target}`;
+      } else s.textContent = `→ ${target}`;
+    }, 'btn secondary');
+    b.style.cssText = 'height:60px;font-size:1.3rem;border-radius:12px;';
     wrap.appendChild(b);
   });
 }
 
-// 46. Ninja Dodge - مع مستويات
 function ninja(){
-  let x=135,score=0,frame=0,over=false,s=status('🟢 سهل | تجنب الأجسام!');
-  const c=canvas(300,260),ctx=c.getContext('2d'),items=[];
-  let spawnRate=50, fallSpeed=2.0;
-  
+  let x = 135, score = 0, frame = 0, over = false, s = status(`🟢 ${t('easy')} | ${t('dodged')}: 0`);
+  const c = canvas(300,260), ctx = c.getContext('2d'), items = [];
+  let spawnRate = 50, fallSpeed = 2.0;
   function getLevel(){
-    if(score>=18){spawnRate=22; fallSpeed=3.8; s.innerHTML='🔴 <b>صعب</b> | النتيجة: '+score;}
-    else if(score>=8){spawnRate=35; fallSpeed=2.8; s.innerHTML='🟡 <b>متوسط</b> | النتيجة: '+score;}
-    else {spawnRate=50; fallSpeed=2.0; s.innerHTML='🟢 <b>سهل</b> | النتيجة: '+score;}
+    if(score>=18){ spawnRate=22; fallSpeed=3.8; s.innerHTML = `🔴 <b>${t('hard')}</b> | ${t('dodged')}: ${score}`; }
+    else if(score>=8){ spawnRate=35; fallSpeed=2.8; s.innerHTML = `🟡 <b>${t('medium')}</b> | ${t('dodged')}: ${score}`; }
+    else { spawnRate=50; fallSpeed=2.0; s.innerHTML = `🟢 <b>${t('easy')}</b> | ${t('dodged')}: ${score}`; }
   }
-  
-  document.onkeydown=e=>{
-    if(e.key==='ArrowLeft')x=Math.max(0,x-20);
-    if(e.key==='ArrowRight')x=Math.min(265,x+20);
+  document.onkeydown = e => {
+    if(e.key==='ArrowLeft') x = Math.max(0, x-20);
+    if(e.key==='ArrowRight') x = Math.min(265, x+20);
   };
   cleanups.push(()=>document.onkeydown=null);
-  addDpad(controls,['ArrowLeft','ArrowRight']);
-  
+  addDpad(controls, ['ArrowLeft','ArrowRight']);
   function draw(){
-    const bg=ctx.createLinearGradient(0,0,0,260);
-    bg.addColorStop(0,'#0a0a18');bg.addColorStop(1,'#030308');
-    ctx.fillStyle=bg;ctx.fillRect(0,0,300,260);
-    
-    ctx.shadowColor='#00f0ff';ctx.shadowBlur=10;
+    const bg = ctx.createLinearGradient(0,0,0,260);
+    bg.addColorStop(0,'#0a0a18'); bg.addColorStop(1,'#030308');
+    ctx.fillStyle = bg; ctx.fillRect(0,0,300,260);
+    ctx.shadowColor='#00f0ff'; ctx.shadowBlur=10;
     ctx.fillStyle='#00f0ff';
-    ctx.beginPath();ctx.roundRect(x,222,32,28,8);ctx.fill();
-    ctx.shadowBlur=0;
-    
+    ctx.beginPath(); ctx.roundRect(x,222,32,28,8); ctx.fill();
+    ctx.shadowBlur = 0;
     if(!over){
       frame++;
-      if(frame%spawnRate===0)items.push({x:Math.random()*270,y:-20});
+      if(frame%spawnRate===0) items.push({x:Math.random()*270, y:-20});
       items.forEach(a=>{
-        a.y+=fallSpeed;
+        a.y += fallSpeed;
         ctx.fillStyle='#ff4757';
-        ctx.shadowColor='#ff4757';ctx.shadowBlur=6;
-        ctx.beginPath();ctx.roundRect(a.x,a.y,16,20,5);ctx.fill();
-        ctx.shadowBlur=0;
-        if(a.y>205&&a.x>x-8&&a.x<x+32)over=true;
-        if(a.y>270){score++; getLevel();}
+        ctx.shadowColor='#ff4757'; ctx.shadowBlur=6;
+        ctx.beginPath(); ctx.roundRect(a.x,a.y,16,20,5); ctx.fill();
+        ctx.shadowBlur = 0;
+        if(a.y>205&&a.x>x-8&&a.x<x+32) over = true;
+        if(a.y>270){ score++; getLevel(); }
       });
-      items=items.filter(a=>a.y<280);
-      if(over){
-        s.innerHTML='💀 انتهت — النتيجة: '+score;
-        s.style.color='#ff4757';
-      }
+      items.length = 0; items.push(...items.filter(a=>a.y<280));
+      if(over){ s.innerHTML = `💀 ${t('gameOver')} — ${t('score')}: ${score}`; s.style.color='#ff4757'; }
     }
     requestAnimationFrame(draw);
   }
   draw();
 }
 
-// 47. Match Three
 function matchThree(){
-  let shapes=['🔴','🟢','🔵','🟡','🟣'];
-  let board=Array.from({length:16},()=>shapes[Math.random()*5|0]),sel=-1,score=0;
-  let s=status('اصنع ثلاثية متجاورة');
-  const wrap=el('div');
-  wrap.style.cssText='display:grid;grid-template-columns:repeat(4,62px);gap:6px;';
+  let shapes = ['🔴','🟢','🔵','🟡','🟣'];
+  let board = Array.from({length:16}, ()=>shapes[Math.random()*5|0]), sel = -1, score = 0;
+  let s = status(t('clickStart'));
+  const wrap = el('div');
+  wrap.style.cssText = 'display:grid;grid-template-columns:repeat(4,62px);gap:6px;';
   area.appendChild(wrap);
-  
   function checkMatch(){
-    // فحص صفوف
-    for(let r=0;r<4;r++){
-      for(let c=0;c<2;c++){
-        let i=r*4+c;
-        if(board[i]&&board[i]===board[i+1]&&board[i]===board[i+2]){
-          board[i]=board[i+1]=board[i+2]=shapes[Math.random()*5|0];
-          score+=30; return true;
-        }
+    for(let r=0;r<4;r++) for(let c=0;c<2;c++){
+      let i = r*4+c;
+      if(board[i]&&board[i]===board[i+1]&&board[i]===board[i+2]){
+        board[i] = board[i+1] = board[i+2] = shapes[Math.random()*5|0];
+        score += 30; return true;
       }
     }
-    // فحص أعمدة
-    for(let c=0;c<4;c++){
-      for(let r=0;r<2;r++){
-        let i=r*4+c;
-        if(board[i]&&board[i]===board[i+4]&&board[i]===board[i+8]){
-          board[i]=board[i+4]=board[i+8]=shapes[Math.random()*5|0];
-          score+=30; return true;
-        }
+    for(let c=0;c<4;c++) for(let r=0;r<2;r++){
+      let i = r*4+c;
+      if(board[i]&&board[i]===board[i+4]&&board[i]===board[i+8]){
+        board[i] = board[i+4] = board[i+8] = shapes[Math.random()*5|0];
+        score += 30; return true;
       }
     }
     return false;
   }
-  
   function draw(){
-    wrap.innerHTML='';
+    wrap.innerHTML = '';
     board.forEach((v,i)=>{
-      let b=button(v,()=>{
-        if(sel<0){sel=i;s.textContent='اختر المجاور';}
-        else{
+      let b = button(v, ()=>{
+        if(sel<0){ sel = i; s.textContent = t('next'); }
+        else {
           if(Math.abs(sel-i)===1||Math.abs(sel-i)===4){
-            [board[sel],board[i]]=[board[i],board[sel]];
-            if(checkMatch()) s.textContent='النتيجة: '+score;
-            else s.textContent='بدّل مجدداً';
+            [board[sel],board[i]] = [board[i],board[sel]];
+            if(checkMatch()) s.textContent = `${t('score')}: ${score}`;
+            else s.textContent = t('tryAgain');
           }
-          sel=-1; draw();
+          sel = -1; draw();
         }
-      },'btn secondary');
-      b.style.cssText='height:58px;font-size:1.6rem;border-radius:12px;'+(sel===i?'border-color:#00f0ff;box-shadow:0 0 14px #00f0ff;':'');
+      }, 'btn secondary');
+      b.style.cssText = 'height:58px;font-size:1.6rem;border-radius:12px;'+(sel===i?'border-color:#00f0ff;box-shadow:0 0 14px #00f0ff;':'');
       wrap.appendChild(b);
     });
   }
   draw();
 }
 
-// 48. Space Shooter - مع مستويات
 function shooter(){
-  let x=140,shots=[],enemies=[],score=0,over=false,s=status('🟢 سهل | حرّك وأطلق');
-  const c=canvas(300,300),ctx=c.getContext('2d');
-  let spawnChance=0.012, enemySpeed=1.0;
-  
+  let x = 140, shots = [], enemies = [], score = 0, over = false, s = status(`🟢 ${t('easy')} | ${t('score')}: 0`);
+  const c = canvas(300,300), ctx = c.getContext('2d');
+  let spawnChance = 0.012, enemySpeed = 1.0;
   function getLevel(){
-    if(score>=15){spawnChance=0.035; enemySpeed=2.2; s.innerHTML='🔴 <b>صعب</b> | النتيجة: '+score;}
-    else if(score>=6){spawnChance=0.022; enemySpeed=1.5; s.innerHTML='🟡 <b>متوسط</b> | النتيجة: '+score;}
-    else {spawnChance=0.012; enemySpeed=1.0; s.innerHTML='🟢 <b>سهل</b> | النتيجة: '+score;}
+    if(score>=15){ spawnChance=0.035; enemySpeed=2.2; s.innerHTML = `🔴 <b>${t('hard')}</b> | ${t('score')}: ${score}`; }
+    else if(score>=6){ spawnChance=0.022; enemySpeed=1.5; s.innerHTML = `🟡 <b>${t('medium')}</b> | ${t('score')}: ${score}`; }
+    else { spawnChance=0.012; enemySpeed=1.0; s.innerHTML = `🟢 <b>${t('easy')}</b> | ${t('score')}: ${score}`; }
   }
-  
-  document.onkeydown=e=>{
-    if(e.key==='ArrowLeft')x=Math.max(5,x-16);
-    if(e.key==='ArrowRight')x=Math.min(275,x+16);
-    if(e.code==='Space')shots.push({x:x+8,y:255});
+  document.onkeydown = e => {
+    if(e.key==='ArrowLeft') x = Math.max(5, x-16);
+    if(e.key==='ArrowRight') x = Math.min(275, x+16);
+    if(e.code==='Space') shots.push({x:x+8, y:255});
   };
-  c.onclick=()=>shots.push({x:x+8,y:255});
+  c.onclick = ()=>shots.push({x:x+8, y:255});
   cleanups.push(()=>document.onkeydown=null);
-  addDpad(controls,['ArrowLeft','ArrowRight','Space']);
-  
+  addDpad(controls, ['ArrowLeft','ArrowRight','Space']);
   function draw(){
-    const bg=ctx.createLinearGradient(0,0,0,300);
-    bg.addColorStop(0,'#050515');bg.addColorStop(1,'#020208');
-    ctx.fillStyle=bg;ctx.fillRect(0,0,300,300);
-    
-    ctx.shadowColor='#00f0ff';ctx.shadowBlur=12;
+    const bg = ctx.createLinearGradient(0,0,0,300);
+    bg.addColorStop(0,'#050515'); bg.addColorStop(1,'#020208');
+    ctx.fillStyle = bg; ctx.fillRect(0,0,300,300);
+    ctx.shadowColor='#00f0ff'; ctx.shadowBlur=12;
     ctx.fillStyle='#00f0ff';
     ctx.beginPath();
-    ctx.moveTo(x+12,260);
-    ctx.lineTo(x,290);
-    ctx.lineTo(x+24,290);
-    ctx.closePath();
-    ctx.fill();
-    ctx.shadowBlur=0;
-    
+    ctx.moveTo(x+12,260); ctx.lineTo(x,290); ctx.lineTo(x+24,290);
+    ctx.closePath(); ctx.fill();
+    ctx.shadowBlur = 0;
     if(!over){
-      if(Math.random()<spawnChance)enemies.push({x:20+Math.random()*250,y:-10});
-      
+      if(Math.random()<spawnChance) enemies.push({x:20+Math.random()*250, y:-10});
       shots.forEach(b=>{
-        b.y-=7;
+        b.y -= 7;
         ctx.fillStyle='#fff';
-        ctx.shadowColor='#00f0ff';ctx.shadowBlur=6;
+        ctx.shadowColor='#00f0ff'; ctx.shadowBlur=6;
         ctx.fillRect(b.x,b.y,3,14);
-        ctx.shadowBlur=0;
+        ctx.shadowBlur = 0;
       });
-      
       enemies.forEach(e=>{
-        e.y+=enemySpeed;
-        ctx.font='22px serif';
-        ctx.fillText('👾',e.x,e.y);
-        if(e.y>275)over=true;
+        e.y += enemySpeed;
+        ctx.font = '22px serif';
+        ctx.fillText('👾', e.x, e.y);
+        if(e.y>275) over = true;
         shots.forEach(b=>{
           if(Math.abs(b.x-e.x)<20&&Math.abs(b.y-e.y)<20){
-            e.y=400; score++;
-            getLevel();
+            e.y = 400; score++; getLevel();
           }
         });
       });
-      
-      shots=shots.filter(b=>b.y>0);
-      enemies=enemies.filter(e=>e.y<330);
-      
-      if(over){
-        s.innerHTML='💀 انتهت — النتيجة: '+score;
-        s.style.color='#ff4757';
-      }
+      shots = shots.filter(b=>b.y>0);
+      enemies = enemies.filter(e=>e.y<330);
+      if(over){ s.innerHTML = `💀 ${t('gameOver')} — ${t('score')}: ${score}`; s.style.color='#ff4757'; }
     }
     requestAnimationFrame(draw);
   }
   draw();
 }
 
-// 49. Code Breaker
 function codeBreaker(){
-  let code=String(Math.random()*1000|0).padStart(3,'0'),tries=0,s=status('خمّن كود من 3 أرقام');
-  let i=input('مثال: 042');
-  controls.appendChild(button('تحقق',()=>{
-    let v=i.value.padStart(3,'0');
-    if(!/^\d{3}$/.test(v))return s.textContent='أدخل 3 أرقام';
+  let code = String(Math.random()*1000|0).padStart(3,'0'), tries = 0, s = status(t('clickStart'));
+  let i = input('000');
+  controls.appendChild(button(t('submit'), ()=>{
+    let v = i.value.padStart(3,'0');
+    if(!/^\d{3}$/.test(v)) return s.textContent = '3 digits';
     tries++;
-    let exact=[...v].filter((c,j)=>c===code[j]).length;
-    let near=[...v].filter(c=>code.includes(c)).length-exact;
-    s.textContent=exact===3?'فككت الكود في '+tries+' محاولات! 🎉':`صحيح المكان: ${exact} | رقم صحيح مكان خاطئ: ${near}`;
+    let exact = [...v].filter((c,j)=>c===code[j]).length;
+    let near = [...v].filter(c=>code.includes(c)).length-exact;
+    s.innerHTML = exact===3?`🎉 ${t('youWon')} (${tries})`:`✓${exact} | ~${near}`;
   }));
 }
 
-// 50. Keep Balance
 function keepBalance(){
-  let s=status('حافظ على التوازن! ← →'),score=0,over=false;
-  const c=canvas(300,240),ctx=c.getContext('2d');
-  let angle=0, vel=0, px=150;
-  
-  document.onkeydown=e=>{
-    if(e.key==='ArrowLeft')vel-=0.12;
-    if(e.key==='ArrowRight')vel+=0.12;
+  let s = status(t('clickStart')), score = 0, over = false;
+  const c = canvas(300,240), ctx = c.getContext('2d');
+  let angle = 0, vel = 0;
+  document.onkeydown = e => {
+    if(e.key==='ArrowLeft') vel -= 0.12;
+    if(e.key==='ArrowRight') vel += 0.12;
   };
   cleanups.push(()=>document.onkeydown=null);
-  addDpad(controls,['ArrowLeft','ArrowRight']);
-  
+  addDpad(controls, ['ArrowLeft','ArrowRight']);
   function draw(){
-    ctx.fillStyle='#0a0a15';ctx.fillRect(0,0,300,240);
-    
+    ctx.fillStyle = '#0a0a15'; ctx.fillRect(0,0,300,240);
     if(!over){
-      vel*=0.98;
-      angle+=vel;
+      vel *= 0.98;
+      angle += vel;
       if(Math.abs(angle)>0.85){
-        over=true;
-        s.innerHTML='💀 سقط! النتيجة: '+score;
-        s.style.color='#ff4757';
+        over = true;
+        s.innerHTML = `💀 ${t('gameOver')} — ${t('score')}: ${Math.floor(score/10)}`;
+        s.style.color = '#ff4757';
       } else {
         score++;
-        if(score%30===0)s.textContent='التوازن: '+Math.floor(score/10);
+        if(score%30===0) s.textContent = `${t('balance')}: ${Math.floor(score/10)}`;
       }
     }
-    
-    // القاعدة
-    ctx.fillStyle='#333';
+    ctx.fillStyle = '#333';
     ctx.fillRect(100,200,100,12);
-    
-    // العمود
     ctx.save();
     ctx.translate(150,200);
     ctx.rotate(angle);
-    ctx.fillStyle='#00f0ff';
-    ctx.beginPath();ctx.roundRect(-6,-90,12,90,4);ctx.fill();
-    // الكرة فوق
-    ctx.beginPath();ctx.arc(0,-100,14,0,7);ctx.fill();
+    ctx.fillStyle = '#00f0ff';
+    ctx.beginPath(); ctx.roundRect(-6,-90,12,90,4); ctx.fill();
+    ctx.beginPath(); ctx.arc(0,-100,14,0,7); ctx.fill();
     ctx.restore();
-    
     requestAnimationFrame(draw);
   }
   draw();
 }
+
+// ===== Init =====
+(function(){
+  const saved = localStorage.getItem('gz_lang');
+  if(saved && ['ar','en','am'].includes(saved)){
+    const sel = document.getElementById('languageSelect');
+    sel.value = saved;
+    setLanguage(saved);
+  } else {
+    render();
+  }
+})();
 </script>
 </body>
-</html>
+  </html>
