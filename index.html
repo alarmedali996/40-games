@@ -234,9 +234,71 @@ footer{ text-align:center; padding:35px 20px; border-top:1px solid var(--border)
 .modal-actions { display: flex; gap: 10px; margin-top: 14px; justify-content: center; }
 .modal-actions .btn { width: auto; padding: 10px 22px; font-family: 'Orbitron', sans-serif; font-size:0.85rem;}
 
+/* === Auth Styles === */
+.auth-buttons{ display:flex; gap:8px; align-items:center; }
+.auth-buttons .utility-chip{ padding:4px 12px; border:1px solid var(--border); border-radius:20px; font-size:0.75rem; }
+.auth-buttons .utility-chip:hover{ border-color:var(--accent2); background:rgba(0,240,255,0.1); }
+.user-info{ display:flex; align-items:center; gap:6px; color:var(--success); font-weight:700; font-size:0.85rem; }
+
+/* Auth Modal */
+.auth-modal{
+  display:none; position:fixed; inset:0; z-index:2000;
+  background:rgba(0,0,0,0.95); backdrop-filter:blur(12px);
+  align-items:center; justify-content:center; padding:16px;
+}
+.auth-modal.open{ display:flex; }
+.auth-card{
+  width:min(420px, 100%);
+  background:linear-gradient(160deg, #0a0a18 0%, #050510 100%);
+  border:1px solid var(--accent2); border-radius:20px;
+  padding:32px 28px;
+  box-shadow:0 0 60px rgba(0,240,255,0.25);
+  position:relative;
+  animation:authSlide 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+@keyframes authSlide{ from{opacity:0; transform:scale(0.9) translateY(20px);} to{opacity:1; transform:scale(1) translateY(0);} }
+.auth-card .close-auth{
+  position:absolute; top:14px; left:14px;
+  font-size:1.8rem; background:none; border:none; color:var(--muted); cursor:pointer; line-height:1;
+}
+.auth-card .close-auth:hover{ color:var(--accent); }
+.auth-card h2{
+  font-family:'Orbitron', sans-serif; font-size:1.5rem; text-align:center; margin-bottom:6px;
+  background:linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip:text; color:transparent; font-weight:900;
+}
+.auth-card .auth-sub{ text-align:center; color:var(--muted); font-size:0.85rem; margin-bottom:22px; font-weight:600;}
+.auth-form{ display:flex; flex-direction:column; gap:12px; }
+.auth-form .auth-field{ display:flex; flex-direction:column; gap:4px; }
+.auth-form label{ font-size:0.8rem; color:var(--accent2); font-weight:700; font-family:'Orbitron', sans-serif; letter-spacing:0.5px; }
+.auth-form input{
+  padding:12px 16px; border-radius:10px; border:1px solid var(--border);
+  background:#111; color:#fff; font-family:inherit; font-size:0.95rem; font-weight:600;
+  outline:none; transition:0.3s;
+}
+.auth-form input:focus{ border-color:var(--accent2); box-shadow:0 0 18px rgba(0,240,255,0.3); }
+.auth-form .auth-submit{
+  margin-top:8px; padding:13px; border-radius:10px; border:none;
+  background:linear-gradient(135deg, var(--accent), var(--accent3));
+  color:#fff; font-family:'Orbitron', sans-serif; font-weight:900; font-size:0.95rem;
+  cursor:pointer; transition:0.3s; letter-spacing:1px;
+}
+.auth-form .auth-submit:hover{ box-shadow:0 0 25px rgba(255,0,127,0.5); transform:translateY(-2px); }
+.auth-switch{ text-align:center; margin-top:16px; font-size:0.85rem; color:var(--muted); font-weight:600;}
+.auth-switch a{ color:var(--accent2); cursor:pointer; text-decoration:none; font-weight:700; }
+.auth-switch a:hover{ text-shadow:0 0 10px var(--accent2); }
+.auth-msg{ text-align:center; font-size:0.85rem; font-weight:700; min-height:1.2em; margin-top:6px;}
+.auth-msg.success{ color:var(--success); }
+.auth-msg.error{ color:var(--danger); }
+.auth-divider{ display:flex; align-items:center; gap:10px; color:var(--muted); font-size:0.75rem; margin:4px 0;}
+.auth-divider::before, .auth-divider::after{ content:""; flex:1; height:1px; background:var(--border); }
+.auth-guest{ text-align:center; color:var(--muted); font-size:0.8rem; font-weight:600; cursor:pointer; text-decoration:underline; }
+.auth-guest:hover{ color:var(--accent2); }
+
 @media(max-width:600px){
   nav{ width:95%; gap:8px; padding:8px 12px;}
   .utility-chip{ font-size:0.72rem; }
+  .auth-buttons .utility-chip{ font-size:0.65rem; padding:3px 9px; }
   header{ padding:35px 12px 18px;}
   .grid{ grid-template-columns:repeat(2, 1fr); gap:10px; }
   .card{ padding: 14px; }
@@ -245,6 +307,7 @@ footer{ text-align:center; padding:35px 20px; border-top:1px solid var(--border)
   .btn{ padding: 9px; font-size: 0.8rem; }
   .modal-content { padding: 14px; }
   .dpad { grid-template-columns: repeat(3, 50px); grid-template-rows: repeat(2, 50px); }
+  .auth-card{ padding:24px 20px; }
 }
 </style>
 </head>
@@ -255,6 +318,14 @@ footer{ text-align:center; padding:35px 20px; border-top:1px solid var(--border)
   <span class="utility-chip">🕒 <span id="clock">--:--</span></span>
   <button type="button" class="utility-chip" id="themeToggle">🌗 المظهر</button>
   <button type="button" class="utility-chip" id="fullscreenBtn">⛶ ملء الشاشة</button>
+  <div class="auth-buttons" id="authButtons">
+    <button type="button" class="utility-chip" id="loginBtn">🔑 تسجيل الدخول</button>
+    <button type="button" class="utility-chip" id="signupBtn">✨ إنشاء حساب</button>
+  </div>
+  <div class="user-info" id="userInfo" style="display:none;">
+    <span id="welcomeUser">👤</span>
+    <button type="button" class="utility-chip" id="logoutBtn" style="font-size:0.7rem; padding:2px 8px;">🚪 خروج</button>
+  </div>
 </nav>
 
 <header>
@@ -313,6 +384,7 @@ atOptions = {'key':'c23a38c1ab2fde5597f48a5a0ae691d4','format':'iframe','height'
   📧 <a href="mailto:alarmedali996@gmail.com" style="color:var(--accent2);text-decoration:none;">alarmedali996@gmail.com</a>
 </footer>
 
+<!-- Game Modal -->
 <div class="modal" id="modal">
   <div class="modal-content">
     <div class="modal-head">
@@ -328,6 +400,40 @@ atOptions = {'key':'c23a38c1ab2fde5597f48a5a0ae691d4','format':'iframe','height'
   </div>
 </div>
 
+<!-- Auth Modal -->
+<div class="auth-modal" id="authModal">
+  <div class="auth-card">
+    <button type="button" class="close-auth" id="closeAuth">×</button>
+    <h2 id="authTitle">تسجيل الدخول</h2>
+    <p class="auth-sub" id="authSub">أدخل بياناتك للوصول إلى حسابك</p>
+    <form class="auth-form" id="authForm">
+      <div class="auth-field" id="nameField" style="display:none;">
+        <label for="authName">الاسم</label>
+        <input type="text" id="authName" placeholder="اسمك الكامل" autocomplete="name">
+      </div>
+      <div class="auth-field">
+        <label for="authEmail">البريد الإلكتروني</label>
+        <input type="email" id="authEmail" placeholder="you@example.com" autocomplete="email" required>
+      </div>
+      <div class="auth-field">
+        <label for="authPassword">كلمة المرور</label>
+        <input type="password" id="authPassword" placeholder="••••••••" autocomplete="current-password" required minlength="6">
+      </div>
+      <div class="auth-field" id="confirmField" style="display:none;">
+        <label for="authConfirm">تأكيد كلمة المرور</label>
+        <input type="password" id="authConfirm" placeholder="••••••••" autocomplete="new-password" minlength="6">
+      </div>
+      <button type="submit" class="auth-submit" id="authSubmitBtn">دخول</button>
+      <p class="auth-msg" id="authMsg"></p>
+    </form>
+    <div class="auth-divider">أو</div>
+    <p class="auth-guest" id="guestPlay">🎮 اللعب كزائر</p>
+    <p class="auth-switch" id="authSwitch">
+      ليس لديك حساب؟ <a id="switchToSignup">إنشاء حساب</a>
+    </p>
+  </div>
+</div>
+
 <script>
 // ===== Utilities =====
 function updateSiteTime(){
@@ -336,6 +442,159 @@ function updateSiteTime(){
 }
 updateSiteTime(); setInterval(updateSiteTime, 1000);
 document.getElementById('year').textContent = new Date().getFullYear();
+
+// ===== Auth System =====
+const AUTH_KEY = 'gz_user';
+
+function getUsers(){
+  try { return JSON.parse(localStorage.getItem('gz_users') || '{}'); } catch(e){ return {}; }
+}
+function saveUsers(users){ localStorage.setItem('gz_users', JSON.stringify(users)); }
+function getCurrentUser(){
+  try { return JSON.parse(localStorage.getItem(AUTH_KEY) || 'null'); } catch(e){ return null; }
+}
+function setCurrentUser(user){
+  if(user) localStorage.setItem(AUTH_KEY, JSON.stringify(user));
+  else localStorage.removeItem(AUTH_KEY);
+  updateAuthUI();
+}
+
+function updateAuthUI(){
+  const user = getCurrentUser();
+  const authButtons = document.getElementById('authButtons');
+  const userInfo = document.getElementById('userInfo');
+  const welcomeUser = document.getElementById('welcomeUser');
+  if(user && user.email){
+    authButtons.style.display = 'none';
+    userInfo.style.display = 'flex';
+    welcomeUser.textContent = '👤 ' + (user.name || user.email.split('@')[0]);
+  } else {
+    authButtons.style.display = 'flex';
+    userInfo.style.display = 'none';
+  }
+}
+
+// Auth modal elements
+const authModal = document.getElementById('authModal');
+const authTitle = document.getElementById('authTitle');
+const authSub = document.getElementById('authSub');
+const authForm = document.getElementById('authForm');
+const authMsg = document.getElementById('authMsg');
+const authName = document.getElementById('authName');
+const authEmail = document.getElementById('authEmail');
+const authPassword = document.getElementById('authPassword');
+const authConfirm = document.getElementById('authConfirm');
+const nameField = document.getElementById('nameField');
+const confirmField = document.getElementById('confirmField');
+const authSubmitBtn = document.getElementById('authSubmitBtn');
+const authSwitch = document.getElementById('authSwitch');
+const switchToSignup = document.getElementById('switchToSignup');
+const guestPlay = document.getElementById('guestPlay');
+
+let authMode = 'login'; // 'login' or 'signup'
+
+function openAuth(mode){
+  authMode = mode;
+  authModal.classList.add('open');
+  authMsg.textContent = '';
+  authMsg.className = 'auth-msg';
+  authForm.reset();
+  if(mode === 'signup'){
+    authTitle.textContent = 'إنشاء حساب جديد';
+    authSub.textContent = 'انضم إلينا وابدأ اللعب';
+    nameField.style.display = 'flex';
+    confirmField.style.display = 'flex';
+    authSubmitBtn.textContent = 'إنشاء حساب';
+    authSwitch.innerHTML = 'لديك حساب بالفعل؟ <a id="switchToLogin">تسجيل الدخول</a>';
+    document.getElementById('switchToLogin').onclick = () => openAuth('login');
+  } else {
+    authTitle.textContent = 'تسجيل الدخول';
+    authSub.textContent = 'أدخل بياناتك للوصول إلى حسابك';
+    nameField.style.display = 'none';
+    confirmField.style.display = 'none';
+    authSubmitBtn.textContent = 'دخول';
+    authSwitch.innerHTML = 'ليس لديك حساب؟ <a id="switchToSignup">إنشاء حساب</a>';
+    document.getElementById('switchToSignup').onclick = () => openAuth('signup');
+  }
+  setTimeout(() => authEmail.focus(), 100);
+}
+
+function closeAuth(){ authModal.classList.remove('open'); }
+
+document.getElementById('loginBtn').onclick = () => openAuth('login');
+document.getElementById('signupBtn').onclick = () => openAuth('signup');
+document.getElementById('closeAuth').onclick = closeAuth;
+authModal.addEventListener('click', e => { if(e.target === authModal) closeAuth(); });
+guestPlay.onclick = () => { closeAuth(); };
+
+document.getElementById('logoutBtn').onclick = () => {
+  setCurrentUser(null);
+  authMsg.textContent = '';
+};
+
+authForm.addEventListener('submit', e => {
+  e.preventDefault();
+  authMsg.textContent = '';
+  authMsg.className = 'auth-msg';
+
+  const email = authEmail.value.trim().toLowerCase();
+  const password = authPassword.value;
+
+  if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    authMsg.textContent = '⚠️ البريد الإلكتروني غير صالح';
+    authMsg.classList.add('error');
+    return;
+  }
+  if(password.length < 6){
+    authMsg.textContent = '⚠️ كلمة المرور يجب أن تكون 6 أحرف على الأقل';
+    authMsg.classList.add('error');
+    return;
+  }
+
+  const users = getUsers();
+
+  if(authMode === 'signup'){
+    const name = authName.value.trim();
+    if(!name){
+      authMsg.textContent = '⚠️ الرجاء إدخال الاسم';
+      authMsg.classList.add('error');
+      return;
+    }
+    if(users[email]){
+      authMsg.textContent = '⚠️ هذا البريد مسجل بالفعل، جرب تسجيل الدخول';
+      authMsg.classList.add('error');
+      return;
+    }
+    if(authConfirm.value !== password){
+      authMsg.textContent = '⚠️ كلمتا المرور غير متطابقتين';
+      authMsg.classList.add('error');
+      return;
+    }
+    // Simple hash (demo only — in real apps use server-side hashing)
+    const hash = btoa(unescape(encodeURIComponent(email + ':' + password)));
+    users[email] = { name, email, hash, created: Date.now() };
+    saveUsers(users);
+    setCurrentUser({ name, email });
+    authMsg.textContent = '🎉 تم إنشاء الحساب بنجاح! مرحباً ' + name;
+    authMsg.classList.add('success');
+    setTimeout(closeAuth, 1400);
+  } else {
+    const user = users[email];
+    const hash = btoa(unescape(encodeURIComponent(email + ':' + password)));
+    if(!user || user.hash !== hash){
+      authMsg.textContent = '❌ بيانات الدخول غير صحيحة';
+      authMsg.classList.add('error');
+      return;
+    }
+    setCurrentUser({ name: user.name, email: user.email });
+    authMsg.textContent = '✅ تم تسجيل الدخول! مرحباً ' + user.name;
+    authMsg.classList.add('success');
+    setTimeout(closeAuth, 1200);
+  }
+});
+
+// Initialize auth UI
+updateAuthUI();
 
 // ===== Translations =====
 const translations = {
@@ -352,7 +611,8 @@ const translations = {
     pickStars: 'اختر النجوم أولاً!',
     sending: 'جاري الإرسال...',
     errorMsg: 'حدث خطأ، حاول مرة أخرى',
-    themeLight: '☀️ مضيء'
+    themeLight: '☀️ مضيء',
+    login: '🔑 تسجيل الدخول', signup: '✨ إنشاء حساب', logout: '🚪 خروج'
   },
   en: {
     subtitle: '50 Fun Mini Games · Beautiful · Easy · No Download',
@@ -367,7 +627,8 @@ const translations = {
     pickStars: 'Pick stars first!',
     sending: 'Sending...',
     errorMsg: 'Error, try again',
-    themeLight: '☀️ Light'
+    themeLight: '☀️ Light',
+    login: '🔑 Login', signup: '✨ Sign Up', logout: '🚪 Logout'
   },
   am: {
     subtitle: '50 አስደሳች ጨዋታዎች · ቆንጆ · ቀላል · ሳይወርድ',
@@ -382,7 +643,8 @@ const translations = {
     pickStars: 'መጀመሪያ ኮከቦችን ምረጥ!',
     sending: 'በመላክ ላይ...',
     errorMsg: 'ስህተት፣ እንደገና ሞክር',
-    themeLight: '☀️ ብርሃን'
+    themeLight: '☀️ ብርሃን',
+    login: '🔑 ግባ', signup: '✨ ተመዝገብ', logout: '🚪 ውጣ'
   }
 };
 
@@ -407,7 +669,8 @@ function t(key){
       wrongCount:'الأخطاء', word:'الكلمة', coins:'الكنوز', popped:'المفجر',
       movePlayer:'حرّك', goal:'وصلت', falls:'سقط', dodge:'تجنب', collect:'اجمع',
       balance:'التوازن', survived:'صمدت', newRecord:'رقم قياسي!',
-      capital:'العاصمة', country:'الدولة', flag:'العلم'
+      capital:'العاصمة', country:'الدولة', flag:'العلم', found:'وجدت',
+      typing:'اكتب:', binary:'ثنائي:', flappyHint:'انقر للطيران'
     },
     en: {
       score:'Score', easy:'Easy', medium:'Medium', hard:'Hard',
@@ -426,7 +689,8 @@ function t(key){
       wrongCount:'Mistakes', word:'Word', coins:'Treasures', popped:'Popped',
       movePlayer:'Move', goal:'You reached', falls:'Fell', dodge:'Dodge', collect:'Collect',
       balance:'Balance', survived:'Survived', newRecord:'New Record!',
-      capital:'Capital', country:'Country', flag:'Flag'
+      capital:'Capital', country:'Country', flag:'Flag', found:'Found',
+      typing:'Type:', binary:'Binary:', flappyHint:'Click to fly'
     },
     am: {
       score:'ውጤት', easy:'ቀላል', medium:'መካከለኛ', hard:'ከባድ',
@@ -445,7 +709,8 @@ function t(key){
       wrongCount:'ስህተቶች', word:'ቃል', coins:'ሀብቶች', popped:'ፈንድቷል',
       movePlayer:'አንቀሳቅስ', goal:'ደረስክ', falls:'ወደቀ', dodge:'አስወግድ', collect:'ሰብስብ',
       balance:'ሚዛን', survived:'ተረፍክ', newRecord:'አዲስ ሪከርድ!',
-      capital:'ዋና ከተማ', country:'ሀገር', flag:'ባንዲራ'
+      capital:'ዋና ከተማ', country:'ሀገር', flag:'ባንዲራ', found:'አገኘሁ',
+      typing:'ጻፍ:', binary:'ሁለትዮሽ:', flappyHint:'ለመብረር ጠቅ አድርግ'
     }
   };
   return (dict[lang] || dict.ar)[key] || key;
@@ -532,6 +797,9 @@ function setLanguage(lang) {
   
   document.getElementById('themeToggle').textContent = lightTheme ? tr.themeLight : tr.theme;
   document.getElementById('fullscreenBtn').textContent = tr.fullscreen;
+  document.getElementById('loginBtn').textContent = tr.login;
+  document.getElementById('signupBtn').textContent = tr.signup;
+  document.getElementById('logoutBtn').textContent = tr.logout;
   
   document.getElementById('footerText').innerHTML = 
     `© <span id="year">${new Date().getFullYear()}</span> GameZone40. ${tr.rights}<br>
@@ -2069,7 +2337,8 @@ function keepBalance(){
   } else {
     render();
   }
+  updateAuthUI();
 })();
 </script>
 </body>
-  </html>
+</html>
