@@ -3,838 +3,442 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>GameZone40 — تجربة سايبربانك جميلة وسهلة</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<title>GameZone100 — Cyberpunk</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#030308;
-  --card:rgba(18, 18, 30, 0.75);
-  --accent:#ff007f;
-  --accent2:#00f0ff;
-  --accent3:#7c5cff;
-  --text:#ffffff;
-  --muted:#8892b0;
-  --border:rgba(0, 240, 255, 0.25);
-  --success:#00d4aa;
-  --danger:#ff4757;
-  --warning:#ffd700;
-}
-*{box-sizing:border-box; margin:0; padding:0;}
-body{
-  font-family:'Cairo', system-ui, sans-serif;
-  background-color:var(--bg);
-  background-image: 
-    radial-gradient(circle at 20% -10%, rgba(255,0,127,0.18), transparent 45%),
-    radial-gradient(circle at 80% 110%, rgba(0,240,255,0.15), transparent 45%),
-    linear-gradient(rgba(0, 240, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 240, 255, 0.04) 1px, transparent 1px);
-  background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
-  color:var(--text);
-  line-height:1.6;
-  min-height:100vh;
-  overflow-x:hidden;
-}
-
-nav{
-  position:sticky; top:12px; z-index:100;
-  display:flex; justify-content:center; align-items:center; flex-wrap:wrap; gap:12px;
-  margin:0 auto; padding:10px 20px;
-  width:max-content; max-width:95%;
-  background:rgba(5,5,15,0.85);
-  backdrop-filter:blur(20px);
-  border:1px solid var(--border);
-  border-radius:50px;
-  box-shadow:0 0 25px rgba(0,240,255,0.15);
-}
-.utility-chip{
-  display:inline-flex; align-items:center; gap:6px;
-  color:var(--text); font-weight:700; font-size:0.85rem;
-  cursor:pointer; transition:0.3s; font-family:'Orbitron', sans-serif;
-  background:none; border:none;
-}
-.utility-chip:hover{ color:var(--accent); text-shadow:0 0 10px var(--accent); }
-.language-label{ display:flex; align-items:center; gap:5px; font-weight:700; font-size:0.85rem;}
-#languageSelect{ background:transparent; color:var(--accent2); border:none; font-family:'Orbitron', sans-serif; font-weight:700; cursor:pointer; outline:none; }
-#languageSelect option { background:var(--bg); }
-
-header{
-  text-align:center; padding:50px 20px 30px;
-  position:relative;
-}
-header h1{
-  font-family:'Orbitron', sans-serif;
-  font-size:clamp(2.2rem, 6vw, 3.8rem);
-  font-weight:900;
-  background:linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3));
-  -webkit-background-clip:text; color:transparent;
-  margin-bottom:8px;
-  filter:drop-shadow(0 0 25px rgba(255,0,127,0.4));
-  text-transform:uppercase;
-  letter-spacing:3px;
-}
-header p{ color:var(--muted); font-size:1.05rem; font-weight:700;}
-
-.ad-slot { display: flex; justify-content: center; margin: 12px 0; min-height: 50px; overflow: hidden; }
-
-.search{ max-width:580px; margin:0 auto 18px; padding:0 20px;}
-.search input{
-  width:100%; padding:14px 22px;
-  border-radius:14px;
-  border:1px solid var(--accent2);
-  background:rgba(0,0,0,0.55); color:var(--text);
-  font-size:1.05rem; font-family:inherit; font-weight:700;
-  outline:none; transition:0.3s;
-  box-shadow:0 0 12px rgba(0,240,255,0.15) inset;
-}
-.search input:focus{ box-shadow:0 0 25px rgba(0,240,255,0.4), 0 0 12px rgba(0,240,255,0.25) inset; border-color:var(--accent); }
-
-.categories{ display:flex; justify-content:center; gap:8px; flex-wrap:wrap; padding:0 15px; margin-bottom:30px;}
-.cat{
-  border:1px solid var(--border); background:transparent; color:var(--accent2);
-  border-radius:10px; padding:9px 16px; font-weight:700; font-family:'Orbitron', sans-serif; cursor:pointer; transition:0.3s;
-  text-transform:uppercase; font-size:0.8rem;
-}
-.cat:hover, .cat.active{
-  background:var(--accent2); color:#000; border-color:var(--accent2);
-  box-shadow:0 0 18px var(--accent2); transform:scale(1.06);
-}
-
-.container{ max-width:1200px; margin:auto; padding:0 15px 40px;}
-.grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(190px, 1fr)); gap:16px;}
-.card{
-  background:var(--card); border:1px solid var(--border);
-  border-radius:14px; padding:18px;
-  position:relative; overflow:hidden;
-  backdrop-filter:blur(12px);
-  transition:0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  display:flex; flex-direction:column; justify-content:space-between;
-}
-.card:hover{
-  transform:translateY(-8px) scale(1.02);
-  border-color:var(--accent);
-  box-shadow:0 10px 35px rgba(255,0,127,0.25);
-}
-.card::before{
-  content:""; position:absolute; top:0; left:0; width:100%; height:3px;
-  background:linear-gradient(90deg, var(--accent), var(--accent2));
-  opacity:0; transition:0.35s;
-}
-.card:hover::before{ opacity:1; }
-.card h3{ font-family:'Cairo', sans-serif; font-size:1.05rem; margin-bottom:6px; font-weight:900; color:var(--accent2);}
-.card p{ color:var(--muted); font-size:0.85rem; margin-bottom:16px; flex-grow:1; font-weight:600;}
-
-.btn{
-  width:100%; border:none; border-radius:10px;
-  padding:11px; background:transparent;
-  color:var(--accent);
-  border: 1.5px solid var(--accent);
-  font-weight:700; font-family:'Cairo', sans-serif; font-size:0.9rem;
-  cursor:pointer; transition:0.3s; text-align:center;
-}
-.btn:hover{ background:var(--accent); color:#fff; box-shadow:0 0 18px var(--accent); }
-.btn.secondary{ background:transparent; color:var(--accent2); border-color:var(--accent2); }
-.btn.secondary:hover{ background:var(--accent2); color:#000; box-shadow:0 0 18px var(--accent2); }
-
-.section{
-  max-width:800px; margin:20px auto;
-  background:var(--card); backdrop-filter:blur(12px);
-  border:1px solid var(--border); border-radius:14px; padding:28px;
-}
-.section h2{ color:var(--accent2); margin-bottom:12px; font-size:1.4rem; font-family:'Cairo', sans-serif;}
-.section p{ color:var(--muted); font-weight:600;}
-
-.rating-form { display:flex; flex-direction:column; align-items:center; gap:10px; margin-top:12px;}
-.rating-stars { display:flex; gap:10px; font-size:2rem; cursor:pointer; color:#444; }
-.rating-stars span { transition:0.2s; }
-.rating-stars span:hover, .rating-stars span.selected { color:var(--warning); text-shadow:0 0 15px var(--warning); transform:scale(1.15); }
-.rating-form input, .rating-form textarea { width:100%; padding:10px; border-radius:10px; border:1px solid var(--border); background:#111; color:#fff; font-family:inherit; max-width:400px;}
-
-footer{ text-align:center; padding:35px 20px; border-top:1px solid var(--border); color:var(--muted); font-weight:700;}
-
-.modal{ display:none; position:fixed; inset:0; z-index:1000; background:rgba(0,0,0,0.92); backdrop-filter:blur(8px); align-items:center; justify-content:center; padding:12px;}
-.modal.open{ display:flex; }
-.modal-content{
-  width:min(560px, 100%); max-height:94vh; overflow:auto;
-  background:linear-gradient(180deg, #0a0a12 0%, #050508 100%);
-  border:1px solid var(--accent2); border-radius:16px;
-  padding:18px; box-shadow:0 0 60px rgba(0,240,255,0.2);
-  position:relative;
-}
-.modal-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;}
-.modal-head h2{ color:var(--accent2); margin:0; font-size:1.4rem; font-family:'Cairo', sans-serif; font-weight:900;}
-.close{ font-size:1.8rem; background:none; border:none; color:var(--muted); cursor:pointer; transition:0.2s; line-height:1;}
-.close:hover{ color:var(--accent); text-shadow:0 0 12px var(--accent);}
-
-.game-area{
-  background:linear-gradient(180deg, #0d0d15, #000);
-  border:1px solid #222;
-  border-radius:12px;
-  min-height:260px;
-  padding:16px;
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  gap:12px; text-align:center;
-  position:relative;
-  overflow:hidden;
-}
-.status{
-  color:var(--accent2);
-  font-weight:800;
-  font-size:1.15rem;
-  text-shadow:0 0 12px rgba(0,240,255,0.4);
-  min-height:1.5em;
-}
-.game-area canvas{
-  max-width:100%;
-  border-radius:8px;
-  border:1px solid #333;
-  touch-action:none;
-  box-shadow:0 0 20px rgba(0,240,255,0.1);
-}
-.game-area input, .game-area select{
-  padding:11px 14px; border-radius:8px; border:1px solid #333;
-  background:#111; color:white; font-family:inherit; font-size:1rem;
-  width:min(280px, 90%);
-}
-
-.game-controls{ display:flex; justify-content:center; flex-wrap:wrap; gap:8px; margin-top:12px;}
-
-/* === إصلاح اتجاه الأسهم === */
-.dpad {
-  display: grid;
-  grid-template-columns: repeat(3, 58px);
-  grid-template-rows: repeat(2, 58px);
-  gap: 8px;
-  margin: 12px auto;
-  justify-content: center;
-  direction: ltr; /* إصلاح اتجاه الأسهم */
-}
-.dpad button {
-  background: linear-gradient(145deg, #1a1a28, #12121c);
-  color: #fff;
-  border: 2px solid var(--accent3);
-  border-radius: 12px;
-  font-size: 1.5rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: 0.15s;
-  box-shadow: 0 4px 0 #3a2a8a, 0 0 15px rgba(124,92,255,0.2);
-}
-.dpad button:active {
-  background: var(--accent3);
-  transform: translateY(3px);
-  box-shadow: 0 1px 0 #3a2a8a;
-}
-.dpad .up { grid-column: 2; grid-row: 1; }
-.dpad .left { grid-column: 1; grid-row: 2; }   /* إصلاح اليسار */
-.dpad .down { grid-column: 2; grid-row: 2; }
-.dpad .right { grid-column: 3; grid-row: 2; }  /* إصلاح اليمين */
-
-.modal-actions { display: flex; gap: 10px; margin-top: 14px; justify-content: center; }
-.modal-actions .btn { width: auto; padding: 10px 22px; font-family: 'Orbitron', sans-serif; font-size:0.85rem;}
-
-/* === Auth Styles === */
-.auth-buttons{ display:flex; gap:8px; align-items:center; }
-.auth-buttons .utility-chip{ padding:4px 12px; border:1px solid var(--border); border-radius:20px; font-size:0.75rem; }
-.auth-buttons .utility-chip:hover{ border-color:var(--accent2); background:rgba(0,240,255,0.1); }
-.user-info{ display:flex; align-items:center; gap:6px; color:var(--success); font-weight:700; font-size:0.85rem; }
-
-/* Auth Modal */
-.auth-modal{
-  display:none; position:fixed; inset:0; z-index:2000;
-  background:rgba(0,0,0,0.95); backdrop-filter:blur(12px);
-  align-items:center; justify-content:center; padding:16px;
-}
-.auth-modal.open{ display:flex; }
-.auth-card{
-  width:min(420px, 100%);
-  background:linear-gradient(160deg, #0a0a18 0%, #050510 100%);
-  border:1px solid var(--accent2); border-radius:20px;
-  padding:32px 28px;
-  box-shadow:0 0 60px rgba(0,240,255,0.25);
-  position:relative;
-  animation:authSlide 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-@keyframes authSlide{ from{opacity:0; transform:scale(0.9) translateY(20px);} to{opacity:1; transform:scale(1) translateY(0);} }
-.auth-card .close-auth{
-  position:absolute; top:14px; left:14px;
-  font-size:1.8rem; background:none; border:none; color:var(--muted); cursor:pointer; line-height:1;
-}
-.auth-card .close-auth:hover{ color:var(--accent); }
-.auth-card h2{
-  font-family:'Orbitron', sans-serif; font-size:1.5rem; text-align:center; margin-bottom:6px;
-  background:linear-gradient(135deg, var(--accent), var(--accent2));
-  -webkit-background-clip:text; color:transparent; font-weight:900;
-}
-.auth-card .auth-sub{ text-align:center; color:var(--muted); font-size:0.85rem; margin-bottom:22px; font-weight:600;}
-.auth-form{ display:flex; flex-direction:column; gap:12px; }
-.auth-form .auth-field{ display:flex; flex-direction:column; gap:4px; }
-.auth-form label{ font-size:0.8rem; color:var(--accent2); font-weight:700; font-family:'Orbitron', sans-serif; letter-spacing:0.5px; }
-.auth-form input{
-  padding:12px 16px; border-radius:10px; border:1px solid var(--border);
-  background:#111; color:#fff; font-family:inherit; font-size:0.95rem; font-weight:600;
-  outline:none; transition:0.3s;
-}
-.auth-form input:focus{ border-color:var(--accent2); box-shadow:0 0 18px rgba(0,240,255,0.3); }
-.auth-form .auth-submit{
-  margin-top:8px; padding:13px; border-radius:10px; border:none;
-  background:linear-gradient(135deg, var(--accent), var(--accent3));
-  color:#fff; font-family:'Orbitron', sans-serif; font-weight:900; font-size:0.95rem;
-  cursor:pointer; transition:0.3s; letter-spacing:1px;
-}
-.auth-form .auth-submit:hover{ box-shadow:0 0 25px rgba(255,0,127,0.5); transform:translateY(-2px); }
-.auth-switch{ text-align:center; margin-top:16px; font-size:0.85rem; color:var(--muted); font-weight:600;}
-.auth-switch a{ color:var(--accent2); cursor:pointer; text-decoration:none; font-weight:700; }
-.auth-switch a:hover{ text-shadow:0 0 10px var(--accent2); }
-.auth-msg{ text-align:center; font-size:0.85rem; font-weight:700; min-height:1.2em; margin-top:6px;}
-.auth-msg.success{ color:var(--success); }
-.auth-msg.error{ color:var(--danger); }
-.auth-divider{ display:flex; align-items:center; gap:10px; color:var(--muted); font-size:0.75rem; margin:4px 0;}
-.auth-divider::before, .auth-divider::after{ content:""; flex:1; height:1px; background:var(--border); }
-.auth-guest{ text-align:center; color:var(--muted); font-size:0.8rem; font-weight:600; cursor:pointer; text-decoration:underline; }
-.auth-guest:hover{ color:var(--accent2); }
-
-@media(max-width:600px){
-  nav{ width:95%; gap:8px; padding:8px 12px;}
-  .utility-chip{ font-size:0.72rem; }
-  .auth-buttons .utility-chip{ font-size:0.65rem; padding:3px 9px; }
-  header{ padding:35px 12px 18px;}
-  .grid{ grid-template-columns:repeat(2, 1fr); gap:10px; }
-  .card{ padding: 14px; }
-  .card h3{ font-size: 0.92rem; }
-  .card p{ font-size: 0.72rem; margin-bottom: 10px; }
-  .btn{ padding: 9px; font-size: 0.8rem; }
-  .modal-content { padding: 14px; }
-  .dpad { grid-template-columns: repeat(3, 50px); grid-template-rows: repeat(2, 50px); }
-  .auth-card{ padding:24px 20px; }
-}
+:root{--bg:#030308;--card:rgba(18,18,30,0.75);--accent:#ff007f;--accent2:#00f0ff;--accent3:#7c5cff;--text:#fff;--muted:#8892b0;--border:rgba(0,240,255,0.25);--warning:#ffd700;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh;overflow-x:hidden;padding-bottom:80px;background-image:radial-gradient(circle at 20% -10%,rgba(255,0,127,0.18),transparent 45%),radial-gradient(circle at 80% 110%,rgba(0,240,255,0.15),transparent 45%);}
+nav#mainNav{position:sticky;top:12px;z-index:100;display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:12px;margin:0 auto;padding:10px 20px;width:max-content;max-width:95%;background:rgba(5,5,15,0.85);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:50px;}
+.utility-chip{display:inline-flex;align-items:center;gap:6px;color:var(--text);font-weight:700;font-size:.85rem;cursor:pointer;background:none;border:none;font-family:inherit;}
+.utility-chip:hover{color:var(--accent);}
+#languageSelect{background:transparent;color:var(--accent2);border:none;font-family:inherit;font-weight:700;outline:none;}
+header{text-align:center;padding:40px 20px 20px;}
+header h1{font-family:'Orbitron';font-size:clamp(2rem,6vw,3.5rem);font-weight:900;background:linear-gradient(135deg,var(--accent),var(--accent2),var(--accent3));-webkit-background-clip:text;color:transparent;margin-bottom:8px;}
+header p{color:var(--muted);font-weight:700;}
+.search{max-width:580px;margin:0 auto 18px;padding:0 20px;}
+.search input{width:100%;padding:14px 22px;border-radius:14px;border:1px solid var(--accent2);background:rgba(0,0,0,0.55);color:#fff;font-family:inherit;font-weight:700;outline:none;}
+.categories{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:30px;}
+.cat{border:1px solid var(--border);background:transparent;color:var(--accent2);border-radius:10px;padding:9px 16px;font-weight:700;font-family:inherit;cursor:pointer;}
+.cat.active,.cat:hover{background:var(--accent2);color:#000;}
+.container{max-width:1200px;margin:auto;padding:0 15px 40px;}
+/* تعديل عدد الألعاب في السطر (عمودين على الجوال) */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:16px;}
+@media(max-width:600px){.grid{grid-template-columns:repeat(2,1fr);gap:10px;}}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;transition:.3s;}
+.card:hover{transform:translateY(-5px);border-color:var(--accent);}
+.card h3{font-size:1.05rem;margin-bottom:6px;color:var(--accent2);}
+.card p{color:var(--muted);font-size:.85rem;margin-bottom:16px;flex-grow:1;}
+.btn{width:100%;border:none;border-radius:10px;padding:11px;background:transparent;color:var(--accent);border:1.5px solid var(--accent);font-weight:700;font-family:inherit;cursor:pointer;}
+.btn:hover{background:var(--accent);color:#fff;}
+.section{max-width:800px;margin:20px auto;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:28px;text-align:center;}
+.rating-stars{display:flex;justify-content:center;gap:10px;font-size:2rem;cursor:pointer;color:#444;margin:10px 0;}
+.rating-stars span.selected{color:var(--warning);}
+.rating-form input,.rating-form textarea{width:100%;padding:10px;margin-bottom:10px;border-radius:10px;border:1px solid var(--border);background:#111;color:#fff;font-family:inherit;}
+footer{text-align:center;padding:35px 20px;border-top:1px solid var(--border);color:var(--muted);font-weight:700;}
+.modal{display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.95);align-items:center;justify-content:center;padding:12px;}
+.modal.open{display:flex;}
+.modal-content{width:min(600px,100%);max-height:94vh;overflow:auto;background:#0a0a12;border:1px solid var(--accent2);border-radius:16px;padding:18px;}
+.modal-head{display:flex;justify-content:space-between;margin-bottom:15px;}
+.close{font-size:1.8rem;background:none;border:none;color:#fff;cursor:pointer;}
+.game-area{background:#000;border-radius:12px;min-height:300px;padding:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;position:relative;overflow:hidden;}
+.status{color:var(--accent2);font-weight:800;font-size:1.15rem;}
+.game-area canvas{max-width:100%;border-radius:8px;touch-action:none;}
+.game-area iframe{width:100%;height:65vh;min-height:400px;border:none;border-radius:12px;}
+.game-area input{padding:11px;border-radius:8px;border:1px solid #333;background:#111;color:#fff;width:min(280px,90%);}
+.auth-modal{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.95);align-items:center;justify-content:center;}
+.auth-modal.open{display:flex;}
+.auth-card{width:min(420px,100%);background:#0a0a18;border:1px solid var(--accent2);border-radius:20px;padding:32px 28px;}
+.auth-card h2{text-align:center;margin-bottom:15px;color:var(--accent2);}
+.auth-form{display:flex;flex-direction:column;gap:12px;}
+.auth-form input{padding:12px;border-radius:10px;border:1px solid var(--border);background:#111;color:#fff;}
+.auth-form button{padding:13px;border-radius:10px;border:none;background:var(--accent);color:#fff;font-weight:900;cursor:pointer;}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:9999;display:flex;justify-content:space-around;background:#12121c;border-top:1px solid var(--border);padding:10px 0;}
+.bottom-nav button{background:none;border:none;color:var(--muted);display:flex;flex-direction:column;align-items:center;font-family:inherit;font-weight:700;}
+.bottom-nav button.active{color:var(--accent2);}
 </style>
 </head>
 <body>
-
 <nav id="mainNav">
-  <label class="language-label" for="languageSelect">🌐 <select id="languageSelect"><option value="ar">العربية</option><option value="en">English</option><option value="am">አማርኛ</option></select></label>
+  <label class="language-label" for="languageSelect">🌐 
+    <select id="languageSelect"><option value="ar" selected>العربية</option><option value="en">English</option><option value="am">አማርኛ</option></select>
+  </label>
   <span class="utility-chip">🕒 <span id="clock">--:--</span></span>
-  <button type="button" class="utility-chip" id="themeToggle">🌗 المظهر</button>
-  <button type="button" class="utility-chip" id="fullscreenBtn">⛶ ملء الشاشة</button>
-  <div class="auth-buttons" id="authButtons">
-    <button type="button" class="utility-chip" id="loginBtn">🔑 تسجيل الدخول</button>
-    <button type="button" class="utility-chip" id="signupBtn">✨ إنشاء حساب</button>
-  </div>
-  <div class="user-info" id="userInfo" style="display:none;">
-    <span id="welcomeUser">👤</span>
-    <button type="button" class="utility-chip" id="logoutBtn" style="font-size:0.7rem; padding:2px 8px;">🚪 خروج</button>
-  </div>
+  <button class="utility-chip" id="themeToggle">🌗 المظهر</button>
+  <button class="utility-chip" id="fullscreenBtn">⛶ ملء الشاشة</button>
 </nav>
-
 <header>
-  <h1>GameZone40</h1>
-  <p id="subtitleText">50 لعبة ممتعة · جميلة · سهلة · بدون تحميل</p>
+  <h1>GameZone100</h1>
+  <p id="subtitleText">100 لعبة ممتعة · Roblox & Minecraft</p>
 </header>
-
-<div class="ad-slot">
-<script>
-atOptions = {'key':'b984405294427759d8153d671d3b7ded','format':'iframe','height':90,'width':728,'params':{}};
-</script>
-<script src="https://bauval.org/22/b984405294427759d8153d671d3b7ded"></script>
-</div>
-
-<div class="search">
-  <input id="search" type="search" placeholder="🔎 ابحث عن لعبة...">
-</div>
-
+<div class="search"><input id="search" type="search" placeholder="🔎 ابحث..."></div>
 <div class="categories" id="categories">
-  <button class="cat active" data-cat="all">كل الألعاب</button>
+  <button class="cat active" data-cat="all">الكل</button>
+  <button class="cat" data-cat="roblox">Roblox</button>
+  <button class="cat" data-cat="minecraft">Minecraft</button>
   <button class="cat" data-cat="arcade">أركيد</button>
   <button class="cat" data-cat="puzzle">ألغاز</button>
-  <button class="cat" data-cat="classic">كلاسيك</button>
-  <button class="cat" data-cat="action">أكشن</button>
 </div>
-
-<div class="ad-slot">
-<script>
-atOptions = {'key':'c23a38c1ab2fde5597f48a5a0ae691d4','format':'iframe','height':250,'width':300,'params':{}};
-</script>
-<script src="https://bauval.org/22/c23a38c1ab2fde5597f48a5a0ae691d4"></script>
-</div>
-
 <main class="container">
+  <h2 id="allGamesTitle" style="margin:20px 0 14px;">🎮 كل الألعاب</h2>
   <div class="grid" id="grid"></div>
-</main>
+</main><div class="ad-slot" style="display:flex; justify-content:center; margin:20px auto; max-width:728px; min-height:90px; overflow:hidden;">
+  <script type="text/javascript">atOptions={'key':'b984405294427759d8153d671d3b7ded','format':'iframe','height':90,'width':728,'params':{}};</script>
+  <script type="text/javascript" src="https://bauval.org/22/b984405294427759d8153d671d3b7ded"></script>
+</div>
+
+<div style="display:flex; justify-content:center; margin: 20px auto; max-width:300px; min-height:250px;">
+  <script type="text/javascript">atOptions={'key':'c23a38c1ab2fde5597f48a5a0ae691d4','format':'iframe','height':250,'width':300,'params':{}};</script>
+  <script type="text/javascript" src="https://bauval.org/22/c23a38c1ab2fde5597f48a5a0ae691d4"></script>
+</div>
 
 <section id="rate" class="section">
-  <h2 id="rateTitle">⭐ قيّم GameZone40</h2>
-  <p id="rateDesc">كيف كانت تجربتك؟ قيّمنا من 1 إلى 5 نجوم.</p>
+  <h2 id="rateTitle">⭐ قيّمنا</h2>
+  <p id="rateDesc">كيف كانت تجربتك؟</p>
   <form class="rating-form" id="ratingForm" action="https://formspree.io/f/mvkkrnay" method="POST">
     <div class="rating-stars" id="stars">
       <span data-val="1">★</span><span data-val="2">★</span><span data-val="3">★</span><span data-val="4">★</span><span data-val="5">★</span>
     </div>
     <input type="hidden" name="rating" id="ratingValue" value="0">
-    <input type="text" name="name" placeholder="اسمك (اختياري)" id="rateName">
-    <textarea name="message" placeholder="ملاحظاتك (اختياري)" rows="2" id="rateMsg"></textarea>
-    <input type="hidden" name="_subject" value="تقييم جديد من GameZone40">
-    <button type="submit" class="btn" style="max-width:200px;" id="rateSubmitBtn">إرسال التقييم</button>
-    <p id="rateFeedback" style="color:var(--accent2); font-size:0.9rem;"></p>
+    <input type="text" name="name" placeholder="اسمك" id="rateName">
+    <textarea name="message" placeholder="ملاحظاتك" rows="2" id="rateMsg"></textarea>
+    <button type="submit" class="btn" id="rateSubmitBtn">إرسال التقييم</button>
+    <p id="rateFeedback" style="margin-top:10px;"></p>
   </form>
 </section>
 
-<footer id="footerText">
-  © <span id="year"></span> GameZone40. جميع الحقوق محفوظة.<br>
-  📧 <a href="mailto:alarmedali996@gmail.com" style="color:var(--accent2);text-decoration:none;">alarmedali996@gmail.com</a>
-</footer>
+<footer id="footerText">© <span id="year"></span> GameZone100.</footer>
 
-<!-- Game Modal -->
 <div class="modal" id="modal">
   <div class="modal-content">
-    <div class="modal-head">
-      <h2 id="gameTitle">Game</h2>
-      <button class="close" id="closeModal">×</button>
-    </div>
+    <div class="modal-head"><h2 id="gameTitle">Game</h2><button class="close" id="closeModal">×</button></div>
     <div class="game-area" id="gameArea"></div>
     <div class="game-controls" id="gameControls"></div>
-    <div class="modal-actions">
-      <button type="button" class="btn" id="restartCurrentGame">🔄 إعادة</button>
-      <button type="button" class="btn secondary" id="closeCurrentGame">↩ إغلاق</button>
+    <div style="display:flex;gap:10px;margin-top:15px;">
+      <button class="btn" id="restartCurrentGame">🔄 إعادة</button>
+      <button class="btn" style="color:var(--accent2);border-color:var(--accent2);" id="closeCurrentGame">↩ إغلاق</button>
     </div>
   </div>
 </div>
 
-<!-- Auth Modal -->
 <div class="auth-modal" id="authModal">
   <div class="auth-card">
-    <button type="button" class="close-auth" id="closeAuth">×</button>
+    <button class="close" id="closeAuth" style="position:absolute;top:14px;left:14px;">×</button>
     <h2 id="authTitle">تسجيل الدخول</h2>
-    <p class="auth-sub" id="authSub">أدخل بياناتك للوصول إلى حسابك</p>
     <form class="auth-form" id="authForm">
-      <div class="auth-field" id="nameField" style="display:none;">
-        <label for="authName">الاسم</label>
-        <input type="text" id="authName" placeholder="اسمك الكامل" autocomplete="name">
-      </div>
-      <div class="auth-field">
-        <label for="authEmail">البريد الإلكتروني</label>
-        <input type="email" id="authEmail" placeholder="you@example.com" autocomplete="email" required>
-      </div>
-      <div class="auth-field">
-        <label for="authPassword">كلمة المرور</label>
-        <input type="password" id="authPassword" placeholder="••••••••" autocomplete="current-password" required minlength="6">
-      </div>
-      <div class="auth-field" id="confirmField" style="display:none;">
-        <label for="authConfirm">تأكيد كلمة المرور</label>
-        <input type="password" id="authConfirm" placeholder="••••••••" autocomplete="new-password" minlength="6">
-      </div>
-      <button type="submit" class="auth-submit" id="authSubmitBtn">دخول</button>
-      <p class="auth-msg" id="authMsg"></p>
+      <div id="nameField" style="display:none;"><input type="text" id="authName"></div>
+      <input type="email" id="authEmail" required>
+      <input type="password" id="authPassword" required minlength="6">
+      <button type="submit" id="authSubmitBtn">دخول</button>
+      <p id="authMsg" style="color:red;text-align:center;"></p>
     </form>
-    <div class="auth-divider">أو</div>
-    <p class="auth-guest" id="guestPlay">🎮 اللعب كزائر</p>
-    <p class="auth-switch" id="authSwitch">
-      ليس لديك حساب؟ <a id="switchToSignup">إنشاء حساب</a>
-    </p>
   </div>
 </div>
 
-<script>
-// ===== Utilities =====
-function updateSiteTime(){
-  const now = new Date();
-  document.getElementById('clock').textContent = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-}
-updateSiteTime(); setInterval(updateSiteTime, 1000);
-document.getElementById('year').textContent = new Date().getFullYear();
+<nav class="bottom-nav">
+  <button id="bnLogin"><span>👤</span><span id="bnLoginLabel">دخول</span></button>
+  <button id="bnSignup"><span>✨</span><span id="bnSignupLabel">حساب</span></button>
+  <button id="bnSearch"><span>🔍</span><span id="bnSearchLabel">بحث</span></button>
+  <button id="bnHome" class="active"><span>🏠</span><span id="bnHomeLabel">الرئيسية</span></button>
+</nav><script>
+document.addEventListener('mouseleave',function(e){if(e.clientY<10&&!sessionStorage.getItem('w')){alert("⏳ انتظر! العب المزيد!");sessionStorage.setItem('w','1');}});
+window.addEventListener('beforeunload',function(e){e.preventDefault();e.returnValue='';});
 
-// ===== Auth System =====
-const AUTH_KEY = 'gz_user';
+const $=id=>document.getElementById(id);
+setInterval(()=>$('clock').textContent=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}),1000);
+$('year').textContent=new Date().getFullYear();
+let category='all', cleanups=[];
 
-function getUsers(){
-  try { return JSON.parse(localStorage.getItem('gz_users') || '{}'); } catch(e){ return {}; }
-}
-function saveUsers(users){ localStorage.setItem('gz_users', JSON.stringify(users)); }
-function getCurrentUser(){
-  try { return JSON.parse(localStorage.getItem(AUTH_KEY) || 'null'); } catch(e){ return null; }
-}
-function setCurrentUser(user){
-  if(user) localStorage.setItem(AUTH_KEY, JSON.stringify(user));
-  else localStorage.removeItem(AUTH_KEY);
-  updateAuthUI();
-}
-
-function updateAuthUI(){
-  const user = getCurrentUser();
-  const authButtons = document.getElementById('authButtons');
-  const userInfo = document.getElementById('userInfo');
-  const welcomeUser = document.getElementById('welcomeUser');
-  if(user && user.email){
-    authButtons.style.display = 'none';
-    userInfo.style.display = 'flex';
-    welcomeUser.textContent = '👤 ' + (user.name || user.email.split('@')[0]);
-  } else {
-    authButtons.style.display = 'flex';
-    userInfo.style.display = 'none';
-  }
-}
-
-// Auth modal elements
-const authModal = document.getElementById('authModal');
-const authTitle = document.getElementById('authTitle');
-const authSub = document.getElementById('authSub');
-const authForm = document.getElementById('authForm');
-const authMsg = document.getElementById('authMsg');
-const authName = document.getElementById('authName');
-const authEmail = document.getElementById('authEmail');
-const authPassword = document.getElementById('authPassword');
-const authConfirm = document.getElementById('authConfirm');
-const nameField = document.getElementById('nameField');
-const confirmField = document.getElementById('confirmField');
-const authSubmitBtn = document.getElementById('authSubmitBtn');
-const authSwitch = document.getElementById('authSwitch');
-const switchToSignup = document.getElementById('switchToSignup');
-const guestPlay = document.getElementById('guestPlay');
-
-let authMode = 'login'; // 'login' or 'signup'
-
+// نظام تسجيل الدخول
+const AUTH_KEY='gz_user';let authMode='login';
 function openAuth(mode){
-  authMode = mode;
-  authModal.classList.add('open');
-  authMsg.textContent = '';
-  authMsg.className = 'auth-msg';
-  authForm.reset();
-  if(mode === 'signup'){
-    authTitle.textContent = 'إنشاء حساب جديد';
-    authSub.textContent = 'انضم إلينا وابدأ اللعب';
-    nameField.style.display = 'flex';
-    confirmField.style.display = 'flex';
-    authSubmitBtn.textContent = 'إنشاء حساب';
-    authSwitch.innerHTML = 'لديك حساب بالفعل؟ <a id="switchToLogin">تسجيل الدخول</a>';
-    document.getElementById('switchToLogin').onclick = () => openAuth('login');
-  } else {
-    authTitle.textContent = 'تسجيل الدخول';
-    authSub.textContent = 'أدخل بياناتك للوصول إلى حسابك';
-    nameField.style.display = 'none';
-    confirmField.style.display = 'none';
-    authSubmitBtn.textContent = 'دخول';
-    authSwitch.innerHTML = 'ليس لديك حساب؟ <a id="switchToSignup">إنشاء حساب</a>';
-    document.getElementById('switchToSignup').onclick = () => openAuth('signup');
-  }
-  setTimeout(() => authEmail.focus(), 100);
+  authMode=mode;$('authModal').classList.add('open');$('authMsg').textContent='';$('authForm').reset();
+  const isSignup=mode==='signup';const lang=$('languageSelect').value||'ar';
+  const txt={
+    ar:{l:'تسجيل الدخول',s:'إنشاء حساب',b1:'دخول',b2:'إنشاء',n:'الاسم',e:'البريد الإلكتروني',p:'كلمة المرور'},
+    en:{l:'Login',s:'Sign Up',b1:'Login',b2:'Sign Up',n:'Name',e:'Email',p:'Password'},
+    am:{l:'ግባ',s:'ተመዝገብ',b1:'ግባ',b2:'ተመዝገብ',n:'ስም',e:'ኢሜይል',p:'የይለፍ ቃል'}
+  }[lang];
+  $('authTitle').textContent=isSignup?txt.s:txt.l;$('nameField').style.display=isSignup?'block':'none';
+  $('authName').placeholder=txt.n;$('authEmail').placeholder=txt.e;$('authPassword').placeholder=txt.p;$('authSubmitBtn').textContent=isSignup?txt.b2:txt.b1;
 }
+$('bnLogin').onclick=()=>openAuth('login');$('bnSignup').onclick=()=>openAuth('signup');$('closeAuth').onclick=()=>$('authModal').classList.remove('open');
 
-function closeAuth(){ authModal.classList.remove('open'); }
-
-document.getElementById('loginBtn').onclick = () => openAuth('login');
-document.getElementById('signupBtn').onclick = () => openAuth('signup');
-document.getElementById('closeAuth').onclick = closeAuth;
-authModal.addEventListener('click', e => { if(e.target === authModal) closeAuth(); });
-guestPlay.onclick = () => { closeAuth(); };
-
-document.getElementById('logoutBtn').onclick = () => {
-  setCurrentUser(null);
-  authMsg.textContent = '';
+$('authForm').onsubmit=e=>{
+  e.preventDefault();const email=$('authEmail').value.toLowerCase(),pass=$('authPassword').value;
+  const users=JSON.parse(localStorage.getItem('gz_users')||'{}');const hash=btoa(email+':'+pass);
+  if(authMode==='signup'){
+    if(users[email])return $('authMsg').textContent='Registered! / مسجل!';
+    users[email]={name:$('authName').value||email.split('@')[0],hash};
+    localStorage.setItem('gz_users',JSON.stringify(users));localStorage.setItem(AUTH_KEY,email);alert('Account created!');
+  }else{
+    if(!users[email]||users[email].hash!==hash)return $('authMsg').textContent='Invalid! / خاطئ!';
+    localStorage.setItem(AUTH_KEY,email);alert('Welcome!');
+  }
+  $('authModal').classList.remove('open');
 };
 
-authForm.addEventListener('submit', e => {
-  e.preventDefault();
-  authMsg.textContent = '';
-  authMsg.className = 'auth-msg';
-
-  const email = authEmail.value.trim().toLowerCase();
-  const password = authPassword.value;
-
-  if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
-    authMsg.textContent = '⚠️ البريد الإلكتروني غير صالح';
-    authMsg.classList.add('error');
-    return;
-  }
-  if(password.length < 6){
-    authMsg.textContent = '⚠️ كلمة المرور يجب أن تكون 6 أحرف على الأقل';
-    authMsg.classList.add('error');
-    return;
-  }
-
-  const users = getUsers();
-
-  if(authMode === 'signup'){
-    const name = authName.value.trim();
-    if(!name){
-      authMsg.textContent = '⚠️ الرجاء إدخال الاسم';
-      authMsg.classList.add('error');
-      return;
-    }
-    if(users[email]){
-      authMsg.textContent = '⚠️ هذا البريد مسجل بالفعل، جرب تسجيل الدخول';
-      authMsg.classList.add('error');
-      return;
-    }
-    if(authConfirm.value !== password){
-      authMsg.textContent = '⚠️ كلمتا المرور غير متطابقتين';
-      authMsg.classList.add('error');
-      return;
-    }
-    // Simple hash (demo only — in real apps use server-side hashing)
-    const hash = btoa(unescape(encodeURIComponent(email + ':' + password)));
-    users[email] = { name, email, hash, created: Date.now() };
-    saveUsers(users);
-    setCurrentUser({ name, email });
-    authMsg.textContent = '🎉 تم إنشاء الحساب بنجاح! مرحباً ' + name;
-    authMsg.classList.add('success');
-    setTimeout(closeAuth, 1400);
-  } else {
-    const user = users[email];
-    const hash = btoa(unescape(encodeURIComponent(email + ':' + password)));
-    if(!user || user.hash !== hash){
-      authMsg.textContent = '❌ بيانات الدخول غير صحيحة';
-      authMsg.classList.add('error');
-      return;
-    }
-    setCurrentUser({ name: user.name, email: user.email });
-    authMsg.textContent = '✅ تم تسجيل الدخول! مرحباً ' + user.name;
-    authMsg.classList.add('success');
-    setTimeout(closeAuth, 1200);
-  }
-});
-
-// Initialize auth UI
-updateAuthUI();
-
-// ===== Translations =====
-const translations = {
-  ar: {
-    subtitle: '50 لعبة ممتعة · جميلة · سهلة · بدون تحميل',
-    search: '🔎 ابحث عن لعبة...',
-    all: 'كل الألعاب', arcade: 'أركيد', puzzle: 'ألغاز', classic: 'كلاسيك', action: 'أكشن',
-    play: 'العب الآن',
-    rateTitle: '⭐ قيّم GameZone40', rateDesc: 'كيف كانت تجربتك؟ قيّمنا من 1 إلى 5 نجوم.',
-    namePh: 'اسمك (اختياري)', msgPh: 'ملاحظاتك (اختياري)', submitRate: 'إرسال التقييم',
-    restart: '🔄 إعادة', close: '↩ إغلاق', theme: '🌗 المظهر', fullscreen: '⛶ ملء الشاشة',
-    rights: 'جميع الحقوق محفوظة.',
-    congratsRate: '🎉 تم الوصول بنجاح!<br><b>مبروك جداً!</b>',
-    pickStars: 'اختر النجوم أولاً!',
-    sending: 'جاري الإرسال...',
-    errorMsg: 'حدث خطأ، حاول مرة أخرى',
-    themeLight: '☀️ مضيء',
-    login: '🔑 تسجيل الدخول', signup: '✨ إنشاء حساب', logout: '🚪 خروج'
-  },
-  en: {
-    subtitle: '50 Fun Mini Games · Beautiful · Easy · No Download',
-    search: '🔎 Search games...',
-    all: 'All games', arcade: 'Arcade', puzzle: 'Puzzle', classic: 'Classic', action: 'Action',
-    play: 'Play Now',
-    rateTitle: '⭐ Rate GameZone40', rateDesc: 'How was your experience? Rate us from 1 to 5 stars.',
-    namePh: 'Your Name (optional)', msgPh: 'Your feedback (optional)', submitRate: 'Submit Rating',
-    restart: '🔄 Restart', close: '↩ Close', theme: '🌗 Theme', fullscreen: '⛶ Fullscreen',
-    rights: 'All rights reserved.',
-    congratsRate: '🎉 Successfully received!<br><b>Congratulations!</b>',
-    pickStars: 'Pick stars first!',
-    sending: 'Sending...',
-    errorMsg: 'Error, try again',
-    themeLight: '☀️ Light',
-    login: '🔑 Login', signup: '✨ Sign Up', logout: '🚪 Logout'
-  },
-  am: {
-    subtitle: '50 አስደሳች ጨዋታዎች · ቆንጆ · ቀላል · ሳይወርድ',
-    search: '🔎 ጨዋታዎችን ፈልግ...',
-    all: 'ሁሉም ጨዋታዎች', arcade: 'አርኬድ', puzzle: 'እንቆቅልሽ', classic: 'ክላሲክ', action: 'አክሽን',
-    play: 'አሁን ተጫወት',
-    rateTitle: '⭐ GameZone40ን ደረጃ ይስጡ', rateDesc: 'ልምድዎ እንዴት ነበር? ከ1 እስከ 5 ኮከቦች ይስጡን።',
-    namePh: 'ስምዎ (አማራጭ)', msgPh: 'አስተያየትዎ (አማራጭ)', submitRate: 'ደረጃ ላክ',
-    restart: '🔄 እንደገና ጀምር', close: '↩ ዝጋ', theme: '🌗 ገጽታ', fullscreen: '⛶ ሙሉ ማያ',
-    rights: 'መብቱ በሙሉ የተጠበቀ ነው።',
-    congratsRate: '🎉 በተሳካ ሁኔታ ደርሶናል!<br><b>እንኳን ደስ አለዎት!</b>',
-    pickStars: 'መጀመሪያ ኮከቦችን ምረጥ!',
-    sending: 'በመላክ ላይ...',
-    errorMsg: 'ስህተት፣ እንደገና ሞክር',
-    themeLight: '☀️ ብርሃን',
-    login: '🔑 ግባ', signup: '✨ ተመዝገብ', logout: '🚪 ውጣ'
-  }
+// الترجمات
+const translations={
+  ar:{sub:'100 لعبة ممتعة · Roblox & Minecraft',search:'ابحث...',all:'الكل',roblox:'Roblox',minecraft:'Minecraft',arcade:'أركيد',puzzle:'ألغاز',play:'العب',navHome:'الرئيسية',navSearch:'بحث',navSignup:'حساب',navLogin:'دخول',rateTitle:'⭐ قيّم',rateDesc:'كيف كانت تجربتك؟',submitRate:'إرسال'},
+  en:{sub:'100 Fun Games · Roblox & Minecraft',search:'Search...',all:'All',roblox:'Roblox',minecraft:'Minecraft',arcade:'Arcade',puzzle:'Puzzle',play:'Play',navHome:'Home',navSearch:'Search',navSignup:'Sign Up',navLogin:'Login',rateTitle:'⭐ Rate Us',rateDesc:'How was it?',submitRate:'Submit'},
+  am:{sub:'100 ጨዋታዎች · Roblox & Minecraft',search:'ፈልግ...',all:'ሁሉም',roblox:'Roblox',minecraft:'Minecraft',arcade:'አርኬድ',puzzle:'እንቆቅልሽ',play:'ተጫወት',navHome:'መነሻ',navSearch:'ፈልግ',navSignup:'ተመዝገብ',navLogin:'ግባ',rateTitle:'⭐ ደረጃ ስጥ',rateDesc:'ልምድዎ?',submitRate:'ላክ'}
 };
 
-// ===== In-game translation helper =====
-function t(key){
-  const lang = document.getElementById('languageSelect')?.value || 'ar';
-  const dict = {
-    ar: {
-      score:'النتيجة', easy:'سهل', medium:'متوسط', hard:'صعب',
-      gameOver:'انتهت اللعبة', youWon:'مبروك جداً! Congratulations! 🎉', correct:'صحيح',
-      tryAgain:'حاول مجدداً', yourTurn:'دورك', computerWon:'الكمبيوتر فاز',
-      draw:'تعادل', timeUp:'انتهى الوقت', clickStart:'اضغط ابدأ',
-      restart:'إعادة', chooseMove:'اختر حركتك', lives:'أرواح',
-      start:'ابدأ', next:'التالي', submit:'تحقق', answer:'الإجابة',
-      newGame:'لعبة جديدة', play:'العب', ready:'جاهز',
-      turn:'الدور', highScore:'أعلى نتيجة', wrong:'خطأ', right:'صحيح', won:'فزت', lost:'خسرت',
-      red:'أحمر', blue:'أزرق', green:'أخضر', yellow:'أصفر', purple:'بنفسجي', orange:'برتقالي',
-      watch:'راقب...', repeat:'كرر', wait:'انتظر...', now:'اضغط الآن!',
-      reaction:'رد فعلك', milliseconds:'مللي ثانية', tryAgainBtn:'حاول مجدداً',
-      rocks:'الطوب', stars:'النجوم', fruits:'الفواكه', dodged:'تجاوزت',
-      target:'اضغط', left:'المتبقي', time:'الوقت', pairs:'الأزواج',
-      wrongCount:'الأخطاء', word:'الكلمة', coins:'الكنوز', popped:'المفجر',
-      movePlayer:'حرّك', goal:'وصلت', falls:'سقط', dodge:'تجنب', collect:'اجمع',
-      balance:'التوازن', survived:'صمدت', newRecord:'رقم قياسي!',
-      capital:'العاصمة', country:'الدولة', flag:'العلم', found:'وجدت',
-      typing:'اكتب:', binary:'ثنائي:', flappyHint:'انقر للطيران'
-    },
-    en: {
-      score:'Score', easy:'Easy', medium:'Medium', hard:'Hard',
-      gameOver:'Game Over', youWon:'Congratulations! 🎉', correct:'Correct',
-      tryAgain:'Try Again', yourTurn:'Your Turn', computerWon:'Computer Won',
-      draw:'Draw', timeUp:'Time Up', clickStart:'Click Start',
-      restart:'Restart', chooseMove:'Choose your move', lives:'Lives',
-      start:'Start', next:'Next', submit:'Check', answer:'Answer',
-      newGame:'New Game', play:'Play', ready:'Ready',
-      turn:'Turn', highScore:'High Score', wrong:'Wrong', right:'Right', won:'You Won', lost:'You Lost',
-      red:'Red', blue:'Blue', green:'Green', yellow:'Yellow', purple:'Purple', orange:'Orange',
-      watch:'Watch...', repeat:'Repeat', wait:'Wait...', now:'Tap now!',
-      reaction:'Your reaction', milliseconds:'ms', tryAgainBtn:'Try Again',
-      rocks:'Bricks', stars:'Stars', fruits:'Fruits', dodged:'Dodged',
-      target:'Tap', left:'Left', time:'Time', pairs:'Pairs',
-      wrongCount:'Mistakes', word:'Word', coins:'Treasures', popped:'Popped',
-      movePlayer:'Move', goal:'You reached', falls:'Fell', dodge:'Dodge', collect:'Collect',
-      balance:'Balance', survived:'Survived', newRecord:'New Record!',
-      capital:'Capital', country:'Country', flag:'Flag', found:'Found',
-      typing:'Type:', binary:'Binary:', flappyHint:'Click to fly'
-    },
-    am: {
-      score:'ውጤት', easy:'ቀላል', medium:'መካከለኛ', hard:'ከባድ',
-      gameOver:'ጨዋታ አለቀ', youWon:'እንኳን ደስ አለዎት! 🎉', correct:'ትክክል',
-      tryAgain:'እንደገና ሞክር', yourTurn:'ተራህ', computerWon:'ኮምፒውተር አሸነፈ',
-      draw:'አቻ', timeUp:'ጊዜ አለቀ', clickStart:'ጅምር ጠቅ አድርግ',
-      restart:'እንደገና', chooseMove:'እንቅስቃሴህን ምረጥ', lives:'ህይወቶች',
-      start:'ጀምር', next:'ቀጣይ', submit:'አረጋግጥ', answer:'መልስ',
-      newGame:'አዲስ ጨዋታ', play:'ተጫወት', ready:'ዝግጁ',
-      turn:'ተራ', highScore:'ከፍተኛ ውጤት', wrong:'ስህተት', right:'ትክክል', won:'አሸነፍክ', lost:'ተሸነፍክ',
-      red:'ቀይ', blue:'ሰማያዊ', green:'አረንጓዴ', yellow:'ቢጫ', purple:'ወይን ጠጅ', orange:'ብርቱካናማ',
-      watch:'ተመልከት...', repeat:'ድገም', wait:'ጠብቅ...', now:'አሁን ጠቅ አድርግ!',
-      reaction:'ምላሽህ', milliseconds:'ሚሊሰከንድ', tryAgainBtn:'እንደገና ሞክር',
-      rocks:'ጡቦች', stars:'ኮከቦች', fruits:'ፍራፍሬዎች', dodged:'አስወገድክ',
-      target:'ጠቅ አድርግ', left:'ቀሪ', time:'ጊዜ', pairs:'ጥንዶች',
-      wrongCount:'ስህተቶች', word:'ቃል', coins:'ሀብቶች', popped:'ፈንድቷል',
-      movePlayer:'አንቀሳቅስ', goal:'ደረስክ', falls:'ወደቀ', dodge:'አስወግድ', collect:'ሰብስብ',
-      balance:'ሚዛን', survived:'ተረፍክ', newRecord:'አዲስ ሪከርድ!',
-      capital:'ዋና ከተማ', country:'ሀገር', flag:'ባንዲራ', found:'አገኘሁ',
-      typing:'ጻፍ:', binary:'ሁለትዮሽ:', flappyHint:'ለመብረር ጠቅ አድርግ'
-    }
-  };
-  return (dict[lang] || dict.ar)[key] || key;
-}
-
-// ===== Game Names =====
-const gameNames = {
-  ar: [
-    ['الثعبان','كل الطعام وتجنب ذيلَك.','arcade'], ['إكس أو','العب X ضد O.','classic'], ['2048','اجمع البلاطات للوصول لـ 2048.','puzzle'], ['مطابقة الذاكرة','اعثر على الأزواج المتطابقة.','puzzle'],
-    ['حجر ورقة مقص','العب ضد الكمبيوتر.','classic'], ['تخمين الرقم','خمّن رقماً من 1 إلى 50.','puzzle'], ['المشنقة','خمّن الكلمة المخفية.','puzzle'], ['بونغ','حافظ على الكرة.','arcade'],
-    ['اضرب الخلد','اضرب الخلد.','arcade'], ['اختبار رد الفعل','اختبر سرعة رد فعلك.','arcade'], ['التقط الفواكه','التقط الفواكه المتساقطة.','arcade'], ['الطائر','اطير بين الفجوات.','arcade'],
-    ['كسر الطوب','اكسر الطوب بالكرة.','arcade'], ['كاسحة الألغام','اكشف المربعات الآمنة.','puzzle'], ['أربعة متتالية','احصل على أربعة متتالية.','classic'], ['سايمون يقول','كرر تسلسل الألوان.','puzzle'],
-    ['فك الكلمة','فك تشويش الكلمة.','puzzle'], ['سرعة الكتابة','اكتب الجملة بسرعة.','classic'], ['نقر الكوكيز','اجمع الكوكيز.','arcade'], ['مطابقة الألوان','اختر اللون الصحيح.','arcade'],
-    ['فقع البالونات','فجّر البالونات.','arcade'], ['رمي النرد','ارمِ النرد.','classic'], ['اختبار المعلومات','أجب على سؤال.','classic'], ['الحيوان الأليف','اعتنِ بحيوانك الأليف.','arcade'],
-    ['قلب العملة','وجه أم كتابة؟','classic'], ['اضغط الهدف','اضغط على الهدف المتحرك.','action'], ['الأحجية المنزلقة','رتب الأرقام المبعثرة.','puzzle'], ['فقع الفقاعات','فجّر الفقاعات الملونة.','arcade'],
-    ['جامع النجوم','اجمع النجوم الساقطة.','arcade'], ['اندفاع الألوان','اضغط اللون المطلوب بسرعة.','action'], ['اختبار الرياضيات','حل مسائل رياضية سهلة.','puzzle'], ['تهجئة','تهجى الكلمة.','puzzle'],
-    ['اختبار الدول','خمّن عاصمة الدولة.','puzzle'], ['اختبار الأعلام','تعرّف على العلم.','puzzle'], ['تجنب الصخور','تجنب الصخور الساقطة.','action'], ['الثنائي','حوّل الرقم إلى ثنائي.','puzzle'],
-    ['مطابقة النمط','أكمل النمط.','puzzle'], ['سلسلة الكلمات','كلمة تبدأ بآخر حرف.','puzzle'], ['حجر ورقة مقص متقدم','حجر ورقة مقص سحلية سبوك.','classic'], ['تسلسل الأرقام','ابحث عن الرقم الناقص.','puzzle'],
-    ['ذاكرة الألوان','تذكر تسلسل الألوان.','puzzle'], ['سباق رد الفعل','انتظر الأخضر واضغط.','action'], ['كرة المتاهة','أوصل الكرة للهدف.','action'], ['سايمون المتقدم','كرر التسلسل المتزايد.','puzzle'],
-    ['ذاكرة الأرقام','اضغط الأرقام بالترتيب.','puzzle'], ['مراوغة النينجا','تجنب الأجسام الساقطة.','action'], ['مطابقة الثلاثية','اصنع ثلاثية من نفس الشكل.','puzzle'], ['مطلق الفضاء','أطلق على الأهداف.','action'],
-    ['كاسر الكود','اكسر الكود المكوّن من 3 أرقام.','puzzle'], ['حافظ على التوازن','حافظ على التوازن.','action']
-  ],
-  en: [
-    ['Snake','Eat food, avoid your tail.','arcade'], ['Tic-Tac-Toe','Play X vs O.','classic'], ['2048','Merge tiles to reach 2048.','puzzle'], ['Memory Match','Find matching pairs.','puzzle'],
-    ['Rock Paper Scissors','Play against the computer.','classic'], ['Number Guess','Guess a number from 1 to 50.','puzzle'], ['Hangman','Guess the hidden word.','puzzle'], ['Pong','Keep the ball in play.','arcade'],
-    ['Whack-a-Mole','Hit the mole.','arcade'], ['Reaction Test','Test your reaction speed.','arcade'], ['Fruit Catch','Catch the falling fruits.','arcade'], ['Flappy Dot','Fly through the gaps.','arcade'],
-    ['Breakout','Break bricks with the ball.','arcade'], ['Minesweeper Mini','Reveal safe squares.','puzzle'], ['Connect Four','Get four in a row.','classic'], ['Simon Says','Repeat the color sequence.','puzzle'],
-    ['Word Scramble','Unscramble the word.','puzzle'], ['Typing Speed','Type the sentence quickly.','classic'], ['Treasure Hunt','Collect treasures.','arcade'], ['Color Match','Pick the right color.','arcade'],
-    ['Balloon Pop','Pop the balloons.','arcade'], ['Dice Roller','Roll the dice.','classic'], ['Trivia Quiz','Answer a question.','classic'], ['Bubble Shooter','Shoot the bubbles.','arcade'],
-    ['Coin Flip','Heads or tails?','classic'], ['Target Tap','Tap the moving target.','action'], ['Sliding Puzzle','Arrange the scrambled numbers.','puzzle'], ['Bubble Pop','Pop the colorful bubbles.','arcade'],
-    ['Star Collector','Collect the falling stars.','arcade'], ['Color Rush','Tap the requested color fast.','action'], ['Math Speed','Solve math fast.','puzzle'], ['Spelling Bee','Spell the word.','puzzle'],
-    ['Country Quiz','Guess the country capital.','puzzle'], ['Flag Quiz','Identify the flag.','puzzle'], ['Dodge Rocks','Dodge the falling rocks.','action'], ['Binary Game','Convert the number to binary.','puzzle'],
-    ['Pattern Match','Complete the pattern.','puzzle'], ['Catch the Color','Tap the requested color.','action'], ['RPSLS','Rock Paper Scissors Lizard Spock.','classic'], ['Number Sequence','Find the missing number.','puzzle'],
-    ['Color Memory','Remember the color sequence.','puzzle'], ['Reaction Race','Wait for green and tap.','action'], ['Maze Ball','Get the ball to the goal.','action'], ['Simon Pro','Repeat the growing sequence.','puzzle'],
-    ['Number Memory','Tap the numbers in order.','puzzle'], ['Ninja Dodge','Dodge falling objects.','action'], ['Match Three','Make three of a kind.','puzzle'], ['Space Shooter','Shoot the targets.','action'],
-    ['Code Breaker','Crack the 3-digit code.','puzzle'], ['Keep Balance','Keep your balance.','action']
-  ],
-  am: [
-    ['እባብ','ምግብ ብላ ጅራትህን አስወግድ።','arcade'], ['ኤክስ ኦ','ኤክስ ከኦ ጋር ተጫወት።','classic'], ['2048','2048 ለመድረስ ሰድሮችን አዋህድ።','puzzle'], ['የትውስታ ግጥሚያ','ተመሳሳይ ጥንዶችን ፈልግ።','puzzle'],
-    ['ድንጋይ ወረቀት መቀስ','ከኮምፒውተር ጋር ተጫወት።','classic'], ['ቁጥር ግምት','ከ1 እስከ 50 ቁጥር ገምት።','puzzle'], ['ሰው ሰራሽ','የተደበቀውን ቃል ገምት።','puzzle'], ['ፖንግ','ኳሱን ጠብቅ።','arcade'],
-    ['አይጥ ምታ','አይጡን ምታ።','arcade'], ['የምላሽ ፈተና','የምላሽ ፍጥነትህን ፈትን።','arcade'], ['ፍራፍሬ ያዝ','የሚወድቁ ፍራፍሬዎችን ያዝ።','arcade'], ['ተንቦራ','በክፍተቶች መካከል ተንቦራ።','arcade'],
-    ['ጡብ ስብራ','ኳሱን ተጠቅሞ ጡቦችን ስብራ።','arcade'], ['ማዕድን ፈላጊ','ደህና ሳጥኖችን ክፈት።','puzzle'], ['አራት ተከታታይ','አራት ተከታታይ አግኝ።','classic'], ['ሳይሞን ይላል','የቀለም ቅደም ተከተል ድገም።','puzzle'],
-    ['ቃል ቀይር','የተዘበራረቀውን ቃል አስተካክል።','puzzle'], ['የፍጥነት ጽሁፍ','ዓረፍተ ነገሩን በፍጥነት ጻፍ።','classic'], ['ሀብት ፈልግ','ሀብቶችን ሰብስብ።','arcade'], ['ቀለም ግጥሚያ','ትክክለኛውን ቀለም ምረጥ።','arcade'],
-    ['ፊኛ ፍንዳታ','ፊኛዎችን ፈንዳ።','arcade'], ['ዳይስ ጣል','ዳይሱን ጣል።','classic'], ['ጥያቄ ፈተና','ጥያቄ መልስ።','classic'], ['አረፋ ተኳሽ','አረፋዎችን ተኩስ።','arcade'],
-    ['ሳንቲም ጣል','ራስ ወይስ ጅራት?','classic'], ['ዒላማ ጠቅ','የሚንቀሳቀሰውን ዒላማ ጠቅ አድርግ።','action'], ['ተንሸራታች እንቆቅልሽ','የተበተኑ ቁጥሮችን አዘጋጅ።','puzzle'], ['አረፋ ፍንዳታ','ባለቀለም አረፋዎችን ፈንዳ።','arcade'],
-    ['ኮከብ ሰብሳቢ','የሚወድቁ ኮከቦችን ሰብስብ።','arcade'], ['ቀለም ፍጥነት','የተጠየቀውን ቀለም በፍጥነት ጠቅ አድርግ።','action'], ['የሂሳብ ፍጥነት','በፍጥነት ፍታ።','puzzle'], ['ፊደል አሰላል','ቃሉን አሰላል።','puzzle'],
-    ['የሀገር ፈተና','የሀገር ዋና ከተማ ገምት።','puzzle'], ['ባንዲራ ፈተና','ባንዲራውን ለይ።','puzzle'], ['ዓለት አስወግድ','የሚወድቁ ዓለቶችን አስወግድ።','action'], ['ሁለትዮሽ','ቁጥሩን ወደ ሁለትዮሽ ቀይር።','puzzle'],
-    ['ንድፍ ግጥሚያ','ንድፉን አጠናቅቅ።','puzzle'], ['ቀለም ያዝ','የተጠየቀውን ቀለም ጠቅ አድርግ።','action'], ['የላቀ ድንጋይ ወረቀት መቀስ','ድንጋይ ወረቀት መቀስ እንሽሽት ስፖክ።','classic'], ['የቁጥር ቅደም ተከተል','የጎደለውን ቁጥር ፈልግ።','puzzle'],
-    ['የቀለም ትውስታ','የቀለም ቅደም ተከተል አስታውስ።','puzzle'], ['የምላሽ ሩጫ','አረንጓዴ ይጠብቁ እና ጠቅ ያድርጉ።','action'], ['የመንገድ ኳስ','ኳሱን ወደ ግቡ አድርስ።','action'], ['ሳይሞን ፕሮ','የሚያድገውን ቅደም ተከተል ድገም።','puzzle'],
-    ['የቁጥር ትውስታ','ቁጥሮችን በቅደም ተከተል ጠቅ አድርግ።','puzzle'], ['ኒንጃ ማስወገጃ','የሚወድቁ ነገሮችን አስወግድ።','action'], ['ሶስት ግጥሚያ','ሶስት ተመሳሳይ አድርግ።','puzzle'], ['የጠፈር ተኳሽ','ዒላማዎችን ተኩስ።','action'],
-    ['ኮድ ሰባሪ','ባለ3 አሃዝ ኮድን ስበር።','puzzle'], ['ሚዛን ጠብቅ','ሚዛንህን ጠብቅ።','action']
-  ]
+const gameNames={
+  ar:[['Minecraft Classic','النسخة الأصلية','minecraft','https://classic.minecraft.net/'],['بناء المكعبات','مثل Roblox','roblox'],['مغامرة التعدين','احفر','minecraft'],['الثعبان','تجنب','arcade'],['إكس أو','X O','puzzle'],['2048','اجمع','puzzle'],['مطابقة الذاكرة','الأزواج','puzzle'],['حجر ورقة','ضد','arcade'],['تخمين الرقم','1-50','puzzle'],['المشنقة','كلمة','puzzle'],['بونغ','كرة','arcade'],['الخلد','اضرب','arcade'],['رد الفعل','سرعة','arcade'],['الفواكه','التقط','arcade'],['الطائر','فجوات','arcade'],['كسر الطوب','اكسر','arcade'],['الألغام','اكشف','puzzle'],['أربعة','متتالية','puzzle'],['سايمون','ألوان','puzzle'],['فك الكلمة','تشويش','puzzle'],['الكتابة','سرعة','arcade'],['الكوكيز','اجمع','arcade'],['الألوان','اللون','arcade'],['البالونات','فجر','arcade'],['النرد','ارمِ','arcade']],
+  en:[['Minecraft Classic','Original','minecraft','https://classic.minecraft.net/'],['Voxel Builder','Like Roblox','roblox'],['Mining','Dig','minecraft'],['Snake','Avoid','arcade'],['Tic-Tac-Toe','X O','puzzle'],['2048','Merge','puzzle'],['Memory','Pairs','puzzle'],['RPS','CPU','arcade'],['Guess','1-50','puzzle'],['Hangman','Word','puzzle'],['Pong','Ball','arcade'],['Whack','Mole','arcade'],['Reaction','Speed','arcade'],['Fruits','Catch','arcade'],['Flappy','Gaps','arcade'],['Breakout','Bricks','arcade'],['Mines','Reveal','puzzle'],['Connect 4','Four','puzzle'],['Simon','Colors','puzzle'],['Scramble','Word','puzzle'],['Typing','Fast','arcade'],['Cookies','Collect','arcade'],['Color Match','Color','arcade'],['Balloons','Pop','arcade'],['Dice','Roll','arcade']],
+  am:[['Minecraft Classic','ዋናው','minecraft','https://classic.minecraft.net/'],['ቪኦክስል','Roblox','roblox'],['ማዕድን','ቁፍር','minecraft'],['እባብ','ጅራት','arcade'],['ኤክስ ኦ','X O','puzzle'],['2048','አዋህድ','puzzle'],['ትውስታ','ጥንዶች','puzzle'],['ድንጋይ','ኮምፒውተር','arcade'],['ቁጥር','1-50','puzzle'],['ሰራሽ','ቃል','puzzle'],['ፖንግ','ኳስ','arcade'],['አይጥ','ምታ','arcade'],['ምላሽ','ፍጥነት','arcade'],['ፍራፍሬ','ያዝ','arcade'],['ተንቦራ','ክፍተት','arcade'],['ጡብ','ስብራ','arcade'],['ማዕድን','ክፈት','puzzle'],['አራት','ተከታታይ','puzzle'],['ሳይሞን','ቀለም','puzzle'],['ቃል','አስተካክል','puzzle'],['ጽሁፍ','ፍጥነት','arcade'],['ሀብት','ሰብስብ','arcade'],['ቀለም','ትክክል','arcade'],['ፊኛ','ፈንዳ','arcade'],['ዳይስ','ጣል','arcade']]
 };
 
-function getLocalizedGames(lang){
-  const list = gameNames[lang] || gameNames.ar;
-  return list.map((g,i)=>({id:i+1, name:g[0], desc:g[1], cat:g[2]}));
+function getGames(l){
+  let b=gameNames[l]||gameNames.ar;let r=[];
+  for(let i=0;i<4;i++){b.forEach((g)=>{r.push({id:r.length+1,name:(r.length+1>b.length?g[0]+' '+(i+1):g[0]),desc:g[1],cat:g[2],ext:g[3]||null});});}
+  return r;
 }
 
-// ===== Language setter =====
-function setLanguage(lang) {
-  const tr = translations[lang] || translations.ar;
-  document.documentElement.lang = lang;
-  document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
-  
-  document.getElementById('subtitleText').textContent = tr.subtitle;
-  document.getElementById('search').placeholder = tr.search;
-  
-  const cats = document.querySelectorAll('.cat');
-  if(cats[0]) cats[0].textContent = tr.all;
-  if(cats[1]) cats[1].textContent = tr.arcade;
-  if(cats[2]) cats[2].textContent = tr.puzzle;
-  if(cats[3]) cats[3].textContent = tr.classic;
-  if(cats[4]) cats[4].textContent = tr.action;
-  
-  document.getElementById('rateTitle').textContent = tr.rateTitle;
-  document.getElementById('rateDesc').textContent = tr.rateDesc;
-  document.getElementById('rateName').placeholder = tr.namePh;
-  document.getElementById('rateMsg').placeholder = tr.msgPh;
-  document.getElementById('rateSubmitBtn').textContent = tr.submitRate;
-  
-  document.getElementById('restartCurrentGame').textContent = tr.restart;
-  document.getElementById('closeCurrentGame').textContent = tr.close;
-  
-  document.getElementById('themeToggle').textContent = lightTheme ? tr.themeLight : tr.theme;
-  document.getElementById('fullscreenBtn').textContent = tr.fullscreen;
-  document.getElementById('loginBtn').textContent = tr.login;
-  document.getElementById('signupBtn').textContent = tr.signup;
-  document.getElementById('logoutBtn').textContent = tr.logout;
-  
-  document.getElementById('footerText').innerHTML = 
-    `© <span id="year">${new Date().getFullYear()}</span> GameZone40. ${tr.rights}<br>
-    📧 <a href="mailto:alarmedali996@gmail.com" style="color:var(--accent2);text-decoration:none;">alarmedali996@gmail.com</a>`;
-  
+function setLanguage(l){
+  const tr=translations[l]||translations.ar;document.documentElement.dir=(l==='en')?'ltr':'rtl';
+  $('subtitleText').textContent=tr.sub;$('search').placeholder=tr.search;
+  const c=document.querySelectorAll('.cat');if(c[0])c[0].textContent=tr.all;if(c[1])c[1].textContent=tr.roblox;if(c[2])c[2].textContent=tr.minecraft;if(c[3])c[3].textContent=tr.arcade;if(c[4])c[4].textContent=tr.puzzle;
+  $('allGamesTitle').textContent=tr.all;$('bnHomeLabel').textContent=tr.navHome;$('bnSearchLabel').textContent=tr.navSearch;$('bnSignupLabel').textContent=tr.navSignup;$('bnLoginLabel').textContent=tr.navLogin;
+  $('rateTitle').textContent=tr.rateTitle;$('rateDesc').textContent=tr.rateDesc;$('rateSubmitBtn').textContent=tr.submitRate;
   render();
-  if(modal.classList.contains('open') && currentGameId){
-    openGame(currentGameId);
-  }
 }
 
-document.getElementById('languageSelect').addEventListener('change', function(){
-  localStorage.setItem('gz_lang', this.value);
-  setLanguage(this.value);
-});
+function render(){
+  const q=($('search').value||'').toLowerCase();const l=$('languageSelect').value||'ar';
+  const list=getGames(l).filter(g=>(category==='all'||g.cat===category)&&(!q||(g.name+g.desc).toLowerCase().includes(q)));
+  if(!list.length)return $('grid').innerHTML='<p>لا توجد ألعاب</p>';
+  $('grid').innerHTML='';
+  list.forEach(g=>{
+    const d=document.createElement('div');d.className='card';
+    d.innerHTML=`<div><h3>${g.id}. ${g.name}</h3><p>${g.desc}</p></div><button class="btn">${translations[l].play}</button>`;
+    d.querySelector('button').onclick=e=>{e.stopPropagation();openGame(g.id)};d.onclick=()=>openGame(g.id);$('grid').appendChild(d);
+  });
+}
 
-let lightTheme = false;
-document.getElementById('themeToggle').addEventListener('click', () => {
-  lightTheme = !lightTheme;
-  document.documentElement.style.setProperty('--bg', lightTheme ? '#f0f2f8' : '#030308');
-  document.documentElement.style.setProperty('--card', lightTheme ? 'rgba(255,255,255,0.85)' : 'rgba(18,18,30,0.75)');
-  document.documentElement.style.setProperty('--text', lightTheme ? '#1a1a2e' : '#ffffff');
-  document.documentElement.style.setProperty('--muted', lightTheme ? '#55556b' : '#8892b0');
-  document.documentElement.style.setProperty('--border', lightTheme ? 'rgba(0,0,0,0.1)' : 'rgba(0,240,255,0.25)');
+$('languageSelect').onchange=function(){localStorage.setItem('gz_lang',this.value);setLanguage(this.value);};
+$('search').oninput=render;
+document.querySelectorAll('.cat').forEach(b=>b.onclick=()=>{document.querySelectorAll('.cat').forEach(x=>x.classList.remove('active'));b.classList.add('active');category=b.dataset.cat;render();});
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           </script><script>
+let currentGameId=0;
+
+// حل مشكلة زر X
+function closeGame(){ 
+  cleanups.forEach(fn=>fn()); 
+  cleanups=[]; 
+  $('gameArea').innerHTML=''; 
+  $('gameControls').innerHTML=''; 
+  $('modal').classList.remove('open'); 
+}
+$('closeModal').onclick = closeGame;
+$('closeCurrentGame').onclick = closeGame;
+$('modal').onclick = (e) => { if(e.target === $('modal')) closeGame(); };
+
+function openGame(id){
+  currentGameId=id;
+  cleanups.forEach(fn=>fn());cleanups=[];
+  $('gameArea').innerHTML='';$('gameControls').innerHTML='';
+  $('modal').classList.add('open');
   
-  const lang = document.getElementById('languageSelect').value;
-  const tr = translations[lang] || translations.ar;
-  document.getElementById('themeToggle').textContent = lightTheme ? tr.themeLight : tr.theme;
-});
+  const l=$('languageSelect').value||'ar';
+  const g=getGames(l)[id-1];
+  if(!g)return;
+  $('gameTitle').textContent=g.name;
+  
+  if(g.ext){
+    $('gameArea').innerHTML=`<iframe src="${g.ext}" allow="fullscreen"></iframe>`;
+    return;
+  }
+  if(g.name.includes('Voxel')||g.name.includes('المكعبات'))return voxel();
+  if(g.name.includes('Mining')||g.name.includes('التعدين'))return mining();
+  startCore((id%25)||25);
+}
+$('restartCurrentGame').onclick = () => openGame(currentGameId);
 
-document.getElementById('fullscreenBtn').addEventListener('click', () => {
-  if (!document.fullscreenElement) document.documentElement.requestFullscreen();
-  else document.exitFullscreen();
-});
+function el(t,c=''){const e=document.createElement(t);e.textContent=c;if(t==='div')e.className='status';$('gameArea').appendChild(e);return e;}
+function btn(t,fn){const b=document.createElement('button');b.textContent=t;b.className='btn';b.onclick=fn;return b;}
+function canvas(w=320,h=240){const c=document.createElement('canvas');c.width=w;c.height=h;$('gameArea').appendChild(c);return c;}
+function input(ph){const i=document.createElement('input');i.placeholder=ph;$('gameArea').appendChild(i);return i;}
 
+function startCore(id){
+  if(id===1)return snake();if(id===2)return ttt();if(id===3)return game2048();if(id===4)return memory();
+  if(id===5)return rps();if(id===6)return guess();if(id===7)return hangman();if(id===8)return pong();
+  if(id===9)return whack();if(id===10)return react();if(id===11)return fruits();if(id===12)return flappy();
+  if(typeof startCorePart2==='function')return startCorePart2(id);
+}
+
+function voxel(){
+  let c=canvas(320,320),x=c.getContext('2d');let g=Array(10).fill(0).map(()=>Array(10).fill(0)),col=0,cols=['#5cba47','#8b5a2b','#7f7f7f','#fcdb05','#4aedd9'];
+  function d(){
+    x.fillStyle='#0a0a15';x.fillRect(0,0,320,320);
+    for(let y=0;y<10;y++)for(let X=0;X<10;X++){
+      if(g[y][X]>0){x.fillStyle=cols[g[y][X]-1];x.fillRect(X*32,y*32,32,32);x.fillStyle='#ffffff33';x.fillRect(X*32,y*32,32,8);}
+      else{x.fillStyle='#151525';x.fillRect(X*32,y*32,32,32);x.strokeStyle='#222';x.strokeRect(X*32,y*32,32,32);}
+    }
+  }
+  c.onclick=e=>{let r=c.getBoundingClientRect(),gx=Math.floor((e.clientX-r.left)/(r.width/10)),gy=Math.floor((e.clientY-r.top)/(r.height/10));if(gx>=0&&gx<10&&gy>=0&&gy<10){g[gy][gx]=col+1;d();}};
+  let bar=document.createElement('div');cols.forEach((cl,i)=>{let b=btn('',()=>col=i);b.style.cssText=`width:40px;height:40px;background:${cl};display:inline-block;margin:5px;`;bar.appendChild(b);});$('gameControls').appendChild(bar);d();
+}
+
+function mining(){
+  let c=canvas(320,260),x=c.getContext('2d'),p={x:160,y:200},o=[],sc=0,f=0;
+  document.onkeydown=e=>{if(e.key==='ArrowLeft')p.x=Math.max(0,p.x-25);if(e.key==='ArrowRight')p.x=Math.min(300,p.x+25);if(e.key==='ArrowUp')p.y=Math.max(0,p.y-25);if(e.key==='ArrowDown')p.y=Math.min(230,p.y+25);};
+  cleanups.push(()=>document.onkeydown=null);
+  function d(){
+    x.fillStyle='#0a0a15';x.fillRect(0,0,320,260);
+    for(let i=0;i<320;i+=32)for(let j=0;j<260;j+=32){x.fillStyle='#151525';x.fillRect(i,j,32,32);x.strokeStyle='#222';x.strokeRect(i,j,32,32);}
+    x.fillStyle='#00f0ff';x.fillRect(p.x,p.y,24,24);
+    o.forEach(a=>{if(!a.c){x.fillStyle='#fcdb05';x.fillRect(a.x,a.y,20,20);}});
+    f++;if(f%30===0)o.push({x:Math.random()*290,y:Math.random()*230,c:!1});
+    o.forEach(a=>{if(!a.c&&Math.abs(p.x-a.x)<25&&Math.abs(p.y-a.y)<25){a.c=!0;sc++;}});
+    requestAnimationFrame(d);
+  }
+  d();
+}
+
+function snake(){
+  let s=el('div','0'),c=canvas(300,300),x=c.getContext('2d'),b=[{x:8,y:8},{x:7,y:8}],dx=1,dy=0,f={x:14,y:10},sc=0,t;
+  function d(){x.fillStyle='#0a0a15';x.fillRect(0,0,300,300);b.forEach((p,i)=>{x.fillStyle=i===0?'#00f0ff':'#7c5cff';x.fillRect(p.x*15,p.y*15,15,15);});x.fillStyle='#ff007f';x.fillRect(f.x*15,f.y*15,15,15);}
+  function st(){let h={x:b[0].x+dx,y:b[0].y+dy};if(h.x<0||h.x>=20||h.y<0||h.y>=20||b.some(p=>p.x===h.x&&p.y===h.y)){s.textContent='Game Over';clearInterval(t);return;}b.unshift(h);if(h.x===f.x&&h.y===f.y){sc++;s.textContent=sc;f={x:Math.floor(Math.random()*20),y:Math.floor(Math.random()*20)};}else b.pop();d();}
+  document.onkeydown=e=>{if(e.key==='ArrowUp'&&dy!==1){dx=0;dy=-1;}if(e.key==='ArrowDown'&&dy!==-1){dx=0;dy=1;}if(e.key==='ArrowLeft'&&dx!==1){dx=-1;dy=0;}if(e.key==='ArrowRight'&&dx!==-1){dx=1;dy=0;}};
+  cleanups.push(()=>document.onkeydown=null);t=setInterval(st,150);cleanups.push(()=>clearInterval(t));d();
+}
+
+function ttt(){
+  let b=Array(9).fill(''),t='X',s=el('div','X');const w=document.createElement('div');w.style.cssText='display:grid;grid-template-columns:repeat(3,80px);gap:8px;';$('gameArea').appendChild(w);
+  function wn(){for(let a of [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]])if(b[a[0]]&&b[a[0]]===b[a[1]]&&b[a[1]]===b[a[2]])return b[a[0]];return '';}
+  for(let i=0;i<9;i++){let bt=btn('',()=>{if(b[i]||wn())return;b[i]=t;bt.textContent=t;let v=wn();if(v)s.textContent='Win!';else if(b.every(Boolean))s.textContent='Draw';else{t=t==='X'?'O':'X';s.textContent=t;}});bt.style.cssText='height:80px;font-size:2rem;';w.appendChild(bt);}
+}
+
+function game2048(){
+  let b=Array(16).fill(0),s=el('div','0');const c=canvas(300,300),x=c.getContext('2d');const cols={2:'#1a1a3e',4:'#2a2a5e',8:'#3a2a7e',16:'#4a2a9e',32:'#5a2abe',64:'#6a2ade',128:'#7c5cff',256:'#00f0ff'};
+  function ad(){let a=b.map((v,i)=>v?null:i).filter(v=>v!==null);if(a.length)b[a[Math.random()*a.length|0]]=Math.random()<.9?2:4;}
+  function d(){x.fillStyle='#0a0a15';x.fillRect(0,0,300,300);b.forEach((v,i)=>{let rx=i%4*75,ry=(i/4|0)*75;x.fillStyle=v?(cols[v]||'#fff'):'#151525';x.beginPath();x.roundRect(rx+4,ry+4,67,67,10);x.fill();if(v){x.fillStyle='#fff';x.font='bold 24px Cairo';x.textAlign='center';x.textBaseline='middle';x.fillText(v,rx+37.5,ry+37.5);}});}
+  function mv(dir){let ch=false;for(let r=0;r<4;r++){let ids=Array.from({length:4},(_,i)=>dir==='left'?r*4+i:dir==='right'?r*4+3-i:dir==='up'?i*4+r:(3-i)*4+r);let a=ids.map(i=>b[i]).filter(Boolean),o=[];for(let i=0;i<a.length;i++){if(a[i]===a[i+1]){o.push(a[i]*2);i++;}else o.push(a[i]);}while(o.length<4)o.push(0);ids.forEach((id,i)=>{if(b[id]!==o[i])ch=true;b[id]=o[i];});}if(ch){ad();d();}}
+  document.onkeydown=e=>{let dd={'ArrowLeft':'left','ArrowRight':'right','ArrowUp':'up','ArrowDown':'down'}[e.key];if(dd){e.preventDefault();mv(dd);}};
+  cleanups.push(()=>document.onkeydown=null);ad();ad();d();
+}
+
+function memory(){
+  let v=['🍎','🍇','🍋','🍒','🐸','🚀','⚽','⭐'].flatMap(x=>[x,x]).sort(()=>Math.random()-.5);let o=[],m=0,s=el('div','0');const w=document.createElement('div');w.style.cssText='display:grid;grid-template-columns:repeat(4,64px);gap:9px;';$('gameArea').appendChild(w);
+  v.forEach((vl)=>{let b=btn('?',()=>{if(o.length===2||b.dataset.d||o.some(x=>x.b===b))return;b.textContent=vl;o.push({b,v:vl});if(o.length===2){if(o[0].v===o[1].v){o.forEach(x=>x.b.dataset.d='1');m+=2;o=[];s.textContent=m/2;}else setTimeout(()=>{o.forEach(x=>x.b.textContent='?');o=[];},650);}});b.style.cssText='height:64px;font-size:1.4rem;';w.appendChild(b);});
+}
+
+function rps(){const op=['🪨','📄','✂️'];const s=el('div','?');op.forEach(v=>$('gameControls').appendChild(btn(v,()=>{let cp=op[Math.random()*3|0];s.textContent=v+' vs '+cp;})));}
+function guess(){let n=Math.floor(Math.random()*50)+1,s=el('div','1-50'),i=input('?');$('gameControls').appendChild(btn('OK',()=>{let v=parseInt(i.value);if(!v)return;if(v===n)s.textContent='Win!';else s.textContent=v<n?'Higher ⬆️':'Lower ⬇️';}));}
+function hangman(){let wds=['قمر','شمس','كتاب','قلم','بيت'],w=wds[Math.random()*5|0],u=[],s=el('div','0'),d=document.createElement('div');d.textContent='_ '.repeat(w.length);d.style.fontSize='2rem';$('gameArea').appendChild(d);let i=input('?');$('gameControls').appendChild(btn('OK',()=>{let ch=i.value[0];i.value='';if(!ch||u.includes(ch))return;u.push(ch);d.textContent=[...w].map(c=>u.includes(c)?c:'_').join(' ');if([...w].every(c=>u.includes(c)))s.textContent='Win!';}));}
+
+function pong(){
+  const c=canvas(320,240),x=c.getContext('2d');let bx=160,by=120,vx=2.3,vy=1.6,p=110;
+  function d(){x.fillStyle='#0a0a15';x.fillRect(0,0,320,240);x.fillStyle='#00f0ff';x.beginPath();x.arc(bx,by,9,0,7);x.fill();x.fillStyle='#7c5cff';x.fillRect(p,218,90,14);bx+=vx;by+=vy;if(bx<9||bx>311)vx*=-1;if(by<9)vy*=-1;if(by>205&&bx>p&&bx<p+90)vy=-Math.abs(vy);if(by>245){bx=160;by=120;}requestAnimationFrame(d);}
+  c.onpointermove=e=>p=Math.max(0,Math.min(230,e.offsetX-45));d();
+}
+
+function whack(){
+  let sc=0,o=!1,s=el('div','0');const w=document.createElement('div');w.style.cssText='display:grid;grid-template-columns:repeat(3,70px);gap:8px;';$('gameArea').appendChild(w);let hs=[];
+  for(let i=0;i<9;i++){let b=btn('🕳️',()=>{if(!o&&b.textContent==='🐹'){sc++;s.textContent=sc;b.textContent='🕳️';}});b.style.cssText='height:70px;font-size:1.8rem;';w.appendChild(b);hs.push(b);}
+  let iv=setInterval(()=>{if(o)return;hs.forEach(b=>b.textContent='🕳️');hs[Math.random()*9|0].textContent='🐹';},800);cleanups.push(()=>clearInterval(iv));
+}
+
+function react(){let s=el('div','Wait...'),b=btn('Start',()=>{b.disabled=!0;b.textContent='Wait';setTimeout(()=>{b.disabled=!1;b.textContent='CLICK!';b.style.background='#00d4aa';let st=performance.now();b.onclick=()=>{s.textContent=Math.round(performance.now()-st)+'ms';};},1000+Math.random()*2000);});$('gameArea').appendChild(b);}
+
+function fruits(){
+  let sc=0,o=!1,f=0;const c=canvas(300,280),x=c.getContext('2d');let bx=120,fs=[],em=['🍎','🍊','🍋','🍇','🍓'];
+  document.onkeydown=e=>{if(e.key==='ArrowLeft')bx=Math.max(0,bx-22);if(e.key==='ArrowRight')bx=Math.min(240,bx+22);};cleanups.push(()=>document.onkeydown=null);
+  function d(){x.fillStyle='#0a1520';x.fillRect(0,0,300,280);x.fillStyle='#7c5cff';x.fillRect(bx,245,60,22);if(!o){f++;if(f%40===0)fs.push({x:20+Math.random()*240,y:-20,e:em[Math.random()*5|0]});fs.forEach(fr=>{fr.y+=2;x.font='22px serif';x.fillText(fr.e,fr.x,fr.y);if(fr.y>235&&fr.y<265&&fr.x>bx-10&&fr.x<bx+50){fr.y=400;sc++;}});fs=fs.filter(fr=>fr.y<350);}requestAnimationFrame(d);}d();
+}
+
+function flappy(){
+  let y=120,v=0,px=340,gy=80,sc=0,o=!1;const c=canvas(320,240),x=c.getContext('2d');
+  function fl(){if(o){openGame(currentGameId);return;}v=-4.5;}c.onclick=fl;
+  document.onkeydown=e=>{if(e.code==='Space'){e.preventDefault();fl();}};cleanups.push(()=>document.onkeydown=null);
+  function d(){x.fillStyle='#0a1830';x.fillRect(0,0,320,240);if(!o){v+=0.2;y+=v;px-=2;if(px<-50){px=340;gy=30+Math.random()*100;sc++;}x.fillStyle='#7c5cff';x.fillRect(px,0,42,gy);x.fillRect(px,gy+95,42,240);if(y<8||y>232||(px<62&&px>8&&(y<gy+8||y>gy+87))){o=!0;}}x.fillStyle='#00f0ff';x.beginPath();x.arc(50,y,11,0,7);x.fill();requestAnimationFrame(d);}d();
+}
+    </script><script>
+function startCorePart2(id){
+  if(id===13)return breakout();if(id===14)return mines();if(id===15)return connect4();if(id===16)return simon();
+  if(id===17)return scramble();if(id===18)return typing();if(id===19)return cookie();if(id===20)return colormatch();
+  if(id===21)return balloon();if(id===22)return dice();if(id===23)return trivia();if(id===24)return pet();if(id===25)return coin();
+}
+
+function breakout(){
+  let c=canvas(320,280),x=c.getContext('2d');let bx=160,by=230,vx=2,vy=-2.5,px=115,sc=0,o=!1;
+  let br=Array.from({length:20},(_,i)=>({x:14+(i%5)*60,y:22+Math.floor(i/5)*26,on:!0}));
+  c.onpointermove=e=>px=Math.max(0,Math.min(235,e.offsetX-42));
+  function d(){
+    x.fillStyle='#0a0a15';x.fillRect(0,0,320,280);
+    br.forEach(b=>{if(b.on){x.fillStyle='#ff007f';x.fillRect(b.x,b.y,52,18);}});
+    x.fillStyle='#00f0ff';x.fillRect(px,252,85,14);
+    x.fillStyle='#fff';x.beginPath();x.arc(bx,by,8,0,7);x.fill();
+    if(!o){bx+=vx;by+=vy;if(bx<8||bx>312)vx*=-1;if(by<8)vy*=-1;if(by>242&&bx>px&&bx<px+85){vy=-Math.abs(vy);by=242;}br.forEach(b=>{if(b.on&&bx>b.x&&bx<b.x+52&&by>b.y&&by<b.y+18){b.on=!1;vy*=-1;sc++;}});if(by>285)o=!0;}
+    requestAnimationFrame(d);
+  }d();
+}
+
+function mines(){
+  let m=new Set();while(m.size<3)m.add(Math.random()*25|0);let s=el('div','0'),w=document.createElement('div');w.style.cssText='display:grid;grid-template-columns:repeat(5,48px);gap:5px;';$('gameArea').appendChild(w);
+  for(let i=0;i<25;i++){let b=btn('?',()=>{if(m.has(i)){b.textContent='💣';s.textContent='Boom!';w.querySelectorAll('button').forEach(x=>x.disabled=!0);}else{b.textContent='✓';b.disabled=!0;}});b.style.cssText='height:48px;';w.appendChild(b);}
+}
+
+function connect4(){
+  let b=Array(42).fill(0),t=1,s=el('div','🔴'),w=document.createElement('div');w.style.cssText='display:grid;grid-template-columns:repeat(7,40px);gap:4px;';$('gameArea').appendChild(w);
+  for(let i=0;i<42;i++){let bt=btn('·',()=>{let c=i%7,r=5;while(r>=0&&b[r*7+c])r--;if(r<0)return;let ix=r*7+c;b[ix]=t;w.children[ix].textContent=t===1?'🔴':'🟡';t=3-t;s.textContent=t===1?'🔴':'🟡';});bt.style.cssText='width:40px;height:40px;border-radius:50%;';w.appendChild(bt);}
+}
+
+function simon(){
+  let c=['#ff4757','#2ed573','#1e90ff','#ffa502'],sq=[],p=0,sh=!1,sc=0,s=el('div','Start');
+  const w=document.createElement('div');w.style.cssText='display:grid;grid-template-columns:repeat(2,100px);gap:10px;';$('gameArea').appendChild(w);
+  function fl(i){w.children[i].style.opacity='1';setTimeout(()=>w.children[i].style.opacity='.55',350);}
+  function nx(){sh=!0;p=0;sq.push(Math.random()*4|0);sq.forEach((v,i)=>setTimeout(()=>fl(v),i*650));setTimeout(()=>sh=!1,sq.length*650+200);}
+  c.forEach((cl,i)=>{let b=btn('',()=>{if(sh)return;fl(i);if(sq[p]!==i){s.textContent='Miss!';sq=[];return;}p++;if(p===sq.length){sc+=sq.length;s.textContent=sc;setTimeout(nx,600);}});b.style.cssText=`height:90px;background:${cl};opacity:.55;`;w.appendChild(b);});
+  $('gameControls').appendChild(btn('Start',()=>{sq=[];sc=0;nx();}));
+}
+
+function scramble(){
+  let s=el('div','Math'),ca=0,q=document.createElement('div');q.className='status';q.style.fontSize='2rem';$('gameArea').appendChild(q);let i=input('?');
+  function nq(){let a=Math.floor(Math.random()*20)+1,b=Math.floor(Math.random()*20)+1;ca=a+b;q.textContent=`${a}+${b}`;}
+  $('gameControls').appendChild(btn('OK',()=>{if(+i.value===ca)s.textContent='Win!';else s.textContent='Miss';i.value='';nq();}));nq();
+}
+
+function typing(){
+  let p='Welcome',s=el('div','Type'),tx=document.createElement('p');tx.textContent=p;tx.style.color='#00f0ff';$('gameArea').appendChild(tx);
+  let i=input('...');$('gameControls').appendChild(btn('OK',()=>s.textContent=i.value===p?'Win!':'Miss'));
+}
+
+function cookie(){
+  let n=0,s=el('div','0'),w=document.createElement('div');w.style.cssText='display:grid;grid-template-columns:repeat(3,70px);gap:10px;';$('gameArea').appendChild(w);
+  for(let i=0;i<9;i++){let b=btn('🍪',()=>{if(!b.disabled){n++;s.textContent=n;b.disabled=!0;b.textContent='✨';}});b.style.cssText='height:70px;font-size:1.5rem;';w.appendChild(b);}
+}
+
+function colormatch(){
+  let cls=['Red','Blue','Green','Yellow'],tg='',s=el('div'),b=btn('New',nx);$('gameArea').appendChild(b);
+  function nx(){tg=cls[Math.random()*4|0];s.textContent=tg;$('gameControls').innerHTML='';cls.sort(()=>Math.random()-.5).forEach(c=>$('gameControls').appendChild(btn(c,()=>{if(c===tg)s.textContent='Win!';else s.textContent='Miss';})));}nx();
+}
+
+function balloon(){
+  let n=0,s=el('div','0');
+  for(let i=0;i<9;i++){let b=btn('🎈',()=>{n++;b.textContent='💥';s.textContent=n;b.disabled=!0;});b.style.cssText='font-size:2rem;';$('gameArea').appendChild(b);}
+}
+
+function dice(){let s=el('div','Roll');$('gameControls').appendChild(btn('Roll',()=>{let r=Math.floor(Math.random()*6)+1;s.textContent=r+' '+['⚀','⚁','⚂','⚃','⚄','⚅'][r-1];}));}
+
+function trivia(){
+  let qs=[['Capital of Egypt?','Cairo'],['Sky color?','Blue']],q=qs[Math.random()*qs.length|0],s=el('div',q[0]),i=input('?');
+  $('gameControls').appendChild(btn('OK',()=>s.textContent=i.value.toLowerCase()===q[1].toLowerCase()?'Win!':'Miss'));
+}
+
+function pet(){
+  let h=50,s=el('div','❤️ 50%');
+  $('gameControls').appendChild(btn('🍖',()=>{h=Math.min(100,h+10);s.textContent='❤️ '+h+'%';}));
+  $('gameControls').appendChild(btn('🎾',()=>{h=Math.min(100,h+15);s.textContent='❤️ '+h+'%';}));
+  let iv=setInterval(()=>{if(h>0){h-=2;s.textContent='❤️ '+h+'%';}},1000);cleanups.push(()=>clearInterval(iv));
+}
+
+function coin(){let s=el('div','🪙');$('gameControls').appendChild(btn('Flip',()=>s.textContent=Math.random()>0.5?'👑':'🦅'));}
+    </script><script>
+// ================= 9. التقييم والوضع المظلم =================
 let selectedRating = 0;
 document.querySelectorAll('#stars span').forEach(s => {
   s.addEventListener('click', () => {
@@ -842,1503 +446,62 @@ document.querySelectorAll('#stars span').forEach(s => {
     document.querySelectorAll('#stars span').forEach(star => {
       star.classList.toggle('selected', parseInt(star.dataset.val) <= selectedRating);
     });
-    document.getElementById('ratingValue').value = selectedRating;
+    $('ratingValue').value = selectedRating;
   });
 });
 
-document.getElementById('ratingForm').addEventListener('submit', async function(e) {
+$('ratingForm').addEventListener('submit', async function(e) {
   e.preventDefault();
-  const lang = document.getElementById('languageSelect').value;
-  const tr = translations[lang] || translations.ar;
-  
-  if(selectedRating === 0) {
-    document.getElementById('rateFeedback').innerHTML = tr.pickStars;
-    document.getElementById('rateFeedback').style.color = '#ff4757';
-    return;
+  if(selectedRating === 0) { 
+    $('rateFeedback').innerHTML = 'اختر النجوم أولاً!'; 
+    $('rateFeedback').style.color = '#ff4757'; 
+    return; 
   }
-  
-  document.getElementById('ratingValue').value = selectedRating;
-  const btn = document.getElementById('rateSubmitBtn');
-  const originalText = tr.submitRate;
-  btn.disabled = true;
-  btn.textContent = tr.sending;
+  const btn = $('rateSubmitBtn'); 
+  btn.disabled = true; 
+  btn.textContent = '...';
   
   try {
-    const formData = new FormData(this);
-    const response = await fetch(this.action, {
-      method: 'POST', body: formData, headers: { 'Accept': 'application/json' }
-    });
-    
-    if(response.ok) {
-      document.getElementById('rateFeedback').innerHTML = tr.congratsRate;
-      document.getElementById('rateFeedback').style.color = '#00d4aa';
-      this.reset();
-      selectedRating = 0;
-      document.querySelectorAll('#stars span').forEach(star => star.classList.remove('selected'));
+    const response = await fetch(this.action, { method: 'POST', body: new FormData(this), headers: { 'Accept': 'application/json' } });
+    if(response.ok) { 
+      $('rateFeedback').innerHTML = '🎉 تم الإرسال!'; 
+      $('rateFeedback').style.color = '#00d4aa'; 
+      this.reset(); selectedRating = 0; 
+      document.querySelectorAll('#stars span').forEach(star => star.classList.remove('selected')); 
     } else throw new Error('fail');
-  } catch(err) {
-    document.getElementById('rateFeedback').textContent = tr.errorMsg;
-    document.getElementById('rateFeedback').style.color = '#ff4757';
-  } finally {
-    btn.disabled = false;
-    btn.textContent = originalText;
+  } catch(err) { 
+    $('rateFeedback').textContent = 'حدث خطأ، حاول مرة أخرى'; 
+    $('rateFeedback').style.color = '#ff4757'; 
+  } finally { 
+    btn.disabled = false; 
+    btn.textContent = 'إرسال التقييم'; 
   }
 });
 
-// ===== Game Grid =====
-const grid = document.getElementById('grid'), search = document.getElementById('search');
-let category = 'all', cleanups = [];
-
-function render(){
-  grid.innerHTML='';
-  const q = search.value.toLowerCase();
-  const lang = document.getElementById('languageSelect')?.value || 'ar';
-  const localizedGames = getLocalizedGames(lang);
-  const tr = translations[lang] || translations.ar;
-  
-  const list = localizedGames.filter(g =>
-    (category === 'all' || g.cat === category) && 
-    (!q || (g.name + ' ' + g.desc).toLowerCase().includes(q))
-  );
-  
-  list.forEach(g => {
-    const c = document.createElement('article');
-    c.className = 'card';
-    c.innerHTML = `<div><h3>${g.id}. ${g.name}</h3><p>${g.desc}</p></div><button class="btn">${tr.play}</button>`;
-    c.querySelector('button').onclick = () => openGame(g.id);
-    grid.appendChild(c);
-  });
-}
-
-search.addEventListener('input', render);
-document.querySelectorAll('.cat').forEach(b => b.onclick = () => {
-  document.querySelectorAll('.cat').forEach(x => x.classList.remove('active'));
-  b.classList.add('active'); category = b.dataset.cat; render();
+let lightTheme = false;
+$('themeToggle').addEventListener('click', () => {
+  lightTheme = !lightTheme;
+  document.documentElement.style.setProperty('--bg', lightTheme ? '#f0f2f8' : '#030308');
+  document.documentElement.style.setProperty('--text', lightTheme ? '#1a1a2e' : '#ffffff');
+  document.documentElement.style.setProperty('--card', lightTheme ? 'rgba(255,255,255,0.85)' : 'rgba(18,18,30,0.75)');
 });
 
-// ===== Game Engine =====
-const modal = document.getElementById('modal');
-const area = document.getElementById('gameArea');
-const controls = document.getElementById('gameControls');
+$('fullscreenBtn').addEventListener('click', () => {
+  if (!document.fullscreenElement) document.documentElement.requestFullscreen(); 
+  else document.exitFullscreen();
+});
 
-function cleanup(){
-  cleanups.forEach(fn => { try{fn()}catch(e){} });
-  cleanups = [];
-  area.innerHTML = '';
-  controls.innerHTML = '';
-}
+$('bnHome').onclick = () => window.scrollTo({top:0, behavior:'smooth'});
+$('bnSearch').onclick = () => { 
+  $('search').scrollIntoView({behavior:'smooth', block:'center'}); 
+  $('search').focus(); 
+};
 
-function closeGame(){
-  cleanup();
-  modal.classList.remove('open');
-  document.onkeydown = null;
-}
-
-document.getElementById('closeModal').onclick = closeGame;
-modal.addEventListener('click', e => { if(e.target === modal) closeGame(); });
-document.getElementById('closeCurrentGame').addEventListener('click', closeGame);
-document.getElementById('restartCurrentGame').addEventListener('click', () => openGame(currentGameId));
-
-let currentGameId = 0;
-
-function el(tag, text='', cls=''){ const n = document.createElement(tag); n.textContent = text; if(cls) n.className = cls; return n; }
-function button(text, fn, cls='btn'){ const b = el('button', text, cls); b.onclick = fn; return b; }
-function status(text=''){ const s = el('div', text, 'status'); area.appendChild(s); return s; }
-function canvas(w=320, h=240){ const c = document.createElement('canvas'); c.width = w; c.height = h; area.appendChild(c); return c; }
-function input(placeholder=''){ const i = document.createElement('input'); i.placeholder = placeholder; area.appendChild(i); return i; }
-function startInterval(fn, ms){ const t = setInterval(fn, ms); cleanups.push(() => clearInterval(t)); return t; }
-function simulateKey(key){ if(document.onkeydown) document.onkeydown({key:key, preventDefault:()=>{}}); }
-function addDpad(controls, keys){
-  const dpad = document.createElement('div'); dpad.className = 'dpad';
-  if(keys.includes('ArrowUp')){ const b = document.createElement('button'); b.className='up'; b.textContent='↑'; b.onclick=()=>simulateKey('ArrowUp'); dpad.appendChild(b); }
-  if(keys.includes('ArrowLeft')){ const b = document.createElement('button'); b.className='left'; b.textContent='←'; b.onclick=()=>simulateKey('ArrowLeft'); dpad.appendChild(b); }
-  if(keys.includes('ArrowDown')){ const b = document.createElement('button'); b.className='down'; b.textContent='↓'; b.onclick=()=>simulateKey('ArrowDown'); dpad.appendChild(b); }
-  if(keys.includes('ArrowRight')){ const b = document.createElement('button'); b.className='right'; b.textContent='→'; b.onclick=()=>simulateKey('ArrowRight'); dpad.appendChild(b); }
-  if(keys.includes('Space')){ const b = document.createElement('button'); b.className='action'; b.style.gridColumn='1'; b.style.gridRow='1'; b.textContent='🚀'; b.onclick=()=>simulateKey(' '); dpad.appendChild(b); }
-  controls.appendChild(dpad);
-}
-
-function openGame(id){
-  currentGameId = id;
-  cleanup();
-  document.onkeydown = null;
-  modal.classList.add('open');
-  const lang = document.getElementById('languageSelect')?.value || 'ar';
-  const localizedGames = getLocalizedGames(lang);
-  document.getElementById('gameTitle').textContent = localizedGames[id-1].name;
-  try { launch(id); }
-  catch(e){ area.append(el('p', 'Error. Close and reopen.')); console.error(e); }
-}
-
-function launch(id){
-  if(id===1) return snake();
-  if(id===2) return ttt();
-  if(id===3) return game2048();
-  if(id===4) return memory();
-  if(id===5) return rps(false);
-  if(id===6) return guess();
-  if(id===7) return hangman();
-  if(id===8) return pong();
-  if(id===9) return whack();
-  if(id===10||id===42) return reaction();
-  if(id===11) return fruitCatch();
-  if(id===12) return flappy();
-  if(id===13) return breakout();
-  if(id===14) return mines();
-  if(id===15) return connect4();
-  if(id===16||id===44) return simon();
-  if(id===17) return scramble();
-  if(id===18) return typing();
-  if(id===19) return cookie();
-  if(id===20) return colorMatch();
-  if(id===21) return balloon();
-  if(id===22) return dice();
-  if(id===23) return trivia();
-  if(id===24) return pet();
-  if(id===25) return coin();
-  if(id===26) return targetTap();
-  if(id===27) return slidingPuzzle();
-  if(id===28) return bubblePop();
-  if(id===29) return starCollector();
-  if(id===30) return colorRush();
-  if(id===31) return mathQuiz();
-  if(id===32) return spelling();
-  if(id===33) return countryQuiz();
-  if(id===34) return flagQuiz();
-  if(id===35) return dodgeRocks();
-  if(id===36) return binary();
-  if(id===37||id===40) return pattern();
-  if(id===38) return wordChain();
-  if(id===39) return rps(true);
-  if(id===41) return colorMemory();
-  if(id===43) return maze();
-  if(id===45) return numberMemory();
-  if(id===46) return ninja();
-  if(id===47) return matchThree();
-  if(id===48) return shooter();
-  if(id===49) return codeBreaker();
-  if(id===50) return keepBalance();
-}
-
-// ===== GAMES =====
-
-function snake(){
-  let s = status(`🟢 ${t('easy')} | ${t('score')}: 0`);
-  const c = canvas(300,300), x = c.getContext('2d');
-  let body = [{x:8,y:8},{x:7,y:8},{x:6,y:8}], dx=1, dy=0, food={x:14,y:10}, score=0, dead=false;
-  const size = 15;
-  let speed = 180, level = t('easy'), levelColor = '#00d4aa';
-  let timer = null;
-  function getLevel(){
-    if(score>=20){ speed=90; level=t('hard'); levelColor='#ff4757'; }
-    else if(score>=8){ speed=130; level=t('medium'); levelColor='#ffd700'; }
-    else { speed=180; level=t('easy'); levelColor='#00d4aa'; }
-  }
-  function updateStatus(){
-    s.innerHTML = `<span style="color:${levelColor}">● ${level}</span> | ${t('score')}: ${score}`;
-  }
-  function draw(){
-    const g = x.createLinearGradient(0,0,300,300);
-    g.addColorStop(0,'#0a0a18'); g.addColorStop(1,'#030308');
-    x.fillStyle = g; x.fillRect(0,0,300,300);
-    x.strokeStyle='rgba(0,240,255,0.05)'; x.lineWidth=1;
-    for(let i=0;i<=20;i++){
-      x.beginPath(); x.moveTo(i*size,0); x.lineTo(i*size,300); x.stroke();
-      x.beginPath(); x.moveTo(0,i*size); x.lineTo(300,i*size); x.stroke();
-    }
-    body.forEach((p,i)=>{
-      const cx=p.x*size+size/2, cy=p.y*size+size/2;
-      const isHead = i===0;
-      const radius = isHead?7.5:Math.max(4.5,6.8-(i/body.length)*2.2);
-      if(isHead){ x.shadowColor='#00f0ff'; x.shadowBlur=16; } else x.shadowBlur=0;
-      const gradient = x.createRadialGradient(cx-2,cy-2,1,cx,cy,radius);
-      if(isHead){ gradient.addColorStop(0,'#a0ffff'); gradient.addColorStop(0.55,'#00e8ff'); gradient.addColorStop(1,'#0088bb'); }
-      else { const tt=i/Math.max(body.length,1); gradient.addColorStop(0,`rgba(0,${230-tt*90},${255-tt*70},0.95)`); gradient.addColorStop(1,`rgba(0,${150-tt*70},${210-tt*90},0.9)`); }
-      x.fillStyle = gradient; x.beginPath(); x.arc(cx,cy,radius,0,7); x.fill();
-      if(isHead){
-        x.shadowBlur=0; let ox=0,oy=0;
-        if(dx===1)ox=2.5; else if(dx===-1)ox=-2.5; else if(dy===-1)oy=-2.5; else if(dy===1)oy=2.5;
-        x.fillStyle='#fff'; x.beginPath(); x.arc(cx-2.8+ox*0.6,cy-2.2+oy*0.6,1.9,0,7); x.fill();
-        x.beginPath(); x.arc(cx+2.8+ox*0.6,cy-2.2+oy*0.6,1.9,0,7); x.fill();
-        x.fillStyle='#001820'; x.beginPath(); x.arc(cx-2.8+ox,cy-2.2+oy,0.95,0,7); x.fill();
-        x.beginPath(); x.arc(cx+2.8+ox,cy-2.2+oy,0.95,0,7); x.fill();
-      }
-    });
-    const fx=food.x*size+size/2, fy=food.y*size+size/2;
-    x.shadowColor='#ff007f'; x.shadowBlur=18;
-    const appleGrad = x.createRadialGradient(fx-2,fy-2,1,fx,fy,7);
-    appleGrad.addColorStop(0,'#ff8fb3'); appleGrad.addColorStop(0.65,'#ff007f'); appleGrad.addColorStop(1,'#bb0044');
-    x.fillStyle = appleGrad; x.beginPath(); x.arc(fx,fy,6.8,0,7); x.fill();
-    x.shadowBlur = 0;
-  }
-  function step(){
-    if(dead) return;
-    let h = {x:body[0].x+dx, y:body[0].y+dy};
-    if(h.x<0||h.x>=20||h.y<0||h.y>=20){
-      dead=true; s.innerHTML=`💀 <b>${t('gameOver')}</b> — ${t('score')}: ${score}`; s.style.color='#ff4757'; return;
-    }
-    if(body.some(p=>p.x===h.x&&p.y===h.y)){
-      dead=true; s.innerHTML=`💀 <b>${t('gameOver')}</b> — ${t('score')}: ${score}`; s.style.color='#ff4757'; return;
-    }
-    body.unshift(h);
-    if(h.x===food.x&&h.y===food.y){
-      score++; getLevel(); updateStatus();
-      clearInterval(timer);
-      timer = setInterval(step, speed);
-      cleanups.push(()=>clearInterval(timer));
-      do { food = {x:Math.floor(Math.random()*20), y:Math.floor(Math.random()*20)}; }
-      while(body.some(p=>p.x===food.x&&p.y===food.y));
-    } else body.pop();
-    draw();
-  }
-  document.onkeydown = e => {
-    if(dead) return;
-    const k = e.key;
-    if(k==='ArrowUp'&&dy!==1){ dx=0; dy=-1; }
-    else if(k==='ArrowDown'&&dy!==-1){ dx=0; dy=1; }
-    else if(k==='ArrowLeft'&&dx!==1){ dx=-1; dy=0; }
-    else if(k==='ArrowRight'&&dx!==-1){ dx=1; dy=0; }
-    else return;
-    e.preventDefault();
-  };
-  cleanups.push(()=>document.onkeydown=null);
-  timer = setInterval(step, speed);
-  cleanups.push(()=>clearInterval(timer));
-  addDpad(controls, ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight']);
-  draw();
-}
-
-function ttt(){
-  let board = Array(9).fill(''), turn = 'X', s = status(`${t('yourTurn')}: X`);
-  const wrap = el('div');
-  wrap.style.cssText = 'display:grid;grid-template-columns:repeat(3,80px);gap:8px;';
-  area.appendChild(wrap);
-  function win(){
-    for(let a of [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]])
-      if(board[a[0]]&&board[a[0]]===board[a[1]]&&board[a[1]]===board[a[2]]) return board[a[0]];
-    return '';
-  }
-  function play(i){
-    if(board[i]||win()) return;
-    board[i] = turn;
-    wrap.children[i].textContent = turn;
-    wrap.children[i].style.color = turn==='X'?'#00f0ff':'#ff007f';
-    let w = win();
-    if(w) s.innerHTML = `🎉 ${t('youWon')}`;
-    else if(board.every(Boolean)) s.textContent = t('draw')+'!';
-    else { turn = turn==='X'?'O':'X'; s.textContent = `${t('turn')}: ${turn}`; }
-  }
-  for(let i=0;i<9;i++){
-    let b = button('', ()=>play(i), 'btn secondary');
-    b.style.cssText = 'height:80px;font-size:2.2rem;font-weight:900;border-radius:12px;';
-    wrap.appendChild(b);
-  }
-}
-
-function game2048(){
-  let board = Array(16).fill(0), s = status(`${t('score')}: 0`), score = 0;
-  const c = canvas(300,300), ctx = c.getContext('2d');
-  const colors = {2:'#1a1a3e',4:'#2a2a5e',8:'#3a2a7e',16:'#4a2a9e',32:'#5a2abe',64:'#6a2ade',128:'#7c5cff',256:'#00f0ff',512:'#00d4aa',1024:'#ffd700',2048:'#ff007f'};
-  function add(){
-    let a = board.map((v,i)=>v?null:i).filter(v=>v!==null);
-    if(a.length) board[a[Math.random()*a.length|0]] = Math.random()<.9?2:4;
-  }
-  function draw(){
-    ctx.fillStyle = '#0a0a15'; ctx.fillRect(0,0,300,300);
-    board.forEach((v,i)=>{
-      let x = i%4*75, y = (i/4|0)*75;
-      ctx.fillStyle = v?(colors[v]||'#ff007f'):'#151525';
-      ctx.beginPath(); ctx.roundRect(x+4,y+4,67,67,10); ctx.fill();
-      if(v){
-        ctx.fillStyle = 'white';
-        ctx.font = v>100?'bold 20px Cairo':'bold 26px Cairo';
-        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.fillText(v, x+37.5, y+37.5);
-      }
-    });
-  }
-  function move(dir){
-    let changed = false;
-    for(let r=0;r<4;r++){
-      let ids = Array.from({length:4},(_,i)=>dir==='left'?r*4+i:dir==='right'?r*4+3-i:dir==='up'?i*4+r:(3-i)*4+r);
-      let a = ids.map(i=>board[i]).filter(Boolean), out = [];
-      for(let i=0;i<a.length;i++){
-        if(a[i]===a[i+1]){ out.push(a[i]*2); score += a[i]*2; i++; }
-        else out.push(a[i]);
-      }
-      while(out.length<4) out.push(0);
-      ids.forEach((id,i)=>{ if(board[id]!==out[i]) changed=true; board[id]=out[i]; });
-    }
-    if(changed){ add(); s.textContent = `${t('score')}: ${score}`; draw(); }
-  }
-  document.onkeydown = e => {
-    let d = {'ArrowLeft':'left','ArrowRight':'right','ArrowUp':'up','ArrowDown':'down'}[e.key];
-    if(d){ e.preventDefault(); move(d); }
-  };
-  cleanups.push(()=>document.onkeydown=null);
-  addDpad(controls, ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight']);
-  add(); add(); draw();
-}
-
-function memory(){
-  let vals = ['🍎','🍇','🍋','🍒','🐸','🚀','⚽','⭐'].flatMap(x=>[x,x]).sort(()=>Math.random()-.5);
-  let opened = [], matched = 0, s = status(t('clickStart'));
-  const grid = el('div');
-  grid.style.cssText = 'display:grid;grid-template-columns:repeat(4,64px);gap:9px;';
-  area.appendChild(grid);
-  vals.forEach((v,i)=>{
-    let b = button('?', ()=>{
-      if(opened.length===2||b.dataset.done||opened.some(o=>o.b===b)) return;
-      b.textContent = v; b.style.fontSize = '1.7rem';
-      b.style.background = 'rgba(0,240,255,0.15)';
-      opened.push({b,v});
-      if(opened.length===2){
-        if(opened[0].v===opened[1].v){
-          opened.forEach(o=>{
-            o.b.dataset.done = '1';
-            o.b.style.background = 'rgba(0,212,170,0.25)';
-            o.b.style.borderColor = '#00d4aa';
-            o.b.style.boxShadow = '0 0 12px #00d4aa66';
-          });
-          matched += 2; opened = [];
-          s.textContent = `${t('pairs')}: ${matched/2}`;
-          if(matched===16){
-            s.innerHTML = `🎉 ${t('youWon')}`;
-            s.style.color = '#00d4aa';
-          }
-        } else {
-          setTimeout(()=>{
-            opened.forEach(o=>{
-              o.b.textContent = '?';
-              o.b.style.fontSize = '';
-              o.b.style.background = '';
-            });
-            opened = [];
-          }, 650);
-        }
-      }
-    }, 'btn secondary');
-    b.style.cssText = 'height:64px;font-size:1.4rem;border-radius:12px;transition:0.2s;';
-    grid.appendChild(b);
-  });
-}
-
-function rps(five){
-  let opts = five?['🪨 Rock','📄 Paper','✂️ Scissors','🦎 Lizard','🖖 Spock']:['🪨 Rock','📄 Paper','✂️ Scissors'];
-  const s = status(t('chooseMove'));
-  opts.forEach(v=>{
-    let pure = v.split(' ')[1]||v;
-    controls.appendChild(button(v, ()=>{
-      let cpu = opts[Math.random()*opts.length|0];
-      let wins = five?{Rock:['Scissors','Lizard'],Paper:['Rock','Spock'],Scissors:['Paper','Lizard'],Lizard:['Spock','Paper'],Spock:['Scissors','Rock']}:
-                    {Rock:['Scissors'],Paper:['Rock'],Scissors:['Paper']};
-      let you = pure, them = cpu.split(' ')[1]||cpu;
-      s.textContent = v+' vs '+cpu+' — '+(you===them?t('draw'):(wins[you]||[]).includes(them)?`🎉 ${t('youWon')}`:t('computerWon'));
-    }));
-  });
-}
-
-function guess(){
-  let s = status(`🧠 ${t('watch')} ...`);
-  let seq = [], userSeq = [], level = 1, showing = true;
-  function nextLevel() {
-    showing = true; userSeq = []; seq = [];
-    for(let i=0; i<level+2; i++) seq.push(Math.floor(Math.random()*9)+1);
-    s.textContent = `🧠 ${t('watch')}: ${seq.join(' ')}`;
-    setTimeout(()=>{ s.textContent = `✍️ ${t('repeat')}`; showing = false; }, 1500 + (level*300));
-  }
-  function checkWin() {
-    if(userSeq.join('') === seq.join('')) {
-      level++;
-      if(level > 5) { s.innerHTML = `🏆 ${t('youWon')}<br>${t('score')}: ${level-1}`; s.style.color = '#00d4aa'; }
-      else { s.textContent = `✅ ${t('correct')}! Level ${level}`; setTimeout(nextLevel, 1000); }
-    } else {
-      s.innerHTML = `💀 ${t('gameOver')}! ${t('score')}: ${level-1}`; s.style.color = '#ff4757';
-    }
-  }
-  for(let i=1; i<=9; i++){
-    controls.appendChild(button(i, ()=>{
-      if(showing) return;
-      userSeq.push(i);
-      if(userSeq.length === seq.length) checkWin();
-    }, 'btn secondary'));
-  }
-  nextLevel();
-}
-
-function hangman(){
-  let words = {ar:['قمر','شمس','نجمة','كتاب','قلم','بيت','ورد','سماء'], en:['moon','sun','star','book','pen','house','rose','sky'], am:['ጨረቃ','ፀሐይ','ኮከብ','መጽሐፍ','ብዕር','ቤት','ሰማይ']};
-  const lang = document.getElementById('languageSelect').value;
-  let list = words[lang] || words.ar;
-  let word = list[Math.random()*list.length|0], used = [], s = status(`${t('wrongCount')}: 0`);
-  let display = el('div', '_ '.repeat(word.length));
-  display.style.cssText = 'font-size:2rem;letter-spacing:6px;margin:10px 0;';
-  area.appendChild(display);
-  let i = input('حرف / letter');
-  controls.appendChild(button(t('submit'), ()=>{
-    let ch = i.value[0]; i.value = '';
-    if(!ch||used.includes(ch)) return;
-    used.push(ch);
-    let wrong = used.filter(c=>!word.includes(c)).length;
-    display.textContent = [...word].map(c=>used.includes(c)?c:'_').join(' ');
-    s.textContent = `${t('wrongCount')}: ${wrong}`;
-    if([...word].every(c=>used.includes(c))) s.innerHTML = `🎉 ${t('youWon')} ${word}`;
-    else if(wrong>=6) s.textContent = `${t('gameOver')} — ${word}`;
-  }));
-}
-
-function pong(){
-  const c = canvas(320,240), ctx = c.getContext('2d'), s = status(t('movePlayer'));
-  let x=160, y=120, vx=2.3, vy=1.6, p=110, score=0;
-  function draw(){
-    const g = ctx.createLinearGradient(0,0,0,240);
-    g.addColorStop(0,'#0a0a18'); g.addColorStop(1,'#030308');
-    ctx.fillStyle = g; ctx.fillRect(0,0,320,240);
-    ctx.setLineDash([6,8]); ctx.strokeStyle='rgba(0,240,255,0.15)';
-    ctx.beginPath(); ctx.moveTo(160,10); ctx.lineTo(160,230); ctx.stroke();
-    ctx.setLineDash([]);
-    ctx.shadowColor='#00f0ff'; ctx.shadowBlur=14;
-    ctx.fillStyle='#00f0ff';
-    ctx.beginPath(); ctx.arc(x,y,9,0,7); ctx.fill();
-    ctx.shadowBlur=0;
-    const pg = ctx.createLinearGradient(p,0,p+90,0);
-    pg.addColorStop(0,'#7c5cff'); pg.addColorStop(1,'#00f0ff');
-    ctx.fillStyle = pg;
-    ctx.beginPath(); ctx.roundRect(p,218,90,14,7); ctx.fill();
-    x+=vx; y+=vy;
-    if(x<9||x>311) vx*=-1;
-    if(y<9) vy*=-1;
-    if(y>205&&x>p&&x<p+90){
-      vy = -Math.abs(vy);
-      let hit = (x-p)/90;
-      vx = (hit-0.5)*5;
-      y = 205; score++;
-      s.textContent = `${t('score')}: ${score}`;
-    }
-    if(y>245){
-      s.innerHTML = `💀 ${t('gameOver')} — ${t('score')}: ${score}`;
-      s.style.color = '#ff4757';
-      x=160; y=120; vx=2.3; vy=1.6; p=110;
-    }
-    requestAnimationFrame(draw);
-  }
-  c.onpointermove = e => { p = Math.max(0, Math.min(230, e.offsetX-45)); };
-  draw();
-}
-
-function whack(){
-  let s = status(`🐹 ${t('score')}: 0 | ${t('time')}: 20`);
-  let score = 0, time = 20, over = false;
-  const grid = el('div');
-  grid.style.cssText = 'display:grid;grid-template-columns:repeat(3,70px);gap:8px;';
-  area.appendChild(grid);
-  let holes = [];
-  for(let i=0;i<9;i++){
-    let b = button('🕳️', ()=>{
-      if(over || b.textContent!=='🐹') return;
-      score++; s.textContent = `🐹 ${t('score')}: ${score} | ${t('time')}: ${time}`;
-      b.textContent = '🕳️'; b.style.transform = 'scale(1.2)'; setTimeout(()=>b.style.transform='', 100);
-    }, 'btn secondary');
-    b.style.cssText = 'height:70px;font-size:1.8rem;border-radius:12px;transition:0.1s;';
-    grid.appendChild(b); holes.push(b);
-  }
-  startInterval(()=>{
-    if(over) return;
-    holes.forEach(b=>b.textContent='🕳️');
-    holes[Math.random()*9|0].textContent = '🐹';
-    time--;
-    if(time<=0){ over=true; s.innerHTML=`🎉 ${t('youWon')}<br>${t('score')}: ${score}`; s.style.color='#00d4aa'; holes.forEach(b=>b.disabled=true); }
-    else s.textContent = `🐹 ${t('score')}: ${score} | ${t('time')}: ${time}`;
-  }, 800);
-}
-
-function reaction(){
-  let s = status(t('clickStart'));
-  let b = button(t('start'), ()=>{
-    b.disabled = true; b.style.background = '#ff4757'; b.textContent = t('wait');
-    let delay = 800+Math.random()*2000;
-    let tm = setTimeout(()=>{
-      b.disabled = false; b.style.background = '#00d4aa'; b.textContent = t('now');
-      let start = performance.now();
-      b.onclick = ()=>{
-        s.textContent = `${t('reaction')}: ${Math.round(performance.now()-start)} ${t('milliseconds')}`;
-        b.onclick = ()=>openGame(currentGameId);
-        b.textContent = t('tryAgainBtn'); b.style.background = '';
-      };
-    }, delay);
-    cleanups.push(()=>clearTimeout(tm));
-  });
-  area.appendChild(b);
-}
-
-function fruitCatch(){
-  let s = status(`🟢 ${t('easy')} | ${t('fruits')}: 0`), score = 0, lives = 3, over = false;
-  const c = canvas(300,280), ctx = c.getContext('2d');
-  let basketX = 120, fruits = [], frame = 0, spawnRate = 40, baseSpeed = 1.6;
-  const emojis = ['🍎','🍊','🍋','🍇','🍓','🍒'];
-  function getLevel(){
-    if(score>=15){ spawnRate=18; baseSpeed=3.2; s.innerHTML = `🔴 <b>${t('hard')}</b> | ${t('score')}: ${score} | ${t('lives')}: ${lives}`; }
-    else if(score>=6){ spawnRate=28; baseSpeed=2.3; s.innerHTML = `🟡 <b>${t('medium')}</b> | ${t('score')}: ${score} | ${t('lives')}: ${lives}`; }
-    else { spawnRate=40; baseSpeed=1.6; s.innerHTML = `🟢 <b>${t('easy')}</b> | ${t('score')}: ${score} | ${t('lives')}: ${lives}`; }
-  }
-  document.onkeydown = e => {
-    if(e.key==='ArrowLeft') basketX = Math.max(0, basketX-22);
-    if(e.key==='ArrowRight') basketX = Math.min(240, basketX+22);
-  };
-  cleanups.push(()=>document.onkeydown=null);
-  addDpad(controls, ['ArrowLeft','ArrowRight']);
-  function draw(){
-    const g = ctx.createLinearGradient(0,0,0,280);
-    g.addColorStop(0,'#0a1520'); g.addColorStop(1,'#030308');
-    ctx.fillStyle = g; ctx.fillRect(0,0,300,280);
-    ctx.fillStyle = '#7c5cff';
-    ctx.beginPath(); ctx.roundRect(basketX,245,60,22,8); ctx.fill();
-    ctx.fillStyle = '#00f0ff'; ctx.fillRect(basketX+5,250,50,4);
-    if(!over){
-      frame++;
-      if(frame%spawnRate===0) fruits.push({x:20+Math.random()*240, y:-20, emoji:emojis[Math.random()*6|0], speed:baseSpeed+Math.random()*0.8});
-      fruits.forEach(f=>{
-        f.y += f.speed;
-        ctx.font = '22px serif'; ctx.fillText(f.emoji, f.x, f.y);
-        if(f.y>235&&f.y<265&&f.x>basketX-10&&f.x<basketX+50){ f.y=400; score++; getLevel(); }
-        if(f.y>290){ f.y=400; lives--; getLevel(); }
-      });
-      fruits = fruits.filter(f=>f.y<350);
-      if(lives<=0){ over=true; s.innerHTML = `💀 ${t('gameOver')} — ${t('score')}: ${score}`; s.style.color='#ff4757'; }
-    }
-    requestAnimationFrame(draw);
-  }
-  draw();
-}
-
-function flappy(){
-  let y=120, v=0, pipeX=340, gapY=80, score=0, over=false;
-  let pipeSpeed=1.8, gapSize=95, grav=0.18;
-  const c = canvas(320,240), ctx = c.getContext('2d'), s = status(`🟢 ${t('easy')} | ${t('flappyHint')}`);
-  function getLevel(){
-    if(score>=12){ pipeSpeed=3.2; gapSize=70; grav=0.24; s.innerHTML = `🔴 <b>${t('hard')}</b> | ${t('score')}: ${score}`; }
-    else if(score>=5){ pipeSpeed=2.4; gapSize=82; grav=0.20; s.innerHTML = `🟡 <b>${t('medium')}</b> | ${t('score')}: ${score}`; }
-    else { pipeSpeed=1.8; gapSize=95; grav=0.18; s.innerHTML = `🟢 <b>${t('easy')}</b> | ${t('score')}: ${score}`; }
-  }
-  function flap(){
-    if(over){ y=120; v=0; pipeX=340; gapY=80; score=0; over=false; getLevel(); s.style.color=''; }
-    v = -4.0;
-  }
-  c.onclick = flap;
-  document.onkeydown = e => { if(e.code==='Space'){ e.preventDefault(); flap(); } };
-  cleanups.push(()=>document.onkeydown=null);
-  function draw(){
-    const g = ctx.createLinearGradient(0,0,0,240);
-    g.addColorStop(0,'#0a1830'); g.addColorStop(1,'#030308');
-    ctx.fillStyle = g; ctx.fillRect(0,0,320,240);
-    if(!over){
-      v += grav; y += v; pipeX -= pipeSpeed;
-      if(pipeX<-50){ pipeX=340; gapY=30+Math.random()*(180-gapSize); score++; getLevel(); }
-      ctx.fillStyle = '#7c5cff';
-      ctx.shadowColor='#7c5cff'; ctx.shadowBlur=8;
-      ctx.beginPath(); ctx.roundRect(pipeX,0,42,gapY,6); ctx.fill();
-      ctx.beginPath(); ctx.roundRect(pipeX,gapY+gapSize,42,240-(gapY+gapSize),6); ctx.fill();
-      ctx.shadowBlur = 0;
-      if(y<8||y>232||(pipeX<62&&pipeX>8&&(y<gapY+8||y>gapY+gapSize-8))){
-        over = true;
-        s.innerHTML = `💀 ${t('gameOver')} — ${t('score')}: ${score}`;
-        s.style.color = '#ff4757';
-      }
-    }
-    ctx.shadowColor='#00f0ff'; ctx.shadowBlur=14;
-    ctx.fillStyle='#00f0ff';
-    ctx.beginPath(); ctx.arc(50,y,11,0,7); ctx.fill();
-    ctx.shadowBlur=0;
-    ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(54,y-3,3,0,7); ctx.fill();
-    ctx.fillStyle='#001'; ctx.beginPath(); ctx.arc(55,y-3,1.5,0,7); ctx.fill();
-    requestAnimationFrame(draw);
-  }
-  draw();
-}
-
-function breakout(){
-  let c = canvas(320,280), ctx = c.getContext('2d'), s = status(t('movePlayer'));
-  let x=160, y=230, vx=2.0, vy=-2.5, px=115, score=0, over=false;
-  const colors = ['#ff007f','#7c5cff','#00f0ff','#00d4aa','#ffd700'];
-  let bricks = Array.from({length:20}, (_,i)=>({x:14+(i%5)*60, y:22+Math.floor(i/5)*26, on:true, color:colors[Math.floor(i/5)]}));
-  c.onpointermove = e => px = Math.max(0, Math.min(235, e.offsetX-42));
-  function draw(){
-    const bg = ctx.createLinearGradient(0,0,0,280);
-    bg.addColorStop(0,'#0a0a18'); bg.addColorStop(1,'#030308');
-    ctx.fillStyle = bg; ctx.fillRect(0,0,320,280);
-    bricks.forEach(b=>{
-      if(b.on){
-        ctx.shadowColor = b.color; ctx.shadowBlur = 6;
-        ctx.fillStyle = b.color;
-        ctx.beginPath(); ctx.roundRect(b.x,b.y,52,18,5); ctx.fill();
-        ctx.shadowBlur = 0;
-      }
-    });
-    const pg = ctx.createLinearGradient(px,0,px+85,0);
-    pg.addColorStop(0,'#00f0ff'); pg.addColorStop(1,'#7c5cff');
-    ctx.fillStyle = pg;
-    ctx.beginPath(); ctx.roundRect(px,252,85,14,7); ctx.fill();
-    ctx.shadowColor='#ff007f'; ctx.shadowBlur=12;
-    ctx.fillStyle='#ff4d8d';
-    ctx.beginPath(); ctx.arc(x,y,8,0,7); ctx.fill();
-    ctx.shadowBlur=0;
-    if(!over){
-      x+=vx; y+=vy;
-      if(x<8||x>312) vx*=-1;
-      if(y<8) vy*=-1;
-      if(y>242&&x>px&&x<px+85){
-        vy = -Math.abs(vy);
-        let hit = (x-px)/85;
-        vx = (hit-0.5)*4.5;
-        y = 242;
-      }
-      bricks.forEach(b=>{
-        if(b.on&&x>b.x&&x<b.x+52&&y>b.y&&y<b.y+18){
-          b.on = false; vy*=-1; score++;
-          s.textContent = `${t('rocks')}: ${score}`;
-        }
-      });
-      if(y>285){ over=true; s.innerHTML = `💀 ${t('gameOver')} — ${t('score')}: ${score}`; s.style.color='#ff4757'; }
-      if(bricks.every(b=>!b.on)){ over=true; s.innerHTML = `🎉 ${t('youWon')}`; s.style.color='#00d4aa'; }
-    }
-    requestAnimationFrame(draw);
-  }
-  draw();
-}
-
-function mines(){
-  let mine = new Set();
-  while(mine.size<3) mine.add(Math.random()*25|0);
-  let s = status(t('clickStart')), wrap = el('div');
-  wrap.style.cssText = 'display:grid;grid-template-columns:repeat(5,48px);gap:5px;';
-  area.appendChild(wrap);
-  for(let i=0;i<25;i++){
-    let b = button('?', ()=>{
-      if(mine.has(i)){
-        b.textContent = '💣'; b.style.background = '#ff475733';
-        s.textContent = `💥 ${t('gameOver')}`;
-        wrap.querySelectorAll('button').forEach(x=>x.disabled=true);
-      } else {
-        b.textContent = '✓'; b.disabled = true; b.style.background = '#00d4aa33';
-        let safe = wrap.querySelectorAll('button:disabled').length;
-        s.textContent = `${t('found')}: ${safe}`;
-        if(safe===22) s.innerHTML = `🎉 ${t('youWon')}`;
-      }
-    }, 'btn secondary');
-    b.style.cssText = 'height:48px;padding:0;border-radius:8px;font-size:1.1rem;';
-    wrap.appendChild(b);
-  }
-}
-
-function connect4(){
-  let b = Array(42).fill(0), turn = 1, s = status(t('turn')+': 🔴');
-  const wrap = el('div');
-  wrap.style.cssText = 'display:grid;grid-template-columns:repeat(7,40px);gap:4px;';
-  area.appendChild(wrap);
-  function win(i){
-    let r = i/7|0, c = i%7;
-    for(let [dr,dc] of [[0,1],[1,0],[1,1],[1,-1]]){
-      let n = 1;
-      for(let k of [-1,1]){
-        let rr = r+dr*k, cc = c+dc*k;
-        while(rr>=0&&rr<6&&cc>=0&&cc<7&&b[rr*7+cc]===turn){ n++; rr+=dr*k; cc+=dc*k; }
-      }
-      if(n>=4) return true;
-    }
-    return false;
-  }
-  for(let i=0;i<42;i++){
-    let bt = button('·', ()=>{
-      let col = i%7, row = 5;
-      while(row>=0&&b[row*7+col]) row--;
-      if(row<0) return;
-      let ix = row*7+col;
-      b[ix] = turn;
-      wrap.children[ix].textContent = turn===1?'🔴':'🟡';
-      wrap.children[ix].style.fontSize = '1.4rem';
-      if(win(ix)){ s.innerHTML = `🎉 ${t('youWon')}`; wrap.querySelectorAll('button').forEach(x=>x.disabled=true); }
-      else { turn = 3-turn; s.textContent = t('turn')+': '+(turn===1?'🔴':'🟡'); }
-    }, 'btn secondary');
-    bt.style.cssText = 'width:40px;height:40px;padding:0;border-radius:50%;font-size:1.2rem;';
-    wrap.appendChild(bt);
-  }
-}
-
-function simon(){
-  let colors = ['#ff4757','#2ed573','#1e90ff','#ffa502'], seq = [], pos = 0, showing = false, score = 0, s = status(t('clickStart'));
-  const wrap = el('div');
-  wrap.style.cssText = 'display:grid;grid-template-columns:repeat(2,100px);gap:10px;';
-  area.appendChild(wrap);
-  function flash(i){
-    wrap.children[i].style.opacity = '1';
-    wrap.children[i].style.transform = 'scale(1.08)';
-    setTimeout(()=>{ wrap.children[i].style.opacity='.55'; wrap.children[i].style.transform=''; }, 350);
-  }
-  function next(){
-    showing = true; pos = 0;
-    seq.push(Math.random()*4|0);
-    s.textContent = t('watch');
-    seq.forEach((v,i)=>setTimeout(()=>flash(v), i*650));
-    setTimeout(()=>{ showing=false; s.textContent = t('repeat'); }, seq.length*650+200);
-  }
-  colors.forEach((c,i)=>{
-    let b = button('', ()=>{
-      if(showing||!seq.length) return;
-      flash(i);
-      if(seq[pos]!==i){ s.textContent = `${t('wrong')}! ${t('score')}: ${score}`; seq=[]; return; }
-      pos++;
-      if(pos===seq.length){ score+=seq.length; s.textContent = `${t('score')}: ${score}`; setTimeout(next, 600); }
-    }, 'btn');
-    b.style.cssText = `height:90px;background:${c};opacity:.55;border-radius:14px;border:none;transition:0.15s;`;
-    wrap.appendChild(b);
-  });
-  controls.appendChild(button(t('start'), ()=>{ seq=[]; score=0; next(); }));
-}
-
-function scramble(){
-  let s = status('🧮 حل بسرعة!');
-  let score = 0, time = 20, over = false;
-  let currentAns = 0;
-  const question = el('div', '', 'status');
-  question.style.fontSize = '2rem'; area.appendChild(question);
-  let i = input(t('answer'));
-  function newQuestion() {
-    let a = Math.floor(Math.random()*20)+1, b = Math.floor(Math.random()*20)+1;
-    let op = ['+', '-', '*'][Math.floor(Math.random()*3)];
-    if(op === '+') currentAns = a + b;
-    else if(op === '-') currentAns = a - b;
-    else currentAns = a * b;
-    question.textContent = `${a} ${op} ${b} = ?`;
-  }
-  controls.appendChild(button(t('submit'), ()=>{
-    if(over) return;
-    if(parseInt(i.value) === currentAns) { score += 10; s.textContent = `✅ ${t('correct')}! ${t('score')}: ${score}`; }
-    else { s.textContent = `❌ ${t('wrong')}!`; time -= 2; }
-    i.value = ''; newQuestion();
-  }));
-  startInterval(()=>{
-    if(over) return;
-    time--;
-    if(time <= 0) { over = true; s.innerHTML = `🎉 ${t('youWon')}<br>${t('score')}: ${score}`; s.style.color = '#00d4aa'; }
-    else s.textContent = `⏱️ ${t('time')}: ${time} | ${t('score')}: ${score}`;
-  }, 1000);
-  newQuestion();
-}
-
-function typing(){
-  let phrase = {ar:'GameZone40 ألعاب ممتعة', en:'GameZone40 fun games', am:'GameZone40 አስደሳች ጨዋታዎች'}[document.getElementById('languageSelect').value] || 'GameZone40 ألعاب ممتعة';
-  let s = status(t('typing')+':');
-  let p = el('p', phrase); p.style.cssText = 'font-size:1.1rem;color:#00f0ff;margin:8px 0;';
-  area.appendChild(p);
-  let i = input(t('answer'));
-  controls.appendChild(button(t('submit'), ()=>s.innerHTML = i.value===phrase?`🎉 ${t('youWon')}`:t('tryAgain')));
-}
-
-function cookie(){
-  let n = 0, s = status(`💰 ${t('score')}: 0 | ${t('time')}: 15`);
-  let time = 15, over = false;
-  const wrap = el('div');
-  wrap.style.cssText = 'display:grid;grid-template-columns:repeat(3, 70px);gap:10px;';
-  area.appendChild(wrap);
-  for(let i=0; i<9; i++){
-    let b = button('❓', ()=>{
-      if(over || b.disabled) return;
-      if(Math.random() > 0.6) { b.textContent = '💎'; n += 10; s.textContent = `💰 ${t('score')}: ${n} | ${t('time')}: ${time}`; b.style.background = 'rgba(0,212,170,0.3)'; } 
-      else { b.textContent = '💣'; time -= 3; s.textContent = `💥 -3! | ${t('time')}: ${time}`; b.style.background = 'rgba(255,71,87,0.3)'; }
-      b.disabled = true;
-    }, 'btn secondary');
-    b.style.cssText = 'height:70px;font-size:1.5rem;border-radius:12px;';
-    wrap.appendChild(b);
-  }
-  startInterval(()=>{
-    if(over) return;
-    time--;
-    if(time <= 0) { over = true; s.innerHTML = `🎉 ${t('youWon')}<br>${t('score')}: ${n}`; s.style.color = '#00d4aa'; wrap.querySelectorAll('button').forEach(x=>x.disabled=true); } 
-    else s.textContent = `💰 ${t('score')}: ${n} | ${t('time')}: ${time}`;
-  }, 1000);
-}
-
-function colorMatch(){
-  const lang = document.getElementById('languageSelect').value;
-  const colorNames = { ar:['أحمر','أزرق','أخضر','برتقالي','بنفسجي'], en:['Red','Blue','Green','Orange','Purple'], am:['ቀይ','ሰማያዊ','አረንጓዴ','ብርቱካናማ','ወይን ጠጅ'] };
-  let colors = colorNames[lang] || colorNames.ar;
-  let target = '', s = status();
-  const b = button(t('newGame'), next); area.appendChild(b);
-  function next(){
-    target = colors[Math.random()*5|0];
-    s.textContent = `${t('target')}: ${target}`;
-    controls.innerHTML = '';
-    colors.slice().sort(()=>Math.random()-.5).forEach(c=>controls.appendChild(button(c, ()=>{
-      s.textContent = c===target?`${t('correct')}! 🎉`:t('tryAgain');
-      if(c===target) b.textContent = t('next');
-    })));
-  }
-}
-
-function balloon(){
-  let n = 0, s = status(`🎈 ${t('popped')}: 0`);
-  for(let i=0;i<9;i++){
-    let b = button('🎈', ()=>{ n++; b.textContent='💥'; s.textContent = `${t('popped')}: ${n}`; b.disabled=true; }, 'btn secondary');
-    b.style.cssText = 'font-size:1.8rem;height:60px;width:60px;border-radius:50%;';
-    area.appendChild(b);
-  }
-}
-
-function dice(){
-  let s = status('🎨 تذكر الألوان!');
-  let seq = [], userSeq = [], showing = true, score = 0;
-  const colors = ['🔴', '🟢', '🔵', '🟡'];
-  function nextLevel() {
-    showing = true; userSeq = [];
-    seq.push(colors[Math.floor(Math.random() * 4)]);
-    s.textContent = `👀 ${seq.join(' ')}`;
-    setTimeout(()=>{ s.textContent = `✍️ ${t('repeat')}`; showing = false; }, 1000 + (seq.length * 200));
-  }
-  function checkWin() {
-    if(userSeq.join('') === seq.join('')) {
-      score += seq.length;
-      s.textContent = `✅ ${t('correct')}! ${t('score')}: ${score}`;
-      setTimeout(nextLevel, 1000);
-    } else {
-      s.innerHTML = `🎉 ${t('youWon')}<br>${t('score')}: ${score}`; s.style.color = '#00d4aa';
-    }
-  }
-  colors.forEach(c => controls.appendChild(button(c, ()=>{
-    if(showing) return;
-    userSeq.push(c);
-    if(userSeq.length === seq.length) checkWin();
-  }, 'btn')));
-  controls.appendChild(button('ابدأ Start', ()=>{ seq=[]; score=0; nextLevel(); }, 'btn secondary'));
-}
-
-function trivia(){
-  const lang = document.getElementById('languageSelect').value;
-  const qs = { ar:[['عاصمة مصر؟','القاهرة'],['كم يوماً في الأسبوع؟','7'],['الكوكب الأحمر؟','المريخ'],['5 × 4؟','20'],['لون السماء؟','أزرق']], en:[['Capital of Egypt?','Cairo'],['Days in a week?','7'],['Red planet?','Mars'],['5 × 4?','20'],['Sky color?','Blue']], am:[['የግብፅ ዋና ከተማ?','ካይሮ'],['በሳምንት ስንት ቀናት?','7'],['ቀይ ፕላኔት?','ማርስ'],['5 × 4?','20'],['የሰማይ ቀለም?','ሰማያዊ']] };
-  let list = qs[lang] || qs.ar;
-  let q = list[Math.random()*list.length|0], s = status(q[0]), i = input(t('answer'));
-  controls.appendChild(button(t('submit'), ()=>s.innerHTML = i.value.toLowerCase()===q[1].toLowerCase()?`${t('correct')}! 🎉`:`${t('answer')}: ${q[1]}`));
-}
-
-function pet(){
-  let s = status(`🫧 ${t('score')}: 0 | ${t('time')}: 15`);
-  let score = 0, time = 15, over = false;
-  const c = canvas(300, 300), ctx = c.getContext('2d');
-  let bubbles = [];
-  for(let i=0; i<6; i++) bubbles.push({x: 30+Math.random()*240, y: 30+Math.random()*240, r: 15+Math.random()*15, color: `hsl(${Math.random()*360}, 80%, 60%)`});
-  c.onclick = (e) => {
-    if(over) return;
-    const rect = c.getBoundingClientRect();
-    const mx = (e.clientX - rect.left) * (c.width / rect.width);
-    const my = (e.clientY - rect.top) * (c.height / rect.height);
-    bubbles.forEach((b, idx) => {
-      if(Math.hypot(mx - b.x, my - b.y) < b.r) {
-        score += 10; s.textContent = `🫧 ${t('score')}: ${score} | ${t('time')}: ${time}`;
-        bubbles[idx] = {x: 30+Math.random()*240, y: 30+Math.random()*240, r: 15+Math.random()*15, color: `hsl(${Math.random()*360}, 80%, 60%)`};
-      }
-    });
-  };
-  startInterval(()=>{
-    if(over) return;
-    time--;
-    if(time <= 0) { over = true; s.innerHTML = `🎉 ${t('youWon')}<br>${t('score')}: ${score}`; s.style.color = '#00d4aa'; }
-  }, 1000);
-  function draw() {
-    ctx.fillStyle = '#0a0a15'; ctx.fillRect(0, 0, 300, 300);
-    bubbles.forEach(b => { ctx.fillStyle = b.color; ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, 7); ctx.fill(); });
-    if(over) { ctx.fillStyle = 'rgba(0,0,0,0.7)'; ctx.fillRect(0, 0, 300, 300); }
-    requestAnimationFrame(draw);
-  }
-  draw();
-}
-
-function coin(){
-  let s = status('🎮 اختر بسرعة!');
-  let score = 0, timeLeft = 10, over = false;
-  const emojis = ['🪨', '📄', '✂️'];
-  function play(player){
-    if(over) return;
-    let cpu = Math.floor(Math.random() * 3);
-    let result = '';
-    if(player === cpu) result = '🤝 تعادل';
-    else if((player === 0 && cpu === 2) || (player === 1 && cpu === 0) || (player === 2 && cpu === 1)) { result = `🎉 ${t('youWon')}`; score += 5; }
-    else { result = '❌ خسرت'; score -= 2; }
-    s.innerHTML = `${emojis[player]} vs ${emojis[cpu]} — ${result} | ${t('score')}: ${score}`;
-  }
-  emojis.forEach((e, i) => controls.appendChild(button(e, () => play(i), 'btn')));
-  startInterval(()=>{
-    if(over) return;
-    timeLeft--;
-    if(timeLeft <= 0) { over = true; s.innerHTML = `⏰ ${t('timeUp')}! ${t('score')}: ${score}`; s.style.color = '#ff4757'; }
-  }, 1000);
-}
-
-function targetTap(){
-  let s = status(t('clickStart')), score = 0, time = 20, over = false;
-  const c = canvas(300,260), ctx = c.getContext('2d');
-  let tx = 150, ty = 130, tr = 28;
-  function place(){ tx = 40+Math.random()*220; ty = 40+Math.random()*160; tr = 22+Math.random()*12; }
-  place();
-  c.onclick = e => {
-    if(over) return;
-    const r = c.getBoundingClientRect();
-    const mx = (e.clientX-r.left)*(c.width/r.width);
-    const my = (e.clientY-r.top)*(c.height/r.height);
-    if(Math.hypot(mx-tx, my-ty)<tr+8){ score++; s.textContent = `${t('score')}: ${score} | ${t('time')}: ${time}`; place(); }
-  };
-  startInterval(()=>{
-    if(over) return;
-    time--;
-    if(time<=0){ over=true; s.innerHTML = `🎉 ${t('youWon')}<br>${t('score')}: ${score}`; s.style.color='#00d4aa'; }
-    else s.textContent = `${t('score')}: ${score} | ${t('time')}: ${time}`;
-  }, 1000);
-  function draw(){
-    ctx.fillStyle = '#0a0a15'; ctx.fillRect(0,0,300,260);
-    if(!over){
-      ctx.shadowColor='#ff007f'; ctx.shadowBlur=16;
-      ctx.fillStyle='#ff007f';
-      ctx.beginPath(); ctx.arc(tx,ty,tr,0,7); ctx.fill();
-      ctx.shadowBlur = 0;
-    }
-    requestAnimationFrame(draw);
-  }
-  draw();
-}
-
-function slidingPuzzle(){
-  let s = status(t('clickStart'));
-  let tiles = [1,2,3,4,5,6,7,8,0].sort(()=>Math.random()-0.5);
-  while(tiles[8]===0 && Math.random()>0.3) tiles = tiles.sort(()=>Math.random()-0.5);
-  const wrap = el('div');
-  wrap.style.cssText = 'display:grid;grid-template-columns:repeat(3,70px);gap:6px;';
-  area.appendChild(wrap);
-  function draw(){
-    wrap.innerHTML = '';
-    tiles.forEach((v,i)=>{
-      let b = button(v===0?'':v, ()=>{
-        let empty = tiles.indexOf(0);
-        if([empty-1,empty+1,empty-3,empty+3].includes(i) && !(empty%3===0&&i===empty-1) && !(empty%3===2&&i===empty+1)){
-          [tiles[empty],tiles[i]] = [tiles[i],tiles[empty]];
-          draw();
-          if(tiles.slice(0,8).every((n,idx)=>n===idx+1)){
-            s.innerHTML = `🎉 ${t('youWon')}`;
-            s.style.color = '#00d4aa';
-          }
-        }
-      }, 'btn secondary');
-      b.style.cssText = 'height:70px;font-size:1.5rem;border-radius:12px;'+(v===0?'background:#111;border-color:#333;':'');
-      wrap.appendChild(b);
-    });
-  }
-  draw();
-}
-
-function bubblePop(){
-  let s = status(`${t('popped')}: 0`), score = 0;
-  const colors = ['#ff007f','#00f0ff','#7c5cff','#00d4aa','#ffd700'];
-  const wrap = el('div');
-  wrap.style.cssText = 'display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:280px;';
-  area.appendChild(wrap);
-  for(let i=0;i<12;i++){
-    let b = button('○', ()=>{
-      if(b.dataset.popped) return;
-      b.dataset.popped = 1;
-      b.textContent = '💥';
-      b.style.background = colors[i%5];
-      score++;
-      s.textContent = `${t('popped')}: ${score}`;
-      if(score===12){ s.innerHTML = `🎉 ${t('youWon')}`; s.style.color = '#00d4aa'; }
-    }, 'btn secondary');
-    b.style.cssText = `width:60px;height:60px;border-radius:50%;font-size:1.4rem;border-color:${colors[i%5]};color:${colors[i%5]};`;
-    wrap.appendChild(b);
-  }
-}
-
-function starCollector(){
-  let s = status(`⭐ ${t('stars')}: 0`), score = 0, over = false;
-  const c = canvas(300,260), ctx = c.getContext('2d');
-  let px = 130, stars = [], frame = 0;
-  document.onkeydown = e => {
-    if(e.key==='ArrowLeft') px = Math.max(0, px-20);
-    if(e.key==='ArrowRight') px = Math.min(260, px+20);
-  };
-  cleanups.push(()=>document.onkeydown=null);
-  addDpad(controls, ['ArrowLeft','ArrowRight']);
-  function draw(){
-    ctx.fillStyle = '#050510'; ctx.fillRect(0,0,300,260);
-    ctx.fillStyle = '#00f0ff';
-    ctx.beginPath(); ctx.roundRect(px,230,40,20,6); ctx.fill();
-    if(!over){
-      frame++;
-      if(frame%28===0) stars.push({x:Math.random()*270, y:-15});
-      stars.forEach(st=>{
-        st.y += 2.4;
-        ctx.font = '20px serif'; ctx.fillText('⭐', st.x, st.y);
-        if(st.y>220&&st.x>px-10&&st.x<px+35){ st.y=400; score++; s.textContent = `${t('stars')}: ${score}`; }
-        if(st.y>270){ st.y=400; }
-      });
-      stars = stars.filter(st=>st.y<300);
-      if(score>=15){ over=true; s.innerHTML = `🎉 ${t('youWon')}`; s.style.color='#00d4aa'; }
-    }
-    requestAnimationFrame(draw);
-  }
-  draw();
-}
-
-function colorRush(){
-  const lang = document.getElementById('languageSelect').value;
-  const cn = {ar:['أحمر','أزرق','أخضر','أصفر','بنفسجي'], en:['Red','Blue','Green','Yellow','Purple'], am:['ቀይ','ሰማያዊ','አረንጓዴ','ቢጫ','ወይን ጠጅ']};
-  let colors = cn[lang] || cn.ar;
-  let hex = ['#ff4757','#1e90ff','#2ed573','#ffd700','#7c5cff'];
-  let s = status(t('clickStart'));
-  let target = 0, score = 0;
-  function next(){
-    target = Math.random()*5|0;
-    s.innerHTML = `${t('target')}: <span style="color:${hex[target]};font-weight:900">${colors[target]}</span>`;
-    controls.innerHTML = '';
-    colors.forEach((c,i)=>{
-      let b = button(c, ()=>{
-        if(i===target){ score++; s.textContent = `${t('correct')}! ${t('score')}: ${score}`; setTimeout(next, 500); }
-        else s.textContent = t('wrong')+'!';
-      });
-      b.style.borderColor = hex[i]; b.style.color = hex[i];
-      controls.appendChild(b);
-    });
-  }
-  next();
-}
-
-function mathQuiz(){
-  let a = 1+(Math.random()*12|0), b = 1+(Math.random()*12|0), ans = a+b;
-  let s = status(`${a} + ${b} = ?`), i = input(t('answer'));
-  controls.appendChild(button(t('submit'), ()=>s.innerHTML = +i.value===ans?`${t('correct')}! 🎉`:t('tryAgain')));
-}
-
-function spelling(){
-  const lang = document.getElementById('languageSelect').value;
-  const pairs = { ar:[['جسم كبير من الماء','بحر'],['مكان لنوم','سرير'],['عكس الليل','نهار'],['فاكهة صفراء','موز']], en:[['Large body of water','sea'],['Place to sleep','bed'],['Opposite of night','day'],['Yellow fruit','banana']], am:[['ትልቅ የውሃ አካል','ባህር'],['የመተኛት ቦታ','አልጋ'],['የሌሊት ተቃራኒ','ቀን'],['ቢጫ ፍራፍሬ','ሙዝ']] };
-  let list = pairs[lang] || pairs.ar;
-  let p = list[Math.random()*list.length|0], s = status(p[0]), i = input(t('answer'));
-  controls.appendChild(button(t('submit'), ()=>s.innerHTML = i.value===p[1]?`${t('correct')}! 🎉`:`${t('answer')}: ${p[1]}`));
-}
-
-function countryQuiz(){
-  let s = status(`🏃 ${t('score')}: 0`);
-  const c = canvas(300, 200), ctx = c.getContext('2d');
-  let score = 0, over = false, playerY = 150, velocity = 0, jumping = false;
-  let obstacles = [], frame = 0, speed = 4;
-  function jump() {
-    if(jumping || over) return;
-    velocity = -12; jumping = true;
-  }
-  c.onclick = jump;
-  document.onkeydown = e => { if(e.code === 'Space' || e.key === 'ArrowUp'){ e.preventDefault(); jump(); } };
-  cleanups.push(()=>document.onkeydown=null);
-  const jumpBtn = button('⬆️ اقفز', jump);
-  controls.appendChild(jumpBtn);
-  function draw() {
-    ctx.fillStyle = '#0a0a15'; ctx.fillRect(0, 0, 300, 200);
-    ctx.fillStyle = '#333'; ctx.fillRect(0, 180, 300, 20);
-    ctx.fillStyle = '#00f0ff';
-    ctx.beginPath(); ctx.roundRect(40, playerY, 30, 30, 5); ctx.fill();
-    obstacles.forEach(o => { ctx.fillStyle = '#ff4757'; ctx.fillRect(o.x, 160, 20, 20); });
-    if(!over) {
-      frame++;
-      velocity += 0.6; playerY += velocity;
-      if(playerY > 150) { playerY = 150; jumping = false; velocity = 0; }
-      if(frame % 60 === 0) obstacles.push({x: 300});
-      obstacles.forEach(o => {
-        o.x -= speed;
-        if(o.x < 70 && o.x > 30 && playerY > 130) { over = true; }
-        if(o.x === 40) { score++; s.textContent = `🏃 ${t('score')}: ${score}`; }
-      });
-      obstacles = obstacles.filter(o => o.x > -20);
-      if(score >= 10) speed = 6;
-      if(score >= 20) speed = 8;
-      if(over) { s.innerHTML = `🎉 ${t('youWon')}<br>${t('score')}: ${score}`; s.style.color = '#00d4aa'; }
-    }
-    requestAnimationFrame(draw);
-  }
-  draw();
-}
-
-function flagQuiz(){
-  const lang = document.getElementById('languageSelect').value;
-  const p = { ar:[['🇪🇬','مصر'],['🇸🇦','السعودية'],['🇦🇪','الإمارات'],['🇲🇦','المغرب'],['🇯🇴','الأردن']], en:[['🇪🇬','Egypt'],['🇸🇦','Saudi Arabia'],['🇦🇪','UAE'],['🇲🇦','Morocco'],['🇯🇴','Jordan']], am:[['🇪🇬','ግብፅ'],['🇸🇦','ሳዑዲ አረቢያ'],['🇦🇪','ተባባሪ አረብ ኤሚሬቶች'],['🇲🇦','ሞሮኮ'],['🇯🇴','ጆርዳን']] };
-  let list = p[lang] || p.ar;
-  let pair = list[Math.random()*list.length|0];
-  let s = status(`${t('flag')}? ${pair[0]}`), i = input(t('country'));
-  controls.appendChild(button(t('submit'), ()=>s.innerHTML = i.value===pair[1]?`${t('correct')}! 🎉`:`${t('answer')}: ${pair[1]}`));
-}
-
-function dodgeRocks(){
-  let s = status(t('clickStart')), score = 0, over = false;
-  const c = canvas(300,260), ctx = c.getContext('2d');
-  let px = 130, rocks = [], frame = 0;
-  document.onkeydown = e => {
-    if(e.key==='ArrowLeft') px = Math.max(0, px-22);
-    if(e.key==='ArrowRight') px = Math.min(260, px+22);
-  };
-  cleanups.push(()=>document.onkeydown=null);
-  addDpad(controls, ['ArrowLeft','ArrowRight']);
-  function draw(){
-    ctx.fillStyle = '#0a0a15'; ctx.fillRect(0,0,300,260);
-    ctx.fillStyle = '#00f0ff';
-    ctx.beginPath(); ctx.roundRect(px,230,40,22,8); ctx.fill();
-    if(!over){
-      frame++;
-      if(frame%32===0) rocks.push({x:Math.random()*270, y:-20});
-      rocks.forEach(r=>{
-        r.y += 2.6;
-        ctx.fillStyle = '#888';
-        ctx.beginPath(); ctx.roundRect(r.x,r.y,18,18,4); ctx.fill();
-        if(r.y>215&&r.x>px-12&&r.x<px+35) over = true;
-        if(r.y>270){ score++; s.textContent = `${t('dodged')}: ${score}`; }
-      });
-      rocks = rocks.filter(r=>r.y<290);
-      if(over){ s.innerHTML = `💀 ${t('gameOver')} — ${t('score')}: ${score}`; s.style.color='#ff4757'; }
-    }
-    requestAnimationFrame(draw);
-  }
-  draw();
-}
-
-function binary(){
-  let n = 1+(Math.random()*15|0), s = status(`${t('binary')}: ${n}`), i = input(t('answer'));
-  controls.appendChild(button(t('submit'), ()=>s.innerHTML = i.value===n.toString(2)?`${t('correct')}! 🎉`:`${t('answer')}: ${n.toString(2)}`));
-}
-
-function pattern(){
-  let a = 2+(Math.random()*6|0), step = 1+(Math.random()*3|0), ans = a+step*3;
-  let s = status(`${a} , ${a+step} , ${a+2*step} , ?`), i = input(t('answer'));
-  controls.appendChild(button(t('submit'), ()=>s.innerHTML = +i.value===ans?`${t('correct')}! 🎉`:`${t('answer')}: ${ans}`));
-}
-
-function wordChain(){
-  let s = status(`🎯 ${t('target')}: ...`);
-  const c = canvas(300, 280), ctx = c.getContext('2d');
-  let score = 0, timeLeft = 20, over = false, targetColor = '';
-  let blockColors = [];
-  const colorNames = { ar: ['أحمر', 'أزرق', 'أخضر', 'أصفر'], en: ['Red', 'Blue', 'Green', 'Yellow'], am: ['ቀይ', 'ሰማያዊ', 'አረንጓዴ', 'ቢጫ'] };
-  const lang = document.getElementById('languageSelect').value;
-  const names = colorNames[lang] || colorNames.ar;
-  const hexColors = ['#ff4757', '#1e90ff', '#2ed573', '#ffd700'];
-
-  function newRound() {
-    targetColor = hexColors[Math.floor(Math.random() * 4)];
-    const targetIndex = hexColors.indexOf(targetColor);
-    s.innerHTML = `🎯 ${t('target')}: <span style="color:${targetColor}; font-weight:900;">${names[targetIndex]}</span> | ${t('score')}: ${score} | ${t('time')}: ${timeLeft}`;
-    s.style.color = 'var(--accent2)';
-    blockColors = [];
-    let shuffledColors = [...hexColors].sort(() => Math.random() - 0.5);
-    for (let i = 0; i < 4; i++) {
-      blockColors.push({ color: shuffledColors[i], x: (i % 2) * 150, y: Math.floor(i / 2) * 140, w: 150, h: 140 });
-    }
-  }
-
-  c.onclick = (e) => {
-    if (over) return;
-    const rect = c.getBoundingClientRect();
-    const mx = (e.clientX - rect.left) * (c.width / rect.width);
-    const my = (e.clientY - rect.top) * (c.height / rect.height);
-    for (let b of blockColors) {
-      if (mx >= b.x && mx <= b.x + b.w && my >= b.y && my <= b.y + b.h) {
-        if (b.color === targetColor) { score += 10; newRound(); } 
-        else { timeLeft -= 2; if (timeLeft < 0) timeLeft = 0; }
-        break;
-      }
-    }
-  };
-
-  startInterval(() => {
-    if (over) return;
-    timeLeft--;
-    if (timeLeft <= 0) { over = true; s.innerHTML = `🎉 ${t('youWon')}<br>${t('score')}: ${score}`; s.style.color = '#00d4aa'; } 
-    else {
-      const targetIndex = hexColors.indexOf(targetColor);
-      s.innerHTML = `🎯 ${t('target')}: <span style="color:${targetColor}; font-weight:900;">${names[targetIndex]}</span> | ${t('score')}: ${score} | ${t('time')}: ${timeLeft}`;
-    }
-  }, 1000);
-
-  function draw() {
-    ctx.fillStyle = '#0a0a15'; ctx.fillRect(0, 0, 300, 280);
-    blockColors.forEach(b => { ctx.fillStyle = b.color; ctx.fillRect(b.x + 5, b.y + 5, b.w - 10, b.h - 10); });
-    if (over) { ctx.fillStyle = 'rgba(0,0,0,0.7)'; ctx.fillRect(0, 0, 300, 280); }
-    requestAnimationFrame(draw);
-  }
-  newRound(); draw();
-}
-
-function colorMemory(){
-  let seq = [], i = 0, s = status(t('clickStart')), colors = ['🟥','🟩','🟦','🟨'];
-  controls.appendChild(button(t('start'), ()=>{
-    seq.push(Math.random()*4|0); i = 0;
-    s.textContent = t('watch')+' '+seq.map(x=>colors[x]).join(' ');
-    setTimeout(()=>s.textContent = t('repeat'), 1400);
-  }));
-  colors.forEach((v,k)=>controls.appendChild(button(v, ()=>{
-    if(!seq.length) return;
-    if(seq[i]!==k){ s.textContent = t('wrong')+'!'; seq=[]; return; }
-    i++;
-    if(i===seq.length){
-      s.textContent = `${t('correct')}! 🎉`;
-      setTimeout(()=>{ seq.push(Math.random()*4|0); i=0; s.textContent = t('watch')+' '+seq.map(x=>colors[x]).join(' '); setTimeout(()=>s.textContent = t('repeat'), 1400); }, 600);
-    }
-  })));
-}
-
-function maze(){
-  let x = 15, y = 15, s = status(t('clickStart')), c = canvas(280,280), ctx = c.getContext('2d');
-  function draw(){
-    ctx.fillStyle = '#0a0a15'; ctx.fillRect(0,0,280,280);
-    ctx.fillStyle = '#7c5cff88';
-    [[60,0,12,200],[120,80,12,200],[180,0,12,200]].forEach(a=>ctx.fillRect(...a));
-    ctx.fillStyle = '#00d4aa';
-    ctx.beginPath(); ctx.roundRect(240,240,30,30,6); ctx.fill();
-    ctx.fillStyle = '#00f0ff';
-    ctx.beginPath(); ctx.arc(x+8,y+8,10,0,7); ctx.fill();
-  }
-  function move(dx,dy){
-    x = Math.max(5, Math.min(255, x+dx));
-    y = Math.max(5, Math.min(255, y+dy));
-    if(x>230&&y>230) s.textContent = `${t('goal')}! 🎉`;
-    draw();
-  }
-  document.onkeydown = e => {
-    if(e.key==='ArrowUp') move(0,-12);
-    if(e.key==='ArrowDown') move(0,12);
-    if(e.key==='ArrowLeft') move(-12,0);
-    if(e.key==='ArrowRight') move(12,0);
-  };
-  cleanups.push(()=>document.onkeydown=null);
-  addDpad(controls, ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight']);
-  draw();
-}
-
-function numberMemory(){
-  let nums = [1,2,3,4,5,6,7,8,9].sort(()=>Math.random()-.5), target = 1, s = status(t('clickStart'));
-  const wrap = el('div');
-  wrap.style.cssText = 'display:grid;grid-template-columns:repeat(3,65px);gap:8px;';
-  area.appendChild(wrap);
-  nums.forEach(n=>{
-    let b = button(n, ()=>{
-      if(n===target){
-        b.disabled = true; b.textContent = '✓'; b.style.background = '#00d4aa33';
-        target++;
-        s.textContent = target===10?`🎉 ${t('youWon')}`:`→ ${target}`;
-      } else s.textContent = `→ ${target}`;
-    }, 'btn secondary');
-    b.style.cssText = 'height:60px;font-size:1.3rem;border-radius:12px;';
-    wrap.appendChild(b);
-  });
-}
-
-function ninja(){
-  let x = 135, score = 0, frame = 0, over = false, s = status(`🟢 ${t('easy')} | ${t('dodged')}: 0`);
-  const c = canvas(300,260), ctx = c.getContext('2d'), items = [];
-  let spawnRate = 50, fallSpeed = 2.0;
-  function getLevel(){
-    if(score>=18){ spawnRate=22; fallSpeed=3.8; s.innerHTML = `🔴 <b>${t('hard')}</b> | ${t('dodged')}: ${score}`; }
-    else if(score>=8){ spawnRate=35; fallSpeed=2.8; s.innerHTML = `🟡 <b>${t('medium')}</b> | ${t('dodged')}: ${score}`; }
-    else { spawnRate=50; fallSpeed=2.0; s.innerHTML = `🟢 <b>${t('easy')}</b> | ${t('dodged')}: ${score}`; }
-  }
-  document.onkeydown = e => {
-    if(e.key==='ArrowLeft') x = Math.max(0, x-20);
-    if(e.key==='ArrowRight') x = Math.min(265, x+20);
-  };
-  cleanups.push(()=>document.onkeydown=null);
-  addDpad(controls, ['ArrowLeft','ArrowRight']);
-  function draw(){
-    const bg = ctx.createLinearGradient(0,0,0,260);
-    bg.addColorStop(0,'#0a0a18'); bg.addColorStop(1,'#030308');
-    ctx.fillStyle = bg; ctx.fillRect(0,0,300,260);
-    ctx.shadowColor='#00f0ff'; ctx.shadowBlur=10;
-    ctx.fillStyle='#00f0ff';
-    ctx.beginPath(); ctx.roundRect(x,222,32,28,8); ctx.fill();
-    ctx.shadowBlur = 0;
-    if(!over){
-      frame++;
-      if(frame%spawnRate===0) items.push({x:Math.random()*270, y:-20});
-      items.forEach(a=>{
-        a.y += fallSpeed;
-        ctx.fillStyle='#ff4757';
-        ctx.shadowColor='#ff4757'; ctx.shadowBlur=6;
-        ctx.beginPath(); ctx.roundRect(a.x,a.y,16,20,5); ctx.fill();
-        ctx.shadowBlur = 0;
-        if(a.y>205&&a.x>x-8&&a.x<x+32) over = true;
-        if(a.y>270){ score++; getLevel(); }
-      });
-      items.length = 0; items.push(...items.filter(a=>a.y<280));
-      if(over){ s.innerHTML = `💀 ${t('gameOver')} — ${t('score')}: ${score}`; s.style.color='#ff4757'; }
-    }
-    requestAnimationFrame(draw);
-  }
-  draw();
-}
-
-function matchThree(){
-  let shapes = ['🔴','🟢','🔵','🟡','🟣'];
-  let board = Array.from({length:16}, ()=>shapes[Math.random()*5|0]), sel = -1, score = 0;
-  let s = status(t('clickStart'));
-  const wrap = el('div');
-  wrap.style.cssText = 'display:grid;grid-template-columns:repeat(4,62px);gap:6px;';
-  area.appendChild(wrap);
-  function checkMatch(){
-    for(let r=0;r<4;r++) for(let c=0;c<2;c++){
-      let i = r*4+c;
-      if(board[i]&&board[i]===board[i+1]&&board[i]===board[i+2]){
-        board[i] = board[i+1] = board[i+2] = shapes[Math.random()*5|0];
-        score += 30; return true;
-      }
-    }
-    for(let c=0;c<4;c++) for(let r=0;r<2;r++){
-      let i = r*4+c;
-      if(board[i]&&board[i]===board[i+4]&&board[i]===board[i+8]){
-        board[i] = board[i+4] = board[i+8] = shapes[Math.random()*5|0];
-        score += 30; return true;
-      }
-    }
-    return false;
-  }
-  function draw(){
-    wrap.innerHTML = '';
-    board.forEach((v,i)=>{
-      let b = button(v, ()=>{
-        if(sel<0){ sel = i; s.textContent = t('next'); }
-        else {
-          if(Math.abs(sel-i)===1||Math.abs(sel-i)===4){
-            [board[sel],board[i]] = [board[i],board[sel]];
-            if(checkMatch()) s.textContent = `${t('score')}: ${score}`;
-            else s.textContent = t('tryAgain');
-          }
-          sel = -1; draw();
-        }
-      }, 'btn secondary');
-      b.style.cssText = 'height:58px;font-size:1.6rem;border-radius:12px;'+(sel===i?'border-color:#00f0ff;box-shadow:0 0 14px #00f0ff;':'');
-      wrap.appendChild(b);
-    });
-  }
-  draw();
-}
-
-function shooter(){
-  let x = 140, shots = [], enemies = [], score = 0, over = false, s = status(`🟢 ${t('easy')} | ${t('score')}: 0`);
-  const c = canvas(300,300), ctx = c.getContext('2d');
-  let spawnChance = 0.012, enemySpeed = 1.0;
-  function getLevel(){
-    if(score>=15){ spawnChance=0.035; enemySpeed=2.2; s.innerHTML = `🔴 <b>${t('hard')}</b> | ${t('score')}: ${score}`; }
-    else if(score>=6){ spawnChance=0.022; enemySpeed=1.5; s.innerHTML = `🟡 <b>${t('medium')}</b> | ${t('score')}: ${score}`; }
-    else { spawnChance=0.012; enemySpeed=1.0; s.innerHTML = `🟢 <b>${t('easy')}</b> | ${t('score')}: ${score}`; }
-  }
-  document.onkeydown = e => {
-    if(e.key==='ArrowLeft') x = Math.max(5, x-16);
-    if(e.key==='ArrowRight') x = Math.min(275, x+16);
-    if(e.code==='Space') shots.push({x:x+8, y:255});
-  };
-  c.onclick = ()=>shots.push({x:x+8, y:255});
-  cleanups.push(()=>document.onkeydown=null);
-  addDpad(controls, ['ArrowLeft','ArrowRight','Space']);
-  function draw(){
-    const bg = ctx.createLinearGradient(0,0,0,300);
-    bg.addColorStop(0,'#050515'); bg.addColorStop(1,'#020208');
-    ctx.fillStyle = bg; ctx.fillRect(0,0,300,300);
-    ctx.shadowColor='#00f0ff'; ctx.shadowBlur=12;
-    ctx.fillStyle='#00f0ff';
-    ctx.beginPath();
-    ctx.moveTo(x+12,260); ctx.lineTo(x,290); ctx.lineTo(x+24,290);
-    ctx.closePath(); ctx.fill();
-    ctx.shadowBlur = 0;
-    if(!over){
-      if(Math.random()<spawnChance) enemies.push({x:20+Math.random()*250, y:-10});
-      shots.forEach(b=>{
-        b.y -= 7;
-        ctx.fillStyle='#fff';
-        ctx.shadowColor='#00f0ff'; ctx.shadowBlur=6;
-        ctx.fillRect(b.x,b.y,3,14);
-        ctx.shadowBlur = 0;
-      });
-      enemies.forEach(e=>{
-        e.y += enemySpeed;
-        ctx.font = '22px serif';
-        ctx.fillText('👾', e.x, e.y);
-        if(e.y>275) over = true;
-        shots.forEach(b=>{
-          if(Math.abs(b.x-e.x)<20&&Math.abs(b.y-e.y)<20){
-            e.y = 400; score++; getLevel();
-          }
-        });
-      });
-      shots = shots.filter(b=>b.y>0);
-      enemies = enemies.filter(e=>e.y<330);
-      if(over){ s.innerHTML = `💀 ${t('gameOver')} — ${t('score')}: ${score}`; s.style.color='#ff4757'; }
-    }
-    requestAnimationFrame(draw);
-  }
-  draw();
-}
-
-function codeBreaker(){
-  let code = String(Math.random()*1000|0).padStart(3,'0'), tries = 0, s = status(t('clickStart'));
-  let i = input('000');
-  controls.appendChild(button(t('submit'), ()=>{
-    let v = i.value.padStart(3,'0');
-    if(!/^\d{3}$/.test(v)) return s.textContent = '3 digits';
-    tries++;
-    let exact = [...v].filter((c,j)=>c===code[j]).length;
-    let near = [...v].filter(c=>code.includes(c)).length-exact;
-    s.innerHTML = exact===3?`🎉 ${t('youWon')} (${tries})`:`✓${exact} | ~${near}`;
-  }));
-}
-
-function keepBalance(){
-  let s = status(t('clickStart')), score = 0, over = false;
-  const c = canvas(300,240), ctx = c.getContext('2d');
-  let angle = 0, vel = 0;
-  document.onkeydown = e => {
-    if(e.key==='ArrowLeft') vel -= 0.12;
-    if(e.key==='ArrowRight') vel += 0.12;
-  };
-  cleanups.push(()=>document.onkeydown=null);
-  addDpad(controls, ['ArrowLeft','ArrowRight']);
-  function draw(){
-    ctx.fillStyle = '#0a0a15'; ctx.fillRect(0,0,300,240);
-    if(!over){
-      vel *= 0.98;
-      angle += vel;
-      if(Math.abs(angle)>0.85){
-        over = true;
-        s.innerHTML = `💀 ${t('gameOver')} — ${t('score')}: ${Math.floor(score/10)}`;
-        s.style.color = '#ff4757';
-      } else {
-        score++;
-        if(score%30===0) s.textContent = `${t('balance')}: ${Math.floor(score/10)}`;
-      }
-    }
-    ctx.fillStyle = '#333';
-    ctx.fillRect(100,200,100,12);
-    ctx.save();
-    ctx.translate(150,200);
-    ctx.rotate(angle);
-    ctx.fillStyle = '#00f0ff';
-    ctx.beginPath(); ctx.roundRect(-6,-90,12,90,4); ctx.fill();
-    ctx.beginPath(); ctx.arc(0,-100,14,0,7); ctx.fill();
-    ctx.restore();
-    requestAnimationFrame(draw);
-  }
-  draw();
-}
-
-// ===== Init =====
-(function(){
-  const saved = localStorage.getItem('gz_lang');
-  if(saved && ['ar','en','am'].includes(saved)){
-    const sel = document.getElementById('languageSelect');
-    sel.value = saved;
-    setLanguage(saved);
-  } else {
-    render();
-  }
-  updateAuthUI();
-})();
+// إجبار الموقع على الفتح بالعربية
+const savedLang = 'ar'; 
+localStorage.setItem('gz_lang', 'ar');
+$('languageSelect').value = savedLang;
+setLanguage(savedLang);
 </script>
 </body>
 </html>
