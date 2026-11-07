@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 
-<!-- Google AdSense: ضع الموقع في حساب AdSense وفعّل Auto ads من لوحة التحكم -->
+<!-- Google AdSense -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7035413410863098" crossorigin="anonymous"></script>
 
 <style>
@@ -119,6 +119,11 @@ header{padding:30px 16px 18px}header h1{background:linear-gradient(110deg,#073b5
 @media(max-width:900px){.grid{grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:100px}}
 @media(max-width:600px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:88px;gap:12px}.card{grid-row:span 2;min-height:0}.card:nth-child(10n+1){grid-column:span 2;grid-row:span 3}.card:nth-child(10n+6){grid-row:span 3}.game-image{height:100%}.card-body{padding:11px 10px 10px;min-height:78px}.card h3{font-size:.9rem}.card .btn{font-size:.73rem;padding:5px 11px}header{padding-top:26px}.section{margin:18px 10px;padding:18px}}
 
+/* تنسيق أزرار التحكم للهواتف */
+.d-pad{display:grid;grid-template-columns:repeat(3, 1fr);gap:5px;width:150px;margin:10px auto}
+.d-pad button{background:#222238;color:#00f0ff;border:1px solid #00f0ff;border-radius:8px;padding:15px 0;font-size:1.2rem;font-weight:bold}
+.d-pad button:active{background:#00f0ff;color:#030308}
+.d-pad .empty-btn{visibility:hidden}
 </style>
 </head>
 <body>
@@ -137,8 +142,8 @@ header{padding:30px 16px 18px}header h1{background:linear-gradient(110deg,#073b5
 
 <div class="search"><input id="search" type="search" placeholder="🔎 ابحث عن لعبة..."></div>
 <div class="categories" id="categories">
- <button class="cat active" data-cat="all">الكل</button><button class="cat" data-cat="roblox">Roblox</button>
- <button class="cat" data-cat="minecraft">Minecraft</button><button class="cat" data-cat="arcade">أركيد</button><button class="cat" data-cat="puzzle">ألغاز</button>
+ <button class="cat active" data-cat="all">الكل</button><button class="cat" data-cat="io">ألعاب .io</button>
+ <button class="cat" data-cat="famous">مشهورة جداً</button><button class="cat" data-cat="arcade">أركيد</button><button class="cat" data-cat="puzzle">ألغاز</button>
 </div>
 
 <main class="container">
@@ -146,7 +151,7 @@ header{padding:30px 16px 18px}header h1{background:linear-gradient(110deg,#073b5
  <div class="grid" id="grid"><div class="empty">🎮 جارٍ تحميل الألعاب...</div></div>
 </main>
 
-<!-- Adsterra banner ad: الإبقاء على كود الناشر كما أرسلته -->
+<!-- Adsterra banner ad -->
 <div class="ad-wrap">
  <div class="ad-label">Advertisement</div>
  <div class="ad-slot" style="min-height:90px">
@@ -201,80 +206,80 @@ header{padding:30px 16px 18px}header h1{background:linear-gradient(110deg,#073b5
 <script>
 const $=id=>document.getElementById(id);
 const base=[
- ['Minecraft Classic','ابنِ واستكشف عالم المكعبات','minecraft','https://classic.minecraft.net/'],
- ['Roblox','افتح ألعاب وتجارب Roblox الرسمية','roblox','https://www.roblox.com/games/'],
- ['مغامرة التعدين','اجمع الموارد واكتشف الكنوز','minecraft'],
- ['الثعبان','اجمع النقاط وتجنب الاصطدام','arcade'],
- ['إكس أو','تحدَّ صديقك في لعبة X و O','puzzle'],
+ ['Minecraft Classic','ابنِ واستكشف عالم المكعبات','famous','https://classic.minecraft.net/'],
+ ['Roblox','افتح ألعاب وتجارب Roblox الرسمية','famous','https://www.roblox.com/games/'],
+ ['Slither.io','كن أكبر ثعبان في الساحة','io','https://slither.io/'],
+ ['Agar.io','ابتلع الخلايا الأصغر وكن الأكبر','io','https://agar.io/'],
+ ['Diep.io','دمر الأعداء وطور دبابتك','io','https://diep.io/'],
+ ['Zombs Royale','معركة ملكية 2D بأسلوب .io','io','https://zombsroyale.io/'],
+ ['Krunker.io','لعبة تصويب سريعة في المتصفح','io','https://krunker.io/'],
+ ['Skribbl.io','لعبة رسم وتخمين ممتعة','io','https://skribbl.io/'],
+ ['Shell Shockers','تصويب بالبيض المسلح','io','https://shellshock.io/'],
+ ['Mope.io','تطور كحيوان في سلسلة الغذاء','io','https://mope.io/'],
+ ['Little Alchemy 2','ادمج العناصر لاكتشاف العالم','famous','https://littlealchemy2.com/'],
  ['2048','ادمج الأرقام للوصول إلى 2048','puzzle'],
- ['مطابقة الذاكرة','اعثر على البطاقات المتشابهة','puzzle'],
- ['حجر ورقة مقص','هل تستطيع هزيمة الكمبيوتر؟','arcade'],
- ['تخمين الرقم','اكتشف الرقم السري','puzzle'],
- ['المشنقة','خمن الحروف واكتشف الكلمة','puzzle'],
- ['بونغ','حافظ على الكرة داخل الملعب','arcade'],
- ['اضرب الخلد','اختبر سرعتك وردة فعلك','arcade'],
- ['اختبار رد الفعل','اضغط بأسرع ما يمكن','arcade'],
- ['التقط الفواكه','اجمع أكبر عدد من الفواكه','arcade'],
- ['الطائر الطائر','اعبر من بين الحواجز','arcade'],
- ['كسر الطوب','حطّم جميع المكعبات','arcade'],
- ['كاشف الألغام','اكشف المربعات وتجنب الألغام','puzzle'],
- ['أربعة متتالية','كوّن أربعة رموز متتالية','puzzle'],
- ['سايمون','احفظ تسلسل الألوان','puzzle'],
- ['تحدي الحساب','حل المسائل بسرعة','puzzle'],
- ['اختبار الكتابة','اكتب الكلمة بأسرع وقت','arcade'],
- ['جمع الكوكيز','اجمع كل قطع الكوكيز','arcade'],
- ['تطابق الألوان','اختر اللون الصحيح','arcade'],
- ['فرقع البالونات','افرقع أكبر عدد من البالونات','arcade'],
- ['رمي النرد','جرّب حظك مع النرد','arcade']
+ ['Snake','اجمع النقاط وتجنب الاصطدام','arcade'],
+ ['Tic Tac Toe','تحدَّ صديقك في لعبة X و O','puzzle'],
+ ['Pac-Man','العب الكلاسيكية الشهيرة','famous','https://www.google.com/logos/2010/pacman10-i.html'],
+ ['Minesweeper','اكشف المربعات وتجنب الألغام','puzzle'],
+ ['Flappy Bird','اعبر من بين الحواجز','arcade'],
+ ['Sudoku','املأ الشبكة بالأرقام الصحيحة','puzzle'],
+ ['Chess','العب الشطرنج ضد الكمبيوتر','famous','https://www.chess.com/play/computer'],
+ ['Tetris','رتب المكعبات المتساقطة','famous','https://tetris.com/play-tetris'],
+ ['Wordle','خمن الكلمة المخفية','famous','https://www.nytimes.com/games/wordle/index.html'],
+ ['Bubble Shooter','فرقع الفقاعات الملونة','arcade'],
+ ['Cut the Rope','أطعم الوحش الحلوى','famous'],
+ ['Angry Birds','أطلق الطيور الغاضبة','famous'],
+ ['Bounce','تحكم بالكرة واجمع الحلقات','arcade']
 ];
 const names={
  ar:base,
  en:[
- ['Minecraft Classic','Build and explore a block world','minecraft','https://classic.minecraft.net/'],['Roblox','Open official Roblox games and experiences','roblox','https://www.roblox.com/games/'],['Mining Adventure','Collect resources and find treasure','minecraft'],
- ['Snake','Collect points and avoid collisions','arcade'],['Tic Tac Toe','Challenge a friend','puzzle'],['2048','Merge numbers to reach 2048','puzzle'],['Memory Match','Find matching cards','puzzle'],['Rock Paper Scissors','Beat the computer','arcade'],['Number Guess','Find the secret number','puzzle'],['Hangman','Guess the hidden word','puzzle'],['Pong','Keep the ball in play','arcade'],['Whack-a-Mole','Test your reaction speed','arcade'],['Reaction Test','Tap as fast as you can','arcade'],['Fruit Catch','Catch falling fruit','arcade'],['Flappy Bird','Fly through the pipes','arcade'],['Breakout','Break all the bricks','arcade'],['Minesweeper','Avoid hidden mines','puzzle'],['Connect Four','Connect four symbols','puzzle'],['Simon Says','Remember the color sequence','puzzle'],['Math Challenge','Solve quick math questions','puzzle'],['Typing Test','Type the word quickly','arcade'],['Cookie Click','Collect all cookies','arcade'],['Color Match','Choose the right color','arcade'],['Balloon Pop','Pop the balloons','arcade'],['Dice Roll','Try your luck','arcade']
+ ['Minecraft Classic','Build and explore a block world','famous','https://classic.minecraft.net/'],['Roblox','Open official Roblox games and experiences','famous','https://www.roblox.com/games/'],['Slither.io','Become the biggest snake','io','https://slither.io/'],['Agar.io','Eat smaller cells and grow big','io','https://agar.io/'],['Diep.io','Destroy enemies and upgrade your tank','io','https://diep.io/'],['Zombs Royale','2D Battle Royale IO game','io','https://zombsroyale.io/'],['Krunker.io','Fast browser FPS game','io','https://krunker.io/'],['Skribbl.io','Fun drawing and guessing game','io','https://skribbl.io/'],['Shell Shockers','Egg-based FPS game','io','https://shellshock.io/'],['Mope.io','Evolve in the food chain','io','https://mope.io/'],['Little Alchemy 2','Mix elements and discover the world','famous','https://littlealchemy2.com/'],['2048','Merge numbers to reach 2048','puzzle'],['Snake','Collect points and avoid collisions','arcade'],['Tic Tac Toe','Challenge a friend','puzzle'],['Pac-Man','Play the famous classic','famous','https://www.google.com/logos/2010/pacman10-i.html'],['Minesweeper','Avoid hidden mines','puzzle'],['Flappy Bird','Fly through the pipes','arcade'],['Sudoku','Fill the grid with numbers','puzzle'],['Chess','Play chess vs computer','famous','https://www.chess.com/play/computer'],['Tetris','Arrange falling blocks','famous','https://tetris.com/play-tetris'],['Wordle','Guess the hidden word','famous','https://www.nytimes.com/games/wordle/index.html'],['Bubble Shooter','Pop the colored bubbles','arcade'],['Cut the Rope','Feed candy to the monster','famous'],['Angry Birds','Launch the angry birds','famous'],['Bounce','Control the ball and collect rings','arcade']
  ],
  am:[
- ['Minecraft Classic','ዓለም ገንባ እና አስስ','minecraft','https://classic.minecraft.net/'],['Roblox','የRoblox ጨዋታዎችን ክፈት','roblox','https://www.roblox.com/games/'],['Mining Adventure','ሀብት ሰብስብ','minecraft'],['Snake','ነጥብ ሰብስብ','arcade'],['Tic Tac Toe','ከጓደኛ ጋር ተጫወት','puzzle'],['2048','ቁጥሮችን አዋህድ','puzzle'],['Memory Match','ተመሳሳይ ካርዶችን ፈልግ','puzzle'],['Rock Paper Scissors','ኮምፒውተሩን አሸንፍ','arcade'],['Number Guess','ምስጢራዊ ቁጥርን ፈልግ','puzzle'],['Hangman','ቃሉን ገምት','puzzle'],['Pong','ኳሱን ጠብቅ','arcade'],['Whack-a-Mole','ፍጥነትህን ፈትን','arcade'],['Reaction Test','በፍጥነት ንካ','arcade'],['Fruit Catch','ፍራፍሬ ያዝ','arcade'],['Flappy Bird','እንቅፋቶችን አልፍ','arcade'],['Breakout','ጡቦችን ስበር','arcade'],['Minesweeper','ፈንጂዎችን አስወግድ','puzzle'],['Connect Four','አራት አገናኝ','puzzle'],['Simon Says','ቀለሞችን አስታውስ','puzzle'],['Math Challenge','ሂሳብ ፍታ','puzzle'],['Typing Test','ቃሉን በፍጥነት ጻፍ','arcade'],['Cookie Click','ኩኪዎችን ሰብስብ','arcade'],['Color Match','ትክክለኛውን ቀለም ምረጥ','arcade'],['Balloon Pop','ፊኛዎችን ፍንዳ','arcade'],['Dice Roll','ዳይስ ጣል','arcade']
+ ['Minecraft Classic','ዓለም ገንባ እና አስስ','famous','https://classic.minecraft.net/'],['Roblox','የRoblox ጨዋታዎችን ክፈት','famous','https://www.roblox.com/games/'],['Slither.io','ትልቁ እባብ ሁን','io','https://slither.io/'],['Agar.io','ትንንሾቹን ሴሎች ብላ አድግ','io','https://agar.io/'],['Diep.io','ጠላቶችን አጥፋ','io','https://diep.io/'],['Zombs Royale','የ2D ጦርነት ጨዋታ','io','https://zombsroyale.io/'],['Krunker.io','ፈጣን የብራውዘር ጨዋታ','io','https://krunker.io/'],['Skribbl.io','የመሳል እና የመገመት ጨዋታ','io','https://skribbl.io/'],['Shell Shockers','የእንቁላል ተኩስ ጨዋታ','io','https://shellshock.io/'],['Mope.io','በምግብ ሰንሰለት ውስጥ ተሻሽል','io','https://mope.io/'],['Little Alchemy 2','ንጥረ ነገሮችን አዋህድ','famous','https://littlealchemy2.com/'],['2048','ቁጥሮችን አዋህድ','puzzle'],['Snake','ነጥብ ሰብስብ','arcade'],['Tic Tac Toe','ከጓደኛ ጋር ተጫወት','puzzle'],['Pac-Man','ታዋቂውን ጨዋታ ተጫወት','famous','https://www.google.com/logos/2010/pacman10-i.html'],['Minesweeper','ፈንጂዎችን አስወግድ','puzzle'],['Flappy Bird','እንቅፋቶችን አልፍ','arcade'],['Sudoku','ቁጥሮችን አስተካክል','puzzle'],['Chess','ቼስ ተጫወት','famous','https://www.chess.com/play/computer'],['Tetris','ብሎኮችን አስተካክል','famous','https://tetris.com/play-tetris'],['Wordle','ቃሉን ገምት','famous','https://www.nytimes.com/games/wordle/index.html'],['Bubble Shooter','አረፋዎችን ፍንዳ','arcade'],['Cut the Rope','ጨዋታ አስደስት','famous'],['Angry Birds','ተኩስ ጨዋታ','famous'],['Bounce','ኳሱን ተቆጣጠር','arcade']
  ]
 };
 const tr={
- ar:{sub:'100 لعبة ممتعة · Roblox & Minecraft',search:'🔎 ابحث عن لعبة...',all:'🎮 كل الألعاب',play:'العب الآن',rate:'⭐ قيّمنا',desc:'كيف كانت تجربتك؟',submit:'إرسال التقييم',home:'الرئيسية',find:'بحث',signup:'حساب',login:'دخول',empty:'لا توجد ألعاب مطابقة'},
- en:{sub:'100 Fun Games · Roblox & Minecraft',search:'🔎 Search games...',all:'🎮 All Games',play:'PLAY NOW',rate:'⭐ Rate Us',desc:'How was your experience?',submit:'Submit Rating',home:'Home',find:'Search',signup:'Sign Up',login:'Login',empty:'No matching games'},
- am:{sub:'100 ጨዋታዎች · Roblox & Minecraft',search:'🔎 ጨዋታ ፈልግ...',all:'🎮 ሁሉም ጨዋታዎች',play:'ተጫወት',rate:'⭐ ደረጃ ስጥ',desc:'ልምድዎ እንዴት ነበር?',submit:'ላክ',home:'መነሻ',find:'ፈልግ',signup:'ተመዝገብ',login:'ግባ',empty:'ምንም ጨዋታ አልተገኘም'}
+ ar:{sub:'100 لعبة ممتعة · ألعاب .io والمشهورة',search:'🔎 ابحث عن لعبة...',all:'🎮 كل الألعاب',play:'العب الآن',rate:'⭐ قيّمنا',desc:'كيف كانت تجربتك؟',submit:'إرسال التقييم',home:'الرئيسية',find:'بحث',signup:'حساب',login:'دخول',empty:'لا توجد ألعاب مطابقة'},
+ en:{sub:'100 Fun Games · .io & Famous Games',search:'🔎 Search games...',all:'🎮 All Games',play:'PLAY NOW',rate:'⭐ Rate Us',desc:'How was your experience?',submit:'Submit Rating',home:'Home',find:'Search',signup:'Sign Up',login:'Login',empty:'No matching games'},
+ am:{sub:'100 ጨዋታዎች · .io እና ታዋቂ ጨዋታዎች',search:'🔎 ጨዋታ ፈልግ...',all:'🎮 ሁሉም ጨዋታዎች',play:'ተጫወት',rate:'⭐ ደረጃ ስጥ',desc:'ልምድዎ እንዴት ነበር?',submit:'ላክ',home:'መነሻ',find:'ፈልግ',signup:'ተመዝገብ',login:'ግባ',empty:'ምንም ጨዋታ አልተገኘም'}
 };
 let category='all',currentGameId=0,cleanups=[],selectedRating=0,lightTheme=false;
 function lang(){const v=$('languageSelect').value;return ['ar','en','am'].includes(v)?v:'ar'}
-const gameEmojis=['⛏️','🧱','💎','🐍','⭕','🔢','🧠','✂️','🔮','🔤','🏓','🐹','⚡','🍎','🐤','🧱','💣','🔴','🎨','➕','⌨️','🍪','🌈','🎈','🎲'];
+
+// تحديث أيقونات الألعاب لتناسب الألعاب الجديدة
 const artPalettes=[['#173b2b','#74d66b'],['#20264c','#36d9ff'],['#4b2b18','#ffc15c'],['#102e35','#00f0ff'],['#391b48','#ff68c4'],['#172b54','#8d9cff'],['#36234d','#ffbf69'],['#342015','#e6c18b'],['#20204a','#8c7bff'],['#3d1830','#ff7ca8']];
+
 function gameArt(type,title){
- // صورة Minecraft الرسمية، وبقية الألعاب لها رسومات مصممة خصيصاً لنوع اللعبة.
  if(type===1) return 'https://www.minecraft.net/content/dam/minecraftnet/minecraft/news/minecraft-classic/MinecraftClassicScreenshot.jpeg';
  const scenes=[
   null,
   {bg:['#17233f','#12a8c8'],emoji:'🧍',label:'ROBLOX WORLD',shape:'<path d="M0 205L90 125 160 205 245 105 340 205 430 130 480 190V270H0Z" fill="#183b4a"/><rect x="188" y="85" width="104" height="110" rx="12" fill="#f3bd82"/><rect x="180" y="72" width="120" height="38" rx="8" fill="#20243c"/><rect x="198" y="195" width="35" height="60" fill="#ff4d86"/><rect x="247" y="195" width="35" height="60" fill="#4ce0ef"/>'},
-  {bg:['#392414','#e6a43e'],emoji:'💎',label:'MINING ADVENTURE',shape:'<path d="M0 230L70 120 140 230 230 90 330 230 410 130 480 230V270H0Z" fill="#33251d"/><path d="M175 120L230 78 285 120 260 190 200 190Z" fill="#20d9f3" stroke="#a8f7ff" stroke-width="7"/><path d="M230 78V190M175 120L260 190M285 120L200 190" stroke="#8cf4ff" stroke-width="4"/>'},
-  {bg:['#073b42','#17c7c5'],emoji:'🐍',label:'SNAKE',shape:'<path d="M0 220H480V270H0Z" fill="#073326"/><path d="M50 210Q80 130 150 175T260 150T390 175" fill="none" stroke="#80e85d" stroke-width="28" stroke-linecap="round"/><circle cx="390" cy="175" r="18" fill="#b5ff73"/><circle cx="396" cy="169" r="4" fill="#10221a"/><circle cx="80" cy="90" r="12" fill="#ff537c"/>'},
+  {bg:['#1d5a38','#a4dc5c'],emoji:'🐍',label:'SLITHER.IO',shape:'<path d="M0 220Q120 160 240 220T480 220V270H0Z" fill="#0f3a22"/><circle cx="150" cy="150" r="25" fill="#80e85d"/><circle cx="250" cy="130" r="25" fill="#80e85d"/><circle cx="350" cy="160" r="25" fill="#80e85d"/>'},
+  {bg:['#31204d','#b05acb'],emoji:'🦠',label:'AGAR.IO',shape:'<circle cx="150" cy="140" r="50" fill="#ff4757" stroke="#fff" stroke-width="5"/><circle cx="300" cy="160" r="35" fill="#1e90ff" stroke="#fff" stroke-width="5"/><circle cx="240" cy="100" r="20" fill="#2ed573"/>'},
+  {bg:['#173c74','#49a9ef'],emoji:'🚀',label:'DIEP.IO',shape:'<polygon points="240,50 200,180 280,180" fill="#00f0ff" stroke="#fff" stroke-width="4"/><rect x="220" y="180" width="40" height="60" fill="#7c5cff"/>'},
+  {bg:['#4b2038','#e65d8e'],emoji:'🏆',label:'ZOMBS ROYALE',shape:'<circle cx="240" cy="145" r="80" fill="#ffd700" stroke="#fff" stroke-width="6"/><text x="240" y="165" text-anchor="middle" font-size="50" fill="#fff">#1</text>'},
+  {bg:['#202a39','#7d8ba5'],emoji:'🔫',label:'KRUNKER.IO',shape:'<rect x="100" y="100" width="200" height="40" fill="#fff" rx="5"/><rect x="280" y="110" width="60" height="20" fill="#333"/><circle cx="150" cy="160" r="30" fill="#ff4757"/>'},
+  {bg:['#32214d','#8e69ce'],emoji:'🎨',label:'SKRIBBL.IO',shape:'<rect x="100" y="80" width="150" height="100" fill="#fff" rx="10"/><path d="M150 120L180 150L130 170" stroke="#000" stroke-width="5" fill="none"/>'},
+  {bg:['#57202b','#e45c62'],emoji:'🥚',label:'SHELL SHOCKERS',shape:'<ellipse cx="240" cy="145" rx="60" ry="80" fill="#fff" stroke="#333" stroke-width="5"/><circle cx="220" cy="120" r="10" fill="#000"/><circle cx="260" cy="120" r="10" fill="#000"/>'},
+  {bg:['#183d58','#31a5d4'],emoji:'🦊',label:'MOPE.IO',shape:'<circle cx="240" cy="145" r="40" fill="#ffa502"/><circle cx="220" cy="130" r="8" fill="#000"/><circle cx="260" cy="130" r="8" fill="#000"/>'},
+  {bg:['#29451c','#8bc34a'],emoji:'🧪',label:'LITTLE ALCHEMY',shape:'<rect x="180" y="80" width="120" height="120" fill="#fff" rx="10"/><circle cx="220" cy="120" r="15" fill="#ff4757"/><circle cx="260" cy="160" r="15" fill="#1e90ff"/>'},
+  {bg:['#082f4d','#168fc2'],emoji:'🔢',label:'2048',shape:'<rect x="140" y="65" width="200" height="150" rx="10" fill="#5141a5"/><text x="240" y="160" text-anchor="middle" font-size="60" fill="#fff">2048</text>'},
+  {bg:['#073b42','#17c7c5'],emoji:'🐍',label:'SNAKE',shape:'<rect x="100" y="100" width="40" height="40" fill="#00f0ff"/><rect x="140" y="100" width="40" height="40" fill="#00f0ff"/><rect x="180" y="100" width="40" height="40" fill="#00f0ff"/>'},
   {bg:['#31204d','#b05acb'],emoji:'⭕',label:'TIC TAC TOE',shape:'<path d="M170 55V215M310 55V215M110 108H370M110 162H370" stroke="#fff" stroke-width="12" stroke-linecap="round"/><circle cx="140" cy="82" r="23" fill="none" stroke="#ffe36e" stroke-width="10"/><path d="M330 175l38 38m0-38l-38 38" stroke="#65f2ff" stroke-width="11"/>'},
-  {bg:['#173c74','#49a9ef'],emoji:'2048',label:'NUMBER PUZZLE',shape:'<g fill="#f6bd55" stroke="#fff" stroke-opacity=".5" stroke-width="3"><rect x="85" y="65" width="65" height="65" rx="10"/><rect x="158" y="65" width="65" height="65" rx="10"/><rect x="231" y="65" width="65" height="65" rx="10"/><rect x="304" y="65" width="65" height="65" rx="10"/><rect x="85" y="138" width="65" height="65" rx="10"/><rect x="158" y="138" width="65" height="65" rx="10"/><rect x="231" y="138" width="65" height="65" rx="10"/><rect x="304" y="138" width="65" height="65" rx="10"/></g><g fill="#17304d" font-size="27" font-weight="bold" text-anchor="middle"><text x="117" y="108">2</text><text x="190" y="108">4</text><text x="263" y="108">8</text><text x="336" y="108">16</text></g>'},
-  {bg:['#3b2354','#c56bdc'],emoji:'🧠',label:'MEMORY MATCH',shape:'<g fill="#f6d66b" stroke="#fff" stroke-width="4"><rect x="85" y="60" width="80" height="90" rx="12"/><rect x="180" y="60" width="80" height="90" rx="12"/><rect x="275" y="60" width="80" height="90" rx="12"/><rect x="130" y="160" width="80" height="90" rx="12"/><rect x="225" y="160" width="80" height="90" rx="12"/></g><g font-size="48" text-anchor="middle"><text x="125" y="120">🍎</text><text x="220" y="120">⭐</text><text x="315" y="120">🍇</text></g>'},
-  {bg:['#57202b','#e45c62'],emoji:'✂️',label:'ROCK PAPER SCISSORS',shape:'<circle cx="130" cy="145" r="58" fill="#f1c18e"/><circle cx="350" cy="145" r="58" fill="#f1c18e"/><path d="M100 110l60 70m0-70l-60 70" stroke="#fff" stroke-width="13"/><path d="M320 120q30-55 60 0v65h-60z" fill="#f7d45d"/>'},
-  {bg:['#183d58','#31a5d4'],emoji:'🔢',label:'GUESS THE NUMBER',shape:'<rect x="140" y="55" width="200" height="155" rx="20" fill="#101d35" stroke="#7ff7ff" stroke-width="7"/><text x="240" y="160" fill="#83ffcc" font-size="90" text-anchor="middle" font-weight="bold">?</text><circle cx="110" cy="210" r="18" fill="#ffdb65"/><circle cx="370" cy="210" r="18" fill="#ffdb65"/>'},
-  {bg:['#342344','#9b63bd'],emoji:'🔤',label:'HANGMAN',shape:'<path d="M120 220V55H280M280 55V85M120 90H205" stroke="#f8d99a" stroke-width="12" fill="none"/><circle cx="205" cy="115" r="25" fill="none" stroke="#fff" stroke-width="9"/><path d="M205 140V205M205 158L165 180M205 158L245 180M205 205L175 245M205 205L235 245" stroke="#fff" stroke-width="9"/>'},
-  {bg:['#082f4d','#168fc2'],emoji:'🏓',label:'PONG',shape:'<rect x="55" y="55" width="370" height="165" rx="12" fill="#071c30" stroke="#8ffaff" stroke-width="5"/><path d="M240 58V220" stroke="#fff" stroke-width="4" stroke-dasharray="12 12"/><rect x="82" y="110" width="15" height="65" rx="6" fill="#fff"/><rect x="383" y="85" width="15" height="65" rx="6" fill="#fff"/><circle cx="240" cy="145" r="13" fill="#ffef80"/>'},
-  {bg:['#29451c','#8bc34a'],emoji:'🐹',label:'WHACK A MOLE',shape:'<g fill="#5b3523"><ellipse cx="125" cy="190" rx="52" ry="28"/><ellipse cx="240" cy="190" rx="52" ry="28"/><ellipse cx="355" cy="190" rx="52" ry="28"/></g><g font-size="62" text-anchor="middle"><text x="125" y="170">🐹</text><text x="355" y="170">🐹</text></g>'},
-  {bg:['#63331c','#f5a623'],emoji:'⚡',label:'REACTION TEST',shape:'<path d="M270 35L140 155H220L190 245 340 110H255Z" fill="#fff36a" stroke="#ffdb4c" stroke-width="5"/><circle cx="100" cy="85" r="24" fill="#ff547d"/><circle cx="380" cy="195" r="24" fill="#5bf0ff"/>'},
-  {bg:['#1d5a38','#a4dc5c'],emoji:'🍎',label:'FRUIT CATCH',shape:'<path d="M70 215Q240 190 410 215" stroke="#7b4b26" stroke-width="18"/><path d="M240 60q-35-30-58 5q-20 40 20 75q40 35 75 0q40-40 15-75q-25-35-52-5" fill="#ff5365"/><path d="M240 62q15-32 48-28q-10 30-48 28" fill="#76d85b"/>'},
-  {bg:['#2586c7','#a7e8ff'],emoji:'🐤',label:'FLAPPY BIRD',shape:'<path d="M340 0H395V95H340ZM340 175H395V270H340Z" fill="#55c94c" stroke="#247c3d" stroke-width="7"/><circle cx="125" cy="120" r="45" fill="#ffdf4b"/><path d="M105 130l-55 22 58 8" fill="#ff8d36"/><circle cx="140" cy="105" r="7" fill="#17233f"/>'},
-  {bg:['#4b2038','#e65d8e'],emoji:'🧱',label:'BREAKOUT',shape:'<g stroke="#fff" stroke-width="3"><rect x="55" y="55" width="90" height="30" rx="5" fill="#ff6b6b"/><rect x="150" y="55" width="90" height="30" rx="5" fill="#ffbd4a"/><rect x="245" y="55" width="90" height="30" rx="5" fill="#64d9ff"/><rect x="340" y="55" width="90" height="30" rx="5" fill="#9d86ff"/><rect x="55" y="92" width="90" height="30" rx="5" fill="#ffbd4a"/><rect x="150" y="92" width="90" height="30" rx="5" fill="#64d9ff"/><rect x="245" y="92" width="90" height="30" rx="5" fill="#9d86ff"/></g><circle cx="240" cy="205" r="12" fill="#fff"/>'},
-  {bg:['#202a39','#7d8ba5'],emoji:'💣',label:'MINESWEEPER',shape:'<g fill="#d6e1f1" stroke="#23344d" stroke-width="5"><rect x="85" y="55" width="80" height="70" rx="8"/><rect x="175" y="55" width="80" height="70" rx="8"/><rect x="265" y="55" width="80" height="70" rx="8"/><rect x="85" y="135" width="80" height="70" rx="8"/><rect x="175" y="135" width="80" height="70" rx="8"/><rect x="265" y="135" width="80" height="70" rx="8"/></g><text x="215" y="190" font-size="58">💣</text>'},
-  {bg:['#17466a','#42b7df'],emoji:'🔴',label:'CONNECT FOUR',shape:'<rect x="95" y="45" width="290" height="185" rx="18" fill="#1767b4"/><g fill="#f6f7ff"><circle cx="140" cy="90" r="18"/><circle cx="190" cy="90" r="18"/><circle cx="240" cy="90" r="18"/><circle cx="290" cy="90" r="18"/><circle cx="340" cy="90" r="18"/><circle cx="140" cy="145" r="18"/><circle cx="190" cy="145" r="18"/><circle cx="240" cy="145" r="18"/><circle cx="290" cy="145" r="18"/><circle cx="340" cy="145" r="18"/></g><circle cx="190" cy="145" r="18" fill="#ffdf42"/><circle cx="240" cy="145" r="18" fill="#f34e58"/>'},
-  {bg:['#32214d','#8e69ce'],emoji:'🎨',label:'SIMON COLORS',shape:'<path d="M240 45V135H145A95 95 0 0 1 240 45Z" fill="#ff5d70"/><path d="M240 45A95 95 0 0 1 335 140H240Z" fill="#ffd64d"/><path d="M145 145H240V240A95 95 0 0 1 145 145Z" fill="#38d78b"/><path d="M240 145H335A95 95 0 0 1 240 240Z" fill="#3c9cff"/>'},
-  {bg:['#1c3e58','#54b5d4'],emoji:'➕',label:'MATH CHALLENGE',shape:'<rect x="95" y="55" width="290" height="160" rx="20" fill="#0d2338" stroke="#8ef4ff" stroke-width="6"/><text x="240" y="160" fill="#fff" text-anchor="middle" font-size="76" font-weight="bold">7 + 5</text>'},
-  {bg:['#28324c','#7789bb'],emoji:'⌨️',label:'TYPING TEST',shape:'<rect x="55" y="125" width="370" height="100" rx="15" fill="#101b2d" stroke="#a9c8ff" stroke-width="5"/><g fill="#eaf4ff"><rect x="85" y="145" width="45" height="25" rx="5"/><rect x="140" y="145" width="45" height="25" rx="5"/><rect x="195" y="145" width="45" height="25" rx="5"/><rect x="250" y="145" width="45" height="25" rx="5"/><rect x="305" y="145" width="45" height="25" rx="5"/><rect x="125" y="180" width="225" height="20" rx="5"/></g>'},
-  {bg:['#57351c','#d99a45'],emoji:'🍪',label:'COOKIE CLICKER',shape:'<circle cx="240" cy="145" r="88" fill="#b66a32" stroke="#f4c47a" stroke-width="10"/><g fill="#4a281b"><circle cx="200" cy="110" r="10"/><circle cx="270" cy="100" r="12"/><circle cx="290" cy="165" r="10"/><circle cx="205" cy="185" r="11"/><circle cx="245" cy="145" r="9"/></g>'},
-  {bg:['#3d285c','#d37bc5'],emoji:'🌈',label:'COLOR MATCH',shape:'<path d="M75 190A165 165 0 0 1 405 190" fill="none" stroke="#ff5b6e" stroke-width="18"/><path d="M100 190A140 140 0 0 1 380 190" fill="none" stroke="#ffcc4d" stroke-width="18"/><path d="M125 190A115 115 0 0 1 355 190" fill="none" stroke="#5be08a" stroke-width="18"/><path d="M150 190A90 90 0 0 1 330 190" fill="none" stroke="#5bcaff" stroke-width="18"/>'},
-  {bg:['#4c2450','#e77db7'],emoji:'🎈',label:'BALLOON POP',shape:'<g stroke="#fff" stroke-width="3"><ellipse cx="125" cy="100" rx="42" ry="55" fill="#ff557b"/><ellipse cx="240" cy="85" rx="42" ry="55" fill="#55c8ff"/><ellipse cx="355" cy="105" rx="42" ry="55" fill="#ffd44d"/><path d="M125 155l8 40M240 140l-5 50M355 160l-8 35"/></g>'},
-  {bg:['#24415b','#91b5cf'],emoji:'🎲',label:'DICE ROLL',shape:'<g fill="#fff" stroke="#18344d" stroke-width="7"><rect x="95" y="70" width="105" height="105" rx="18"/><rect x="260" y="105" width="105" height="105" rx="18"/></g><g fill="#19334b"><circle cx="125" cy="100" r="9"/><circle cx="170" cy="145" r="9"/><circle cx="290" cy="135" r="9"/><circle cx="335" cy="180" r="9"/><circle cx="335" cy="135" r="9"/></g>'}
+  {bg:['#4c2450','#e77db7'],emoji:'👻',label:'PAC-MAN',shape:'<circle cx="240" cy="145" r="80" fill="#ffd700"/><path d="M240 145L320 100V190Z" fill="#4c2450"/>'},
+  {bg:['#202a39','#7d8ba5'],emoji:'💣',label:'MINESWEEPER',shape:'<rect x="140" y="80" width="200" height="120" fill="#ccc" rx="10"/><text x="240" y="160" text-anchor="middle" font-size="60">💣</text>'},
+  {bg:['#2586c7','#a7e8ff'],emoji:'🐤',label:'FLAPPY BIRD',shape:'<circle cx="240" cy="145" r="40" fill="#ffdf4b"/><path d="M220 150l-30 10 30 10" fill="#ff8d36"/>'},
+  {bg:['#1c3e58','#54b5d4'],emoji:'🔢',label:'SUDOKU',shape:'<rect x="140" y="60" width="200" height="200" fill="#fff" stroke="#000" stroke-width="5"/><text x="240" y="160" text-anchor="middle" font-size="50">1 2 3</text>'},
+  {bg:['#57351c','#d99a45'],emoji:'♟️',label:'CHESS',shape:'<circle cx="240" cy="145" r="80" fill="#e6c18b"/><text x="240" y="180" text-anchor="middle" font-size="100">♟️</text>'},
+  {bg:['#3d285c','#d37bc5'],emoji:'🧱',label:'TETRIS',shape:'<rect x="150" y="80" width="40" height="40" fill="#ff4757"/><rect x="190" y="80" width="40" height="40" fill="#ff4757"/><rect x="230" y="120" width="40" height="40" fill="#1e90ff"/>'},
+  {bg:['#24415b','#91b5cf'],emoji:'📝',label:'WORDLE',shape:'<rect x="160" y="80" width="160" height="120" fill="#fff" rx="10"/><text x="240" y="160" text-anchor="middle" font-size="50">W O R D</text>'},
+  {bg:['#4c2450','#e77db7'],emoji:'🫧',label:'BUBBLE SHOOTER',shape:'<circle cx="200" cy="120" r="20" fill="#ff4757"/><circle cx="250" cy="120" r="20" fill="#1e90ff"/><circle cx="300" cy="120" r="20" fill="#2ed573"/>'},
+  {bg:['#29451c','#8bc34a'],emoji:'🍬',label:'CUT THE ROPE',shape:'<circle cx="240" cy="145" r="40" fill="#2ed573"/><path d="M200 100L280 100" stroke="#fff" stroke-width="5"/>'},
+  {bg:['#57202b','#e45c62'],emoji:'🐦',label:'ANGRY BIRDS',shape:'<circle cx="240" cy="145" r="50" fill="#ff4757"/><circle cx="220" cy="130" r="8" fill="#fff"/><circle cx="260" cy="130" r="8" fill="#fff"/>'},
+  {bg:['#082f4d','#168fc2'],emoji:'🔴',label:'BOUNCE',shape:'<circle cx="240" cy="145" r="40" fill="#ff4757"/><circle cx="240" cy="145" r="15" fill="#fff"/>'}
  ];
  const sc=scenes[type-1]||scenes[2];
  const safe=String(title).replace(/[<>&"']/g,'').slice(0,28);
@@ -303,7 +308,7 @@ function setLanguage(l){
  $('subtitleText').textContent=T.sub;$('search').placeholder=T.search;$('allGamesTitle').textContent=T.all;
  $('rateTitle').textContent=T.rate;$('rateDesc').textContent=T.desc;$('rateSubmitBtn').textContent=T.submit;
  $('bnHomeLabel').textContent=T.home;$('bnSearchLabel').textContent=T.find;$('bnSignupLabel').textContent=T.signup;$('bnLoginLabel').textContent=T.login;
- const labels=[T.all.replace('🎮 ','') ,l==='en'?'Roblox':l==='am'?'Roblox':'Roblox',l==='en'?'Minecraft':l==='am'?'Minecraft':'Minecraft',l==='en'?'Arcade':l==='am'?'አርኬድ':'أركيد',l==='en'?'Puzzle':l==='am'?'እንቆቅልሽ':'ألغاز'];
+ const labels=[T.all.replace('🎮 ','') ,l==='en'?'.io Games':l==='am'?'.io ጨዋታዎች':'ألعاب .io',l==='en'?'Famous':l==='am'?'ታዋቂ':'مشهورة جداً',l==='en'?'Arcade':l==='am'?'አርኬድ':'أركيد',l==='en'?'Puzzle':l==='am'?'እንቆቅልሽ':'ألغاز'];
  document.querySelectorAll('.cat').forEach((b,i)=>b.textContent=labels[i]);render();
 }
 $('languageSelect').onchange=()=>{try{localStorage.setItem('gz_lang',lang())}catch(e){}setLanguage(lang())};
@@ -314,46 +319,72 @@ setInterval(()=>$('clock').textContent=new Date().toLocaleTimeString([],{hour:'2
 function cleanup(){cleanups.forEach(fn=>{try{fn()}catch(e){}});cleanups=[];document.onkeydown=null}
 function closeGame(){cleanup();$('gameArea').innerHTML='';$('gameControls').innerHTML='';$('modal').classList.remove('open')}
 $('closeModal').onclick=closeGame;$('closeCurrentGame').onclick=closeGame;$('modal').onclick=e=>{if(e.target===$('modal'))closeGame()};
-function openGame(id){currentGameId=id;cleanup();$('gameArea').innerHTML='';$('gameControls').innerHTML='';$('modal').classList.add('open');const g=allGames()[id-1];$('gameTitle').textContent=g.name;if(g.ext){
- if(g.cat==='roblox'){const p=document.createElement('p');p.textContent='Roblox يحتاج إلى مشغّل Roblox الرسمي؛ لا يمكن تشغيله داخل إطار هذه الصفحة.';$('gameArea').appendChild(p);const b=button('🎮 افتح Roblox الرسمي',()=>window.open(g.ext,'_blank','noopener'));$('gameArea').appendChild(b);return;}
- const frame=document.createElement('iframe');frame.src=g.ext;frame.allow='fullscreen; gamepad';frame.title=g.name;$('gameArea').appendChild(frame);const note=document.createElement('p');note.textContent='إذا لم تعمل اللعبة داخل الإطار، افتحها مباشرة من الزر التالي.';$('gameArea').appendChild(note);const b=button('افتح اللعبة في صفحة مستقلة',()=>window.open(g.ext,'_blank','noopener'));$('gameArea').appendChild(b);return;}startGame(g.type)}
+function openGame(id){currentGameId=id;cleanup();$('gameArea').innerHTML='';$('gameControls').innerHTML='';$('modal').classList.add('open');const g=allGames()[id-1];$('gameTitle').textContent=g.name;
+if(g.ext){
+ // إذا كانت اللعبة موجودة على موقع خارجي، نفتحها في إطار
+ const frame=document.createElement('iframe');frame.src=g.ext;frame.allow='fullscreen; gamepad';frame.title=g.name;$('gameArea').appendChild(frame);
+ const note=document.createElement('p');note.textContent='إذا لم تعمل اللعبة داخل الإطار، افتحها مباشرة من الزر التالي.';$('gameArea').appendChild(note);
+ const b=button('افتح اللعبة في صفحة مستقلة',()=>window.open(g.ext,'_blank','noopener'));$('gameArea').appendChild(b);return;
+}
+startGame(g.type)}
+
 $('restartCurrentGame').onclick=()=>openGame(currentGameId);
 function status(t=''){let e=document.createElement('div');e.className='status';e.textContent=t;$('gameArea').appendChild(e);return e}
 function button(t,fn){let b=document.createElement('button');b.className='btn';b.textContent=t;b.onclick=fn;return b}
 function control(t,fn){$('gameControls').appendChild(button(t,fn))}
 function inp(ph='اكتب هنا'){let i=document.createElement('input');i.placeholder=ph;$('gameArea').appendChild(i);return i}
 function canvas(w=320,h=280){let c=document.createElement('canvas');c.width=w;c.height=h;$('gameArea').appendChild(c);return c}
+
 function startGame(n){
- const games=[null,minecraftInfo,voxel,mining,snake,ttt,game2048,memory,rps,guess,hangman,pong,whack,react,fruits,flappy,breakout,mines,connect4,simon,scramble,typing,cookie,colormatch,balloon,dice];
- (games[n]||coin)();
+ // تم استبدال الألعاب البسيطة بألعاب تفاعلية أو روابط خارجية
+ const games=[null,null,null,null,null,null,null,null,null,null,null,
+  game2048, // 11
+  snake,    // 12
+  ttt,      // 13
+  null,     // 14 (Pac-Man external)
+  mines,    // 15
+  null,     // 16 (Flappy external)
+  null,     // 17 (Sudoku external)
+  null,     // 18 (Chess external)
+  null,     // 19 (Tetris external)
+  null,     // 20 (Wordle external)
+  null,     // 21
+  null,     // 22
+  null,     // 23
+  null      // 24
+ ];
+ if(n===11) game2048();
+ else if(n===12) snake();
+ else if(n===13) ttt();
+ else if(n===15) mines();
+ else {
+    // في حال عدم وجود لعبة محلية، نعرض رسالة تجريبية
+    let s=status('هذه اللعبة قيد التطوير أو تعمل عبر رابط خارجي.');
+ }
 }
-function minecraftInfo(){let s=status('Minecraft Classic');let p=document.createElement('p');p.textContent='افتح اللعبة في الإطار أو استخدم زر ملء الشاشة.';$('gameArea').appendChild(p);let b=button('فتح Minecraft Classic',()=>window.open('https://classic.minecraft.net/','_blank','noopener'));$('gameArea').appendChild(b)}
-function voxel(){let c=canvas(320,320),x=c.getContext('2d'),grid=Array(10).fill(0).map(()=>Array(10).fill(0)),col=0,cols=['#5cba47','#8b5a2b','#7f7f7f','#fcdb05','#4aedd9'];function draw(){x.fillStyle='#0a0a15';x.fillRect(0,0,320,320);grid.forEach((r,y)=>r.forEach((v,z)=>{x.fillStyle=v?cols[v-1]:'#151525';x.fillRect(z*32,y*32,32,32);x.strokeStyle='#333';x.strokeRect(z*32,y*32,32,32)}))}c.onclick=e=>{let r=c.getBoundingClientRect(),a=Math.floor((e.clientX-r.left)/r.width*10),b=Math.floor((e.clientY-r.top)/r.height*10);grid[b][a]=col+1;draw()};cols.forEach((v,i)=>{let b=button('■',()=>col=i);b.style.cssText=`width:42px;background:${v};color:#000`; $('gameControls').appendChild(b)});draw()}
-function mining(){let c=canvas(320,260),x=c.getContext('2d'),p={x:150,y:120},items=[],score=0,alive=true,s=status('Score: 0');function key(e){if(e.key==='ArrowLeft')p.x=Math.max(0,p.x-15);if(e.key==='ArrowRight')p.x=Math.min(296,p.x+15);if(e.key==='ArrowUp')p.y=Math.max(0,p.y-15);if(e.key==='ArrowDown')p.y=Math.min(236,p.y+15)}document.addEventListener('keydown',key);cleanups.push(()=>document.removeEventListener('keydown',key));let f=0;function draw(){if(!alive)return;x.fillStyle='#0a0a15';x.fillRect(0,0,320,260);x.fillStyle='#00f0ff';x.fillRect(p.x,p.y,24,24);f++;if(f%35===0)items.push({x:Math.random()*295,y:Math.random()*235});items.forEach(a=>{x.fillStyle='#ffd700';x.fillRect(a.x,a.y,15,15);if(Math.abs(p.x-a.x)<22&&Math.abs(p.y-a.y)<22){a.got=true;score++;s.textContent='Score: '+score}});items=items.filter(a=>!a.got);requestAnimationFrame(draw)}draw()}
-function snake(){let c=canvas(300,300),x=c.getContext('2d'),s=status('0'),body=[{x:8,y:8},{x:7,y:8}],dx=1,dy=0,food={x:14,y:10},score=0,t;function key(e){let d={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0]}[e.key];if(d&&!(d[0]===-dx&&d[1]===-dy)){dx=d[0];dy=d[1]}}document.addEventListener('keydown',key);cleanups.push(()=>document.removeEventListener('keydown',key));function draw(){x.fillStyle='#090914';x.fillRect(0,0,300,300);body.forEach((p,i)=>{x.fillStyle=i?'#7c5cff':'#00f0ff';x.fillRect(p.x*15,p.y*15,14,14)});x.fillStyle='#ff007f';x.fillRect(food.x*15,food.y*15,14,14)}function step(){let h={x:body[0].x+dx,y:body[0].y+dy};if(h.x<0||h.x>=20||h.y<0||h.y>=20||body.some(p=>p.x===h.x&&p.y===h.y)){clearInterval(t);s.textContent='Game Over · '+score;return}body.unshift(h);if(h.x===food.x&&h.y===food.y){score++;s.textContent=score;food={x:Math.random()*20|0,y:Math.random()*20|0}}else body.pop();draw()}draw();t=setInterval(step,140);cleanups.push(()=>clearInterval(t))}
+
+// دوال الألعاب المحلية
+function snake(){
+ let c=canvas(300,300),x=c.getContext('2d'),s=status('0'),body=[{x:8,y:8},{x:7,y:8}],dx=1,dy=0,food={x:14,y:10},score=0,t;
+ function key(e){let d={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0]}[e.key];if(d&&!(d[0]===-dx&&d[1]===-dy)){dx=d[0];dy=d[1]}}
+ document.addEventListener('keydown',key);cleanups.push(()=>document.removeEventListener('keydown',key));
+ function draw(){x.fillStyle='#090914';x.fillRect(0,0,300,300);body.forEach((p,i)=>{x.fillStyle=i?'#7c5cff':'#00f0ff';x.fillRect(p.x*15,p.y*15,14,14)});x.fillStyle='#ff007f';x.fillRect(food.x*15,food.y*15,14,14)}
+ function step(){let h={x:body[0].x+dx,y:body[0].y+dy};if(h.x<0||h.x>=20||h.y<0||h.y>=20||body.some(p=>p.x===h.x&&p.y===h.y)){clearInterval(t);s.textContent='Game Over · '+score;return}body.unshift(h);if(h.x===food.x&&h.y===food.y){score++;s.textContent=score;food={x:Math.random()*20|0,y:Math.random()*20|0}}else body.pop();draw()}
+ draw();t=setInterval(step,140);cleanups.push(()=>clearInterval(t));
+ const dpad=document.createElement('div');dpad.className='d-pad';
+ const btnUp=button('⬆️',()=>{if(dy===0){dx=0;dy=-1}});
+ const btnLeft=button('⬅️',()=>{if(dx===0){dx=-1;dy=0}});
+ const btnRight=button('➡️',()=>{if(dx===0){dx=1;dy=0}});
+ const btnDown=button('⬇️',()=>{if(dy===0){dx=0;dy=1}});
+ const empty=document.createElement('div');empty.className='empty-btn';
+ dpad.append(empty,btnUp,empty,btnLeft,empty,btnRight,empty,btnDown,empty);
+ $('gameControls').appendChild(dpad);
+}
 function ttt(){let b=Array(9).fill(''),turn='X',s=status('X');let w=document.createElement('div');w.style.cssText='display:grid;grid-template-columns:repeat(3,76px);gap:7px';$('gameArea').appendChild(w);function win(){return [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]].some(a=>b[a[0]]&&b[a[0]]===b[a[1]]&&b[a[1]]===b[a[2]])}b.forEach((_,i)=>{let q=button('',()=>{if(b[i]||win()||b.every(Boolean))return;b[i]=turn;q.textContent=turn;if(win())s.textContent=turn+' wins!';else if(b.every(Boolean))s.textContent='Draw';else{turn=turn==='X'?'O':'X';s.textContent=turn}});q.style.height='76px';q.style.fontSize='2rem';w.appendChild(q)})}
 function game2048(){let b=Array(16).fill(0),s=status('2048'),c=canvas(300,300),x=c.getContext('2d');function add(){let a=b.map((v,i)=>v?null:i).filter(v=>v!==null);if(a.length)b[a[Math.random()*a.length|0]]=2}function draw(){x.fillStyle='#10101d';x.fillRect(0,0,300,300);b.forEach((v,i)=>{let xx=i%4*75,yy=(i/4|0)*75;x.fillStyle=v?'#5141a5':'#222238';x.fillRect(xx+3,yy+3,69,69);if(v){x.fillStyle='white';x.font='bold 24px Cairo';x.textAlign='center';x.fillText(v,xx+37,yy+46)}})}function move(d){let changed=false;for(let r=0;r<4;r++){let ids=Array.from({length:4},(_,i)=>d==='left'?r*4+i:d==='right'?r*4+3-i:d==='up'?i*4+r:(3-i)*4+r),a=ids.map(i=>b[i]).filter(Boolean),o=[];for(let i=0;i<a.length;i++){if(a[i]===a[i+1]){o.push(a[i]*2);i++}else o.push(a[i])}while(o.length<4)o.push(0);ids.forEach((id,i)=>{if(b[id]!==o[i])changed=true;b[id]=o[i]})}if(changed){add();draw()}}function key(e){let d={ArrowLeft:'left',ArrowRight:'right',ArrowUp:'up',ArrowDown:'down'}[e.key];if(d){e.preventDefault();move(d)}}document.addEventListener('keydown',key);cleanups.push(()=>document.removeEventListener('keydown',key));add();add();draw();['⬅️','➡️','⬆️','⬇️'].forEach((v,i)=>control(v,()=>move(['left','right','up','down'][i])))}
-function memory(){let vals=['🍎','🍇','🍋','🍒','🐸','🚀','⚽','⭐'].flatMap(v=>[v,v]).sort(()=>Math.random()-.5),open=[],found=0,s=status('0'),w=document.createElement('div');w.style.cssText='display:grid;grid-template-columns:repeat(4,60px);gap:7px';$('gameArea').appendChild(w);vals.forEach(v=>{let b=button('? ',()=>{if(b.dataset.done||open.length===2||open.some(a=>a.b===b))return;b.textContent=v;open.push({b,v});if(open.length===2){if(open[0].v===open[1].v){open.forEach(a=>a.b.dataset.done='1');found++;s.textContent=found+' / 8';open=[]}else setTimeout(()=>{open.forEach(a=>a.b.textContent='?');open=[]},650)}});b.style.height='60px';w.appendChild(b)})}
-function rps(){let s=status('اختر');['🪨','📄','✂️'].forEach(v=>control(v,()=>{let a=['🪨','📄','✂️'][Math.random()*3|0];s.textContent=v+' مقابل '+a+(v===a?' تعادل':(v==='🪨'&&a==='✂️'||v==='📄'&&a==='🪨'||v==='✂️'&&a==='📄'?' — فزت!':' — حاول مرة أخرى'))}))}
-function guess(){let n=Math.random()*50|0+1; n=Math.floor(Math.random()*50)+1;let s=status('خمن رقمًا من 1 إلى 50'),i=inp('الرقم');control('تحقق',()=>{let v=+i.value;s.textContent=v===n?'🎉 صحيح!':v<n?'أعلى ↑':'أقل ↓'})}
-function hangman(){let words=['قمر','شمس','كتاب','قلم','بيت'],w=words[Math.random()*words.length|0],used=[],s=status('اكتب حرفًا'),out=document.createElement('div');out.style.fontSize='2rem';$('gameArea').appendChild(out);let i=inp('الحرف');function draw(){out.textContent=[...w].map(c=>used.includes(c)?c:'_').join(' ')}control('إرسال',()=>{let c=i.value.trim()[0];i.value='';if(c&&!used.includes(c))used.push(c);draw();if([...w].every(c=>used.includes(c)))s.textContent='🎉 فزت!'});draw()}
-function pong(){let c=canvas(320,240),x=c.getContext('2d'),bx=150,by=100,vx=2.5,vy=2,p=110,score=0,s=status('حرّك المضرب بإصبعك');c.onpointermove=e=>p=Math.max(0,Math.min(230,e.offsetX-45));let raf;function d(){x.fillStyle='#080817';x.fillRect(0,0,320,240);x.fillStyle='#00f0ff';x.fillRect(p,218,90,12);x.beginPath();x.arc(bx,by,8,0,7);x.fill();bx+=vx;by+=vy;if(bx<8||bx>312)vx*=-1;if(by<8)vy*=-1;if(by>208&&bx>p&&bx<p+90){vy=-Math.abs(vy);score++;s.textContent='Score: '+score}if(by>240){bx=160;by=100;score=0;s.textContent='حاول مجددًا'}raf=requestAnimationFrame(d)}d();cleanups.push(()=>cancelAnimationFrame(raf))}
-function whack(){let score=0,s=status('0'),w=document.createElement('div');w.style.cssText='display:grid;grid-template-columns:repeat(3,65px);gap:7px';$('gameArea').appendChild(w);let bs=[];for(let i=0;i<9;i++){let b=button('🕳️',()=>{if(b.textContent==='🐹'){score++;s.textContent=score;b.textContent='🕳️'}});b.style.height='65px';bs.push(b);w.appendChild(b)}let t=setInterval(()=>{bs.forEach(b=>b.textContent='🕳️');bs[Math.random()*9|0].textContent='🐹'},750);cleanups.push(()=>clearInterval(t))}
-function react(){let s=status('اضغط ابدأ ثم انتظر اللون الأخضر'),b=button('ابدأ',()=>{b.disabled=true;b.textContent='انتظر...';let delay=1000+Math.random()*2500,t=setTimeout(()=>{let start=performance.now();b.disabled=false;b.textContent='اضغط الآن!';b.style.background='#008f68';b.onclick=()=>{s.textContent=Math.round(performance.now()-start)+' ms';b.disabled=true}},delay);cleanups.push(()=>clearTimeout(t))});$('gameArea').appendChild(b)}
-function fruits(){let c=canvas(300,280),x=c.getContext('2d'),px=120,items=[],score=0,s=status('0'),raf;function key(e){if(e.key==='ArrowLeft')px=Math.max(0,px-20);if(e.key==='ArrowRight')px=Math.min(240,px+20)}document.addEventListener('keydown',key);cleanups.push(()=>document.removeEventListener('keydown',key));c.onpointermove=e=>px=Math.max(0,Math.min(240,e.offsetX-25));let f=0;function d(){x.fillStyle='#0a1520';x.fillRect(0,0,300,280);x.fillStyle='#7c5cff';x.fillRect(px,245,60,22);if(++f%35===0)items.push({x:Math.random()*270,y:-10,e:['🍎','🍊','🍋','🍇'][Math.random()*4|0]});items.forEach(a=>{a.y+=2;x.font='22px serif';x.fillText(a.e,a.x,a.y);if(a.y>235&&a.y<270&&a.x>px-10&&a.x<px+60){a.y=400;score++;s.textContent=score}});items=items.filter(a=>a.y<320);raf=requestAnimationFrame(d)}d();cleanups.push(()=>cancelAnimationFrame(raf))}
-function flappy(){let c=canvas(320,240),x=c.getContext('2d'),y=110,v=0,px=320,gap=80,score=0,dead=false,s=status('المس الشاشة للقفز'),raf;function flap(){if(dead){y=110;v=0;px=320;score=0;dead=false}v=-4.5}c.onclick=flap;function key(e){if(e.code==='Space'){e.preventDefault();flap()}}document.addEventListener('keydown',key);cleanups.push(()=>document.removeEventListener('keydown',key));function d(){x.fillStyle='#0a1830';x.fillRect(0,0,320,240);if(!dead){v+=.2;y+=v;px-=2;if(px<-45){px=330;gap=30+Math.random()*100;score++;s.textContent='Score: '+score}x.fillStyle='#7c5cff';x.fillRect(px,0,42,gap);x.fillRect(px,gap+90,42,240);if(y<8||y>232||(px<62&&px>8&&(y<gap||y>gap+90))){dead=true;s.textContent='انتهت اللعبة — المس للبدء من جديد'}}x.fillStyle='#00f0ff';x.beginPath();x.arc(50,y,11,0,7);x.fill();raf=requestAnimationFrame(d)}d();cleanups.push(()=>cancelAnimationFrame(raf))}
-function breakout(){let c=canvas(320,280),x=c.getContext('2d'),bx=160,by=220,vx=2.2,vy=-2.5,p=115,score=0,br=Array.from({length:20},(_,i)=>({x:12+i%5*61,y:20+(i/5|0)*25,on:true})),s=status('0'),raf;c.onpointermove=e=>p=Math.max(0,Math.min(235,e.offsetX-42));function d(){x.fillStyle='#080817';x.fillRect(0,0,320,280);br.forEach(b=>{if(b.on){x.fillStyle='#ff007f';x.fillRect(b.x,b.y,52,17)}});x.fillStyle='#00f0ff';x.fillRect(p,252,85,13);x.fillStyle='white';x.beginPath();x.arc(bx,by,7,0,7);x.fill();bx+=vx;by+=vy;if(bx<7||bx>313)vx*=-1;if(by<7)vy*=-1;if(by>242&&bx>p&&bx<p+85)vy=-Math.abs(vy);br.forEach(b=>{if(b.on&&bx>b.x&&bx<b.x+52&&by>b.y&&by<b.y+17){b.on=false;vy*=-1;score++;s.textContent=score}});if(by>280){bx=160;by=220}raf=requestAnimationFrame(d)}d();cleanups.push(()=>cancelAnimationFrame(raf))}
 function mines(){let bombs=new Set();while(bombs.size<3)bombs.add(Math.random()*25|0);let s=status('تجنب الألغام'),w=document.createElement('div');w.style.cssText='display:grid;grid-template-columns:repeat(5,46px);gap:5px';$('gameArea').appendChild(w);for(let i=0;i<25;i++){let b=button('?',()=>{if(bombs.has(i)){b.textContent='💣';s.textContent='انفجر اللغم!';[...w.children].forEach(x=>x.disabled=true)}else{b.textContent='✓';b.disabled=true}});b.style.height='46px';w.appendChild(b)}}
-function connect4(){let b=Array(42).fill(0),turn=1,s=status('🔴 دور الأحمر'),w=document.createElement('div');w.style.cssText='display:grid;grid-template-columns:repeat(7,38px);gap:3px';$('gameArea').appendChild(w);for(let i=0;i<42;i++){let q=button('·',()=>{let col=i%7,row=5;while(row>=0&&b[row*7+col])row--;if(row<0)return;let ix=row*7+col;b[ix]=turn;w.children[ix].textContent=turn===1?'🔴':'🟡';turn=3-turn;s.textContent=turn===1?'🔴 دور الأحمر':'🟡 دور الأصفر'});q.style.cssText='width:38px;height:38px;border-radius:50%;padding:0';w.appendChild(q)}}
-function simon(){let colors=['#ff4757','#2ed573','#1e90ff','#ffa502'],seq=[],pos=0,locked=false,score=0,s=status('ابدأ اللعبة'),w=document.createElement('div');w.style.cssText='display:grid;grid-template-columns:repeat(2,95px);gap:8px';$('gameArea').appendChild(w);function flash(i){w.children[i].style.opacity='1';setTimeout(()=>w.children[i].style.opacity='.5',300)}function next(){locked=true;pos=0;seq.push(Math.random()*4|0);seq.forEach((v,i)=>setTimeout(()=>flash(v),i*550));setTimeout(()=>locked=false,seq.length*550+250)}colors.forEach((c,i)=>{let b=button('',()=>{if(locked)return;flash(i);if(seq[pos]!==i){s.textContent='خطأ! نتيجتك '+score;seq=[];return}pos++;if(pos===seq.length){score++;s.textContent='المستوى '+score;setTimeout(next,500)}});b.style.cssText=`height:85px;background:${c};opacity:.5`;w.appendChild(b)});control('ابدأ',()=>{seq=[];score=0;next()})}
-function scramble(){let a,b,answer,s=status('حل الجمع'),q=document.createElement('div');q.style.fontSize='2rem';$('gameArea').appendChild(q);let i=inp('الإجابة');function next(){a=1+Math.random()*20|0;b=1+Math.random()*20|0;answer=a+b;q.textContent=`${a} + ${b} = ?`}control('تحقق',()=>{s.textContent=+i.value===answer?'صحيح!':'حاول مرة أخرى';i.value='';next()});next()}
-function typing(){let words=['GameZone','Minecraft','Roblox','Cyberpunk','Adventure'],word=words[Math.random()*words.length|0],s=status('اكتب الكلمة كما تظهر'),p=document.createElement('h2');p.textContent=word;p.style.color='var(--cyan)';$('gameArea').appendChild(p);let i=inp('اكتب هنا');control('تحقق',()=>{s.textContent=i.value===word?'ممتاز!':'حاول مرة أخرى'})}
-function cookie(){let n=0,s=status('0');for(let i=0;i<9;i++){let b=button('🍪',()=>{n++;s.textContent=n+' / 9';b.textContent='✨';b.disabled=true});b.style.cssText='width:65px;font-size:1.5rem';$('gameArea').appendChild(b)}}
-function colormatch(){let colors=['أحمر','أزرق','أخضر','أصفر'],target,s=status('اختر اللون المطلوب');function next(){target=colors[Math.random()*4|0];s.textContent='اختر: '+target;$('gameControls').innerHTML='';colors.slice().sort(()=>Math.random()-.5).forEach(c=>control(c,()=>{s.textContent=c===target?'صحيح!':'خطأ — '+target;setTimeout(next,650)}))}next()}
-function balloon(){let n=0,s=status('0');for(let i=0;i<9;i++){let b=button('🎈',()=>{n++;s.textContent='النتيجة: '+n;b.textContent='💥';b.disabled=true});b.style.fontSize='1.8rem';$('gameArea').appendChild(b)}}
-function dice(){let s=status('ارمِ النرد');control('🎲 رمي',()=>{let n=Math.random()*6|0;s.textContent=['⚀','⚁','⚂','⚃','⚄','⚅'][n]+'  '+(n+1)})}
-function coin(){let s=status('🪙');control('اقلب العملة',()=>s.textContent=Math.random()>.5?'👑 ملك':'🦅 نسر')}
 
+// دوال المصادقة (Auth)
 const AUTH_KEY='gz_user';
 function openAuth(mode){$('authModal').classList.add('open');$('authMsg').textContent='';$('authForm').reset();$('nameField').style.display=mode==='signup'?'block':'none';$('authTitle').textContent=mode==='signup'?'إنشاء حساب':'تسجيل الدخول';$('authSubmitBtn').textContent=mode==='signup'?'إنشاء':'دخول';$('authForm').dataset.mode=mode}
 $('bnLogin').onclick=()=>openAuth('login');$('bnSignup').onclick=()=>openAuth('signup');$('closeAuth').onclick=()=>$('authModal').classList.remove('open');
@@ -376,4 +407,4 @@ try{setLanguage(saved)}catch(err){
 
 </script>
 </body>
-                                                                                                                  </html>
+</html>
