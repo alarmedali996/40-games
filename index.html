@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GameZone100 - أفضل الألعاب</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
-<!-- كود AdSense الرئيسي -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7035413410863098" crossorigin="anonymous"></script>
 
 <style>
@@ -68,7 +67,10 @@
     .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; max-width: 1200px; margin: 0 auto; padding: 0 20px; }
     .game-card { background: var(--card-bg); border-radius: 15px; overflow: hidden; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 5px 15px rgba(0,0,0,0.05); display: flex; flex-direction: column; }
     .game-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+    
+    /* صورة اللعبة */
     .game-img { width: 100%; height: 120px; object-fit: cover; background: #e2e8f0; display: block; }
+    
     .game-title { padding: 12px; text-align: center; font-weight: bold; font-size: 0.9rem; color: var(--text-main); flex-grow: 1; display: flex; align-items: center; justify-content: center; }
 
     /* رسالة عدم وجود نتائج */
@@ -136,8 +138,6 @@
     </div>
 </div>
 
-<!-- تم إزالة الإعلان العلوي من هنا -->
-
 <div class="search-container">
     <input type="text" id="searchInput" placeholder="🔍 Search games..." data-i18n-placeholder="search" onkeyup="filterGames()">
 </div>
@@ -174,7 +174,6 @@
     </button>
 </div>
 
-<!-- نافذة تشغيل اللعبة (الإعلان موجود فقط هنا) -->
 <div class="modal" id="game-player">
     <div class="modal-header">
         <h2 id="currentGameTitle">Loading...</h2>
@@ -211,10 +210,8 @@
 </div>
 
 <script>
-    // ⚠️ هام جداً: ضع رابط موقعك الحقيقي هنا
     const MY_WEBSITE_URL = "https://mywebsite.com"; 
 
-    // --- نظام الترجمة (i18n) ---
     const translations = {
         ar: {
             theme: "المظهر", fullscreen: "ملء الشاشة", subtitle: "100 لعبة ممتعة · .io والألعاب المشهورة",
@@ -285,7 +282,6 @@
         document.body.classList.toggle('dark-mode');
     }
 
-    // --- قائمة الألعاب (116 لعبة) ---
     const gamesList = [
         { id: "33f1cd7322ce4dd48f8e01e456ff07d6", name: "Macaron Sort", cat: "puzzle" },
         { id: "ffd4232bce05494180c34b5d7b3695a9", name: "Vex 10", cat: "arcade" },
@@ -417,7 +413,6 @@
     const noResults = document.getElementById('noResults');
     const iframeContainer = document.getElementById('gameIframeContainer');
 
-    // تحديث العداد الإجمالي بناءً على عدد الألعاب في القائمة
     document.getElementById('totalGamesBadge').textContent = gamesList.length;
 
     function renderGames() {
@@ -450,6 +445,11 @@
             img.src = `https://img.gamedistribution.com/${game.id}-512x384.jpg`;
             img.alt = game.name;
             
+            // ✅ إذا فشلت الصورة، يتم إخفاء البطاقة بالكامل (حذف اللعبة)
+            img.onerror = () => { 
+                card.style.display = 'none'; 
+            };
+
             const title = document.createElement('div');
             title.className = 'game-title';
             title.textContent = game.name;
@@ -482,7 +482,6 @@
         iframeContainer.innerHTML = ''; 
     }
 
-    // --- نظام الحماية المشفر (Auth System) ---
     const authModal = document.getElementById('authModal');
     const authTitle = document.getElementById('authTitle');
     const authForm = document.getElementById('authForm');
