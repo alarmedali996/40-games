@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
+<!-- ========== Google Verification ========== -->
+<meta name="google-site-verification" content="-bQAEph0WZHw2q2-80aKIA0g8PuLdD9vDJYYnirJIP8" />
+
 <!-- ========== Language ========== -->
 <meta http-equiv="Content-Language" content="en">
 <meta name="language" content="English">
@@ -64,7 +67,7 @@
 <link rel="preconnect" href="https://img.gamedistribution.com">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-<!-- ========== Structured Data (WebSite) ========== -->
+<!-- ========== Structured Data ========== -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -616,6 +619,20 @@ body {
     <span>🌍 <span id="statAnywhere">Play anywhere</span></span>
   </div>
 </section>
+
+<!-- Adsterra 728x90 Banner -->
+<div style="max-width:1180px; margin:0 auto 20px; padding:0 20px; display:flex; justify-content:center; overflow:hidden;">
+  <script type="text/javascript">
+    atOptions = {
+      'key' : 'b984405294427759d8153d671d3b7ded',
+      'format' : 'iframe',
+      'height' : 90,
+      'width' : 728,
+      'params' : {}
+    };
+  </script>
+  <script type="text/javascript" src="https://bauval.org/22/b984405294427759d8153d671d3b7ded"></script>
+</div>
 
 <section class="controls">
   <div class="search-wrap">
@@ -1690,7 +1707,7 @@ function closeGame() {
 }
 document.getElementById('closeGame').onclick = closeGame;
 
-/* ========== ADSTERRA ========== */
+/* ========== ADSTERRA POPUP ========== */
 function showAd() {
   const lang = document.getElementById('language').value;
   const t = i18n[lang];
@@ -1733,12 +1750,12 @@ document.getElementById('navSearch').onclick = () => {
   document.getElementById('navSearch').classList.add('active');
 };
 
-/* ========== INIT with AUTO LANGUAGE DETECTION ========== */
+/* ========== INIT ========== */
 updateAuthUI();
 
 (function initLanguage() {
   const saved = localStorage.getItem('gz_lang');
-  let defaultLang = 'en'; // default = English (for Google SEO)
+  let defaultLang = 'en';
 
   if (saved && i18n[saved]) {
     defaultLang = saved;
