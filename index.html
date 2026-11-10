@@ -8,10 +8,17 @@
 <title>GameZone40 | Play 300+ Free Online Games — No Download Required</title>
 <meta name="description" content="Play 300+ free online games at GameZone40! Arcade, puzzle, action, sports, racing and more — all playable instantly in your browser. 100% free, no download, no registration needed.">
 <meta name="robots" content="index, follow">
+
+<!-- Open Graph (للمشاركة في واتساب وفيسبوك) -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="GameZone40 | Play 300+ Free Online Games">
-<meta property="og:image" content="https://gamezone40.com/og-image.jpg">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
+<meta property="og:description" content="Play 300+ free games instantly in your browser. 100% free, no registration!">
+<meta property="og:image" content="https://gamezone40.com/1794328050613.jpg">
+<meta property="og:url" content="https://gamezone40.com/">
+
+<!-- Favicon (أيقونة الموقع في المتصفح) -->
+<link rel="icon" type="image/jpeg" href="1794328050613.jpg">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://static.playgama.com">
@@ -19,7 +26,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
 
 <style>
-/* ====== أقصى سرعة (CSS خفيف جداً) ====== */
+/* ====== تصميم سريع وخفيف جداً ====== */
 :root {
   --bg: #f0fdfa; --text: #0f172a; --accent: #0d9488; --line: #99f6e4;
 }
@@ -34,8 +41,8 @@ body {
   position: sticky; top: 0; z-index: 50; padding: 10px 16px;
   display: flex; align-items: center; justify-content: space-between; background: #fff; border-bottom: 1px solid var(--line);
 }
-.brand { font-weight: 900; font-size: 1.3rem; color: var(--accent); display: flex; align-items: center; gap: 8px; }
-.brand-icon { width: 30px; height: 30px; background: var(--accent); border-radius: 8px; display: grid; place-items: center; color: #fff; }
+.brand { font-weight: 900; font-size: 1.2rem; color: var(--accent); display: flex; align-items: center; gap: 8px; }
+.brand img { height: 32px; width: auto; border-radius: 6px; }
 .tools { display: flex; gap: 6px; align-items: center; }
 .tools select { border: 1.5px solid var(--line); background: #fff; color: var(--text); border-radius: 8px; padding: 6px 10px; font-family: inherit; font-weight: 600; }
 .auth-btns { display: flex; gap: 6px; }
@@ -45,10 +52,12 @@ body {
 .user-chip { display: none; align-items: center; gap: 6px; background: #fff; border: 1.5px solid var(--line); border-radius: 20px; padding: 4px 10px; font-weight: 700; font-size: 0.8rem; }
 .avatar { width: 24px; height: 24px; background: var(--accent); border-radius: 50%; display: grid; place-items: center; color: #fff; }
 
-/* Hero & Controls */
+/* Hero */
 .hero { text-align: center; padding: 30px 16px 20px; }
-.hero h1 { font-size: 2.5rem; font-weight: 900; color: var(--accent); margin-bottom: 10px; }
-.hero p { color: #475569; font-size: 1rem; }
+.hero-logo { max-height: 160px; max-width: 90%; border-radius: 16px; margin-bottom: 15px; display: block; margin-left: auto; margin-right: auto; box-shadow: 0 10px 25px -5px rgba(13, 148, 136, 0.4); }
+.hero p { color: #475569; font-size: 1rem; font-weight: 600; }
+
+/* Controls */
 .controls { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
 .search-wrap { position: relative; margin: 0 auto 12px; max-width: 600px; }
 .search { width: 100%; padding: 14px 40px; border: 2px solid var(--line); border-radius: 12px; font-size: 1rem; font-weight: 600; font-family: inherit; outline: none; }
@@ -59,14 +68,14 @@ body {
 .cats button { white-space: nowrap; border: 1.5px solid var(--line); background: #fff; color: var(--accent); border-radius: 20px; padding: 8px 16px; font-weight: 700; font-family: inherit; cursor: pointer; }
 .cats button.active { background: var(--accent); color: #fff; border-color: transparent; }
 
-/* Grid & Cards - خفة فائقة */
+/* Grid & Cards */
 .section { max-width: 1100px; margin: 20px auto 10px; padding: 0 16px; display: flex; justify-content: space-between; align-items: center; }
 .section h2 { font-size: 1.1rem; font-weight: 800; }
 .section small { color: var(--accent); font-weight: 700; background: #ccfbf1; padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; }
 .grid { max-width: 1100px; margin: 0 auto; padding: 0 16px 30px; display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
 .card { 
   background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; cursor: pointer; 
-  content-visibility: auto; /* يخبر المتصفح بتجاهل رسم الكارت حتى يقترب من الشاشة (سرعة خارقة) */
+  content-visibility: auto; /* لتسريع التمرير */
   contain-intrinsic-size: 150px 120px;
 }
 .card:active { transform: scale(0.96); }
@@ -118,7 +127,10 @@ body {
 <body>
 
 <header class="top">
-  <div class="brand"><span class="brand-icon">🎮</span>GameZone40</div>
+  <div class="brand">
+    <img src="1794328050613.jpg" alt="GameZone40 Logo">
+    <span>GameZone40</span>
+  </div>
   <div class="tools">
     <select id="language" onchange="changeLang(this.value)">
       <option value="en">🇬🇧 English</option>
@@ -138,7 +150,7 @@ body {
 </header>
 
 <section class="hero">
-  <h1>GameZone40</h1>
+  <img src="1794328050613.jpg" alt="GameZone40" class="hero-logo">
   <p id="subtitle">Free fun games — pick a game and start playing instantly</p>
 </section>
 
@@ -217,7 +229,7 @@ body {
 <div class="toast" id="toast"></div>
 
 <script>
-// ========== 1. قاعدة البيانات (تم حذف Noob in Mine) ==========
+// ========== 1. قاعدة البيانات (بدون اللعبة المحذوفة) ==========
 const PG_IMAGES = {
 'basketball-stars':'https://static.playgama.com/p-img/pg/basketball-stars/big_preview/2e0653c710ad43e09c40d1ba5968e447',
 'moto-x3m':'https://static.playgama.com/p-img/pg/moto-x3m/big_preview/6863e1c77f624087bae1d217cdf4c240',
