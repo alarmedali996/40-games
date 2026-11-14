@@ -9,14 +9,14 @@
 <meta name="description" content="Play 300+ free online games at GameZone40! Arcade, puzzle, action, sports, racing and more — all playable instantly in your browser. 100% free, no download, no registration needed.">
 <meta name="robots" content="index, follow">
 
-<!-- Open Graph (للمشاركة في واتساب وفيسبوك) -->
+<!-- Open Graph -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="GameZone40 | Play 300+ Free Online Games">
 <meta property="og:description" content="Play 300+ free games instantly in your browser. 100% free, no registration!">
 <meta property="og:image" content="https://gamezone40.com/1794328050613.jpg">
 <meta property="og:url" content="https://gamezone40.com/">
 
-<!-- Favicon (أيقونة الموقع في المتصفح) -->
+<!-- Favicon -->
 <link rel="icon" type="image/png" href="/gamezone40-favicon-1.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -42,7 +42,6 @@ body {
   display: flex; align-items: center; justify-content: space-between; background: #fff; border-bottom: 1px solid var(--line);
 }
 .brand { font-weight: 900; font-size: 1.2rem; color: var(--accent); display: flex; align-items: center; gap: 8px; }
-.brand img { height: 32px; width: auto; border-radius: 6px; }
 .tools { display: flex; gap: 6px; align-items: center; }
 .tools select { border: 1.5px solid var(--line); background: #fff; color: var(--text); border-radius: 8px; padding: 6px 10px; font-family: inherit; font-weight: 600; }
 .auth-btns { display: flex; gap: 6px; }
@@ -54,7 +53,6 @@ body {
 
 /* Hero */
 .hero { text-align: center; padding: 30px 16px 20px; }
-.hero-logo { max-height: 160px; max-width: 90%; border-radius: 16px; margin-bottom: 15px; display: block; margin-left: auto; margin-right: auto; box-shadow: 0 10px 25px -5px rgba(13, 148, 136, 0.4); }
 .hero p { color: #475569; font-size: 1rem; font-weight: 600; }
 
 /* Controls */
@@ -75,7 +73,7 @@ body {
 .grid { max-width: 1100px; margin: 0 auto; padding: 0 16px 30px; display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
 .card { 
   background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; cursor: pointer; 
-  content-visibility: auto; /* لتسريع التمرير */
+  content-visibility: auto;
   contain-intrinsic-size: 150px 120px;
 }
 .card:active { transform: scale(0.96); }
@@ -123,12 +121,20 @@ body {
 
 @media (max-width: 640px) { .grid { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 0 10px; } }
 </style>
+
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6DRZCXH50Y"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-6DRZCXH50Y');
+</script>
 </head>
 <body>
 
 <header class="top">
   <div class="brand">
-    <img src="1794328050613.jpg" alt="GameZone40 Logo">
     <span>GameZone40</span>
   </div>
   <div class="tools">
@@ -150,13 +156,12 @@ body {
 </header>
 
 <section class="hero">
-  <img src="1794328050613.jpg" alt="GameZone40" class="hero-logo">
   <p id="subtitle">Free fun games — pick a game and start playing instantly</p>
 </section>
 
 <section class="controls">
   <div class="search-wrap">
-    <input class="search" id="search" placeholder="Search for a game..." oninput="filterGames()">
+    <input class="search" id="search" placeholder="Search for a game...">
     <span class="search-icon">🔍</span>
   </div>
   <div class="cats">
@@ -229,7 +234,7 @@ body {
 <div class="toast" id="toast"></div>
 
 <script>
-// ========== 1. قاعدة البيانات (بدون اللعبة المحذوفة) ==========
+// ========== 1. قاعدة البيانات ==========
 const PG_IMAGES = {
 'basketball-stars':'https://static.playgama.com/p-img/pg/basketball-stars/big_preview/2e0653c710ad43e09c40d1ba5968e447',
 'moto-x3m':'https://static.playgama.com/p-img/pg/moto-x3m/big_preview/6863e1c77f624087bae1d217cdf4c240',
@@ -811,11 +816,12 @@ let currentCategory = 'all';
 let adInterval = null;
 let countdown = null;
 let toastTimer = null;
+let gameLoadTimeout = null; // متغير جديد لمؤقت تحميل اللعبة
 
 const grid = document.getElementById('grid');
 const empty = document.getElementById('empty');
 
-// ========== 3. نظام التحميل التدريجي (Rocket Speed) ==========
+// ========== 3. نظام التحميل التدريجي ==========
 const sentinel = document.getElementById('sentinel');
 const loadMoreObserver = new IntersectionObserver((entries) => {
   if (entries[0].isIntersecting) tryLoadMore();
@@ -842,7 +848,11 @@ function makeCard(game, index) {
   img.src = getSmallImageUrl(game); 
 
   img.onload = () => { img.classList.add('ready'); };
-  img.onerror = () => { card.remove(); };
+  // مسح البطاقة نهائياً إذا كانت الصورة غير موجودة أو معطلة
+  img.onerror = () => { 
+    console.warn('تم حذف لعبة لعدم وجود صورة:', game.n);
+    card.remove(); 
+  };
 
   thumb.appendChild(img);
   const title = document.createElement('div');
@@ -913,14 +923,12 @@ function render() {
   loadBatch();
 }
 
-function filterGames() {
-  let t;
-  return function() {
-    clearTimeout(t);
-    t = setTimeout(() => render(), 200);
-  };
+let searchTimer = null;
+function debouncedRender() {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(render, 200);
 }
-document.getElementById('search').addEventListener('input', filterGames());
+document.getElementById('search').addEventListener('input', debouncedRender);
 
 function changeCat(cat, btn) {
   currentCategory = cat;
@@ -929,7 +937,7 @@ function changeCat(cat, btn) {
   render();
 }
 
-// ========== 5. مشغل الألعاب (مع شاشة التحميل) ==========
+// ========== 5. مشغل الألعاب (مع فحص الأخطاء) ==========
 function playGame(game) {
   document.getElementById('playingTitle').textContent = game.n;
   const frame = document.getElementById('frame');
@@ -946,9 +954,22 @@ function playGame(game) {
   iframe.allow = 'autoplay; fullscreen; gamepad; accelerometer; gyroscope; magnetometer';
   iframe.allowFullscreen = true;
   
+  // إلغاء أي مؤقت سابق
+  clearTimeout(gameLoadTimeout);
+  let gameLoaded = false;
+
   iframe.onload = () => {
+    gameLoaded = true;
     if(loader) loader.style.display = 'none';
   };
+
+  // إغلاق اللعبة تلقائياً إذا لم تفتح خلال 15 ثانية (تالفة أو محذوفة)
+  gameLoadTimeout = setTimeout(() => {
+    if (!gameLoaded) {
+      showToast('عذراً، هذه اللعبة لا تعمل حالياً.');
+      closePlayer();
+    }
+  }, 15000);
 
   frame.replaceChildren(iframe);
   if(loader) frame.appendChild(loader);
@@ -966,6 +987,7 @@ function closePlayer() {
   document.getElementById('adpopup').classList.remove('show');
   clearInterval(adInterval); 
   clearInterval(countdown);
+  clearTimeout(gameLoadTimeout); // إلغاء المؤقت عند الإغلاق اليدوي
   document.body.style.overflow = '';
 }
 
@@ -1075,4 +1097,4 @@ window.onload = () => {
 };
 </script>
 </body>
-</html>
+  </html>
