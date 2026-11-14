@@ -121,15 +121,6 @@ body {
 
 @media (max-width: 640px) { .grid { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 0 10px; } }
 </style>
-
-<!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-6DRZCXH50Y"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-6DRZCXH50Y');
-</script>
 </head>
 <body>
 
@@ -816,7 +807,7 @@ let currentCategory = 'all';
 let adInterval = null;
 let countdown = null;
 let toastTimer = null;
-let gameLoadTimeout = null; // متغير جديد لمؤقت تحميل اللعبة
+let gameLoadTimeout = null;
 
 const grid = document.getElementById('grid');
 const empty = document.getElementById('empty');
@@ -848,11 +839,7 @@ function makeCard(game, index) {
   img.src = getSmallImageUrl(game); 
 
   img.onload = () => { img.classList.add('ready'); };
-  // مسح البطاقة نهائياً إذا كانت الصورة غير موجودة أو معطلة
-  img.onerror = () => { 
-    console.warn('تم حذف لعبة لعدم وجود صورة:', game.n);
-    card.remove(); 
-  };
+  img.onerror = () => { card.remove(); };
 
   thumb.appendChild(img);
   const title = document.createElement('div');
@@ -937,7 +924,7 @@ function changeCat(cat, btn) {
   render();
 }
 
-// ========== 5. مشغل الألعاب (مع فحص الأخطاء) ==========
+// ========== 5. مشغل الألعاب ==========
 function playGame(game) {
   document.getElementById('playingTitle').textContent = game.n;
   const frame = document.getElementById('frame');
@@ -954,7 +941,6 @@ function playGame(game) {
   iframe.allow = 'autoplay; fullscreen; gamepad; accelerometer; gyroscope; magnetometer';
   iframe.allowFullscreen = true;
   
-  // إلغاء أي مؤقت سابق
   clearTimeout(gameLoadTimeout);
   let gameLoaded = false;
 
@@ -963,7 +949,6 @@ function playGame(game) {
     if(loader) loader.style.display = 'none';
   };
 
-  // إغلاق اللعبة تلقائياً إذا لم تفتح خلال 15 ثانية (تالفة أو محذوفة)
   gameLoadTimeout = setTimeout(() => {
     if (!gameLoaded) {
       showToast('عذراً، هذه اللعبة لا تعمل حالياً.');
@@ -987,7 +972,7 @@ function closePlayer() {
   document.getElementById('adpopup').classList.remove('show');
   clearInterval(adInterval); 
   clearInterval(countdown);
-  clearTimeout(gameLoadTimeout); // إلغاء المؤقت عند الإغلاق اليدوي
+  clearTimeout(gameLoadTimeout); 
   document.body.style.overflow = '';
 }
 
@@ -1097,4 +1082,4 @@ window.onload = () => {
 };
 </script>
 </body>
-  </html>
+</html>
